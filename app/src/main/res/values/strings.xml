@@ -1,3 +1,8 @@
 <resources>
     <string name="app_name">GptRecipeApp</string>
+
+    <string name="title_search">검색</string>
+    <string name="title_rec">추천</string>
+    <string name="title_favorite">즐겨찾기</string>
+
 </resources>

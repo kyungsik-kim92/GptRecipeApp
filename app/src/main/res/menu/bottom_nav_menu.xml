@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/navigation_search"
+        android:icon="@drawable/ic_clamp_search"
+        android:title="@string/title_search" />
+
+    <item
+        android:id="@+id/navigation_rec"
+        android:icon="@drawable/ic_clamp_recommend"
+        android:title="@string/title_rec" />
+
+    <item
+        android:id="@+id/navigation_favorite"
+        android:icon="@drawable/ic_clamp_subscribe"
+        android:title="@string/title_favorite" />
+
+</menu>
