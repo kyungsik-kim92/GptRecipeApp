@@ -5,4 +5,9 @@
     <string name="title_rec">추천</string>
     <string name="title_favorite">즐겨찾기</string>
 
+
+    <string name="searchTitle">레시피검색</string>
+    <string name="searchHint">검색</string>
+
+
 </resources>
