@@ -10,5 +10,9 @@
     <string name="searchPlaceHolder">검색</string>
     <string name="searchHint">레시피가 궁금한 음식을 검색해주세요.</string>
 
+    <string name="recTitle">레시피 추천</string>
+    <string name="recHint">재료를 선택해주시면\n레시피를 추천해드려요!</string>
+    <string name="recFindIngredients">재료 알아보기</string>
+
 
 </resources>
