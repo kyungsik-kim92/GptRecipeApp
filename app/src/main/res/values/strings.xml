@@ -15,4 +15,10 @@
     <string name="recFindIngredients">재료 알아보기</string>
 
 
+    <string name="favoriteTitle">찜한 레시피</string>
+    <string name="favoriteEmptyList">찜한 레시피가 없어요.\n마음에 드는 레시피를 저장해보세요.</string>
+
+
+
+
 </resources>
