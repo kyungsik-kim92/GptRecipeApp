@@ -18,7 +18,14 @@
     <string name="favoriteTitle">찜한 레시피</string>
     <string name="favoriteEmptyList">찜한 레시피가 없어요.\n마음에 드는 레시피를 저장해보세요.</string>
 
-
+    <string name="recIngrdientsTitle">레시피 추천</string>
+    <string name="recIngredientsCategory1">고기 🥩</string>
+    <string name="recIngredientsCategory2">해산물 🐟</string>
+    <string name="recIngredientsCategory3">채소 🥬 / 곡물 🌾</string>
+    <string name="recIngredientsCategory4">과일 🍎</string>
+    <string name="recIngredientsCategory5">가공 🥫 / 유제품 🥚</string>
+    <string name="recIngredientsCategory6">기타</string>
+    <string name="recIngredients">레시피 추천받기</string>
 
 
 </resources>
