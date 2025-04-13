@@ -55,5 +55,8 @@ dependencies {
     implementation("androidx.navigation:navigation-fragment-ktx:2.8.9")
     implementation("androidx.navigation:navigation-ui-ktx:2.8.9")
 
+    // flexbox
+    implementation("com.google.android.flexbox:flexbox:3.0.0")
+
 
 }
