@@ -15,11 +15,20 @@
         android:id="@+id/navigation_rec"
         android:name="com.example.gptrecipeapp.RecFragment"
         android:label="@string/title_rec"
-        tools:layout="@layout/fragment_rec" />
+        tools:layout="@layout/fragment_rec" >
+        <action
+            android:id="@+id/action_navigation_rec_to_recIngredientsFragment"
+            app:destination="@id/recIngredientsFragment" />
+    </fragment>
 
     <fragment
         android:id="@+id/navigation_favorite"
         android:name="com.example.gptrecipeapp.FavoriteFragment"
         android:label="@string/title_favorite"
         tools:layout="@layout/fragment_favorite" />
+    <fragment
+        android:id="@+id/recIngredientsFragment"
+        android:name="com.example.gptrecipeapp.RecIngredientsFragment"
+        android:label="RecIngredientsFragment"
+        tools:layout="@layout/fragment_rec_ingredients"/>
 </navigation>

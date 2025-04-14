@@ -1,32 +1,41 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
-    android:paddingHorizontal="12dp"
-    android:paddingVertical="8dp">
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+        <variable
+            name="ingredientsModel"
+            type="com.example.gptrecipeapp.model.IngredientsModel" />
+    </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:background="@{ingredientsModel.isSelected == true ? @drawable/box_16r_orange100 : @drawable/box_16r_1s_gray100}"
-        android:paddingHorizontal="14dp"
-        android:paddingVertical="12dp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        tools:background="@drawable/box_16r_1s_gray100">
+        android:paddingHorizontal="12dp"
+        android:paddingVertical="8dp">
 
-        <TextView
-            android:id="@+id/tv_ingredients"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:text="@{ingredientsModel.ingredients}"
-            android:textColor="@{ingredientsModel.isSelected == true ? @color/white : @color/gray_400}"
-            android:textSize="16sp"
-            tools:text="닭고기"
-            tools:textColor="@color/gray_400" />
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@{ingredientsModel.isSelected == true ? @drawable/box_16r_orange100 : @drawable/box_16r_1s_gray100}"
+            android:paddingHorizontal="14dp"
+            android:paddingVertical="12dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:background="@drawable/box_16r_1s_gray100">
+
+            <TextView
+                android:id="@+id/tv_ingredients"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:text="@{ingredientsModel.ingredients}"
+                android:textColor="@{ingredientsModel.isSelected == true ? @color/white : @color/gray_400}"
+                android:textSize="16sp"
+                tools:text="닭고기"
+                tools:textColor="@color/gray_400" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
-
-</androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

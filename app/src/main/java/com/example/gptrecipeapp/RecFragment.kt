@@ -5,6 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.navigation.fragment.findNavController
 import com.example.gptrecipeapp.databinding.FragmentRecBinding
 
 class RecFragment : Fragment() {
@@ -22,6 +23,10 @@ class RecFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        binding.btnSearch.setOnClickListener {
+            val action = RecFragmentDirections.actionNavigationRecToRecIngredientsFragment()
+            findNavController().navigate(action)
+        }
     }
 
 
