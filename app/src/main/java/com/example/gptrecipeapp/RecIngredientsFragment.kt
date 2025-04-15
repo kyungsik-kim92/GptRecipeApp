@@ -48,8 +48,8 @@ class RecIngredientsFragment : Fragment() {
         _binding = null
     }
 
-    private fun getMeatList(): ArrayList<IngredientsModel> {
-        return arrayListOf<IngredientsModel>(
+    private fun getMeatList(): MutableList<IngredientsModel> {
+        return mutableListOf(
             IngredientsModel(ingredients = "닭고기", initialIsSelected = false),
             IngredientsModel(ingredients = "돼지고기", initialIsSelected = false),
             IngredientsModel(ingredients = "소고기", initialIsSelected = false),

@@ -7,6 +7,9 @@ import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.example.gptrecipeapp.databinding.ItemRecIngredientsBinding
 import com.example.gptrecipeapp.model.IngredientsModel
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
 class RecIngredientsAdapter : ListAdapter<IngredientsModel, IngredientsViewHolder>(diffUtil) {
 
@@ -43,6 +46,13 @@ class IngredientsViewHolder(
     private val binding: ItemRecIngredientsBinding
 ) : RecyclerView.ViewHolder(binding.root) {
     fun bind(item: IngredientsModel) {
+        binding.ingredientsModel = item
+        CoroutineScope(Dispatchers.Main).launch {
+            item.isSelected.collect { isSelected ->
+                binding.tvIngredients.isSelected = isSelected
+                binding.invalidateAll()
+            }
+        }
         itemView.setOnClickListener {
             item.setIsSelected(!item.isSelected.value)
         }
