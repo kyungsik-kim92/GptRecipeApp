@@ -27,5 +27,10 @@
     <string name="recIngredientsCategory6">기타</string>
     <string name="recIngredients">레시피 추천받기</string>
 
+    <string name="searchIngredientsTitle">레시피 검색</string>
+    <string name="searchIngredientsHint">재료 🥣</string>
+    <string name="searchIngredientsOverview">요리에 필요한 재료입니다. 원하지 않는 재료가 있다면 선택 해제해주세요.그 재료를 사용하지 않고 요리할 수 있는 레시피를 알려드려요 :)</string>
+    <string name="addIngredients">재료 추가하기</string>
+    <string name="searchIngredients">레시피 알아보기</string>
 
 </resources>
