@@ -1,0 +1,15 @@
+package com.example.gptrecipeapp.model
+
+data class GPT(
+    val choices: ArrayList<Choice> = ArrayList()
+)
+
+data class Choice(
+    val message: Message = Message(),
+    val finish_reason: String? = null
+)
+
+data class Message(
+    val role: String? = null,
+    val content: String? = null
+)
