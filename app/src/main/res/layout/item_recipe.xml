@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <data>
+
+
+
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingTop="12dp">
+
+        <TextView
+            android:id="@+id/btn_selector"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:background="@drawable/ic_clamp_selected"
+            app:layout_constraintBottom_toBottomOf="@id/tv_ingredients"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="@id/tv_ingredients" />
+
+        <TextView
+            android:id="@+id/tv_ingredients"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_marginStart="10dp"
+            android:ellipsize="end"
+            android:gravity="center_vertical"
+            android:lineSpacingExtra="4dp"
+            android:maxLines="2"
+            android:textColor="@color/black"
+            android:textSize="15sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@id/btn_selector"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:text="레시피" />
+        <!--            android:text="@{recipeModel.recipe}"-->
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_marginTop="12dp"
+            android:background="@color/gray_100"
+            app:layout_constraintTop_toBottomOf="@id/tv_ingredients" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

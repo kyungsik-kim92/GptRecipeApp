@@ -33,4 +33,7 @@
     <string name="addIngredients">재료 추가하기</string>
     <string name="searchIngredients">레시피 알아보기</string>
 
+    <string name="wellbeingRecipeTitle">레시피</string>
+    <string name="wellbeingRecipeHint">건강하게 요리할 수 있는 방법을 추천해드려요.</string>
+
 </resources>
