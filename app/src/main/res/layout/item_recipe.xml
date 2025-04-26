@@ -2,13 +2,12 @@
 <layout xmlns:android="http://schemas.android.com/apk/res/android">
 
     <data>
-
-
-
+        <variable
+            name="recipeModel"
+            type="com.example.gptrecipeapp.model.RecipeModel" />
     </data>
 
-    <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:app="http://schemas.android.com/apk/res-auto"
+    <androidx.constraintlayout.widget.ConstraintLayout xmlns:app="http://schemas.android.com/apk/res-auto"
         xmlns:tools="http://schemas.android.com/tools"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -32,13 +31,13 @@
             android:gravity="center_vertical"
             android:lineSpacingExtra="4dp"
             android:maxLines="2"
+            android:text="@{recipeModel.recipe}"
             android:textColor="@color/black"
             android:textSize="15sp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@id/btn_selector"
             app:layout_constraintTop_toTopOf="parent"
             tools:text="레시피" />
-        <!--            android:text="@{recipeModel.recipe}"-->
 
         <View
             android:layout_width="match_parent"
