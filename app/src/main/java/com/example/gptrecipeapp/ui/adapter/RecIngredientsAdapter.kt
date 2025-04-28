@@ -1,4 +1,4 @@
-package com.example.gptrecipeapp.adapter
+package com.example.gptrecipeapp.ui.adapter
 
 import android.view.LayoutInflater
 import android.view.ViewGroup

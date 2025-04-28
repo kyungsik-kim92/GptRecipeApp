@@ -7,13 +7,13 @@
 
     <fragment
         android:id="@+id/navigation_search"
-        android:name="com.example.gptrecipeapp.SearchFragment"
+        android:name="com.example.gptrecipeapp.ui.search.SearchFragment"
         android:label="@string/title_search"
         tools:layout="@layout/fragment_search" />
 
     <fragment
         android:id="@+id/navigation_rec"
-        android:name="com.example.gptrecipeapp.RecFragment"
+        android:name="com.example.gptrecipeapp.ui.rec.RecFragment"
         android:label="@string/title_rec"
         tools:layout="@layout/fragment_rec" >
         <action
@@ -23,12 +23,12 @@
 
     <fragment
         android:id="@+id/navigation_favorite"
-        android:name="com.example.gptrecipeapp.FavoriteFragment"
+        android:name="com.example.gptrecipeapp.ui.favorite.FavoriteFragment"
         android:label="@string/title_favorite"
         tools:layout="@layout/fragment_favorite" />
     <fragment
         android:id="@+id/recIngredientsFragment"
-        android:name="com.example.gptrecipeapp.RecIngredientsFragment"
+        android:name="com.example.gptrecipeapp.ui.recingredients.RecIngredientsFragment"
         android:label="RecIngredientsFragment"
         tools:layout="@layout/fragment_rec_ingredients"/>
 </navigation>

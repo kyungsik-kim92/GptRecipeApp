@@ -1,4 +1,4 @@
-package com.example.gptrecipeapp
+package com.example.gptrecipeapp.ui.recingredients
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -6,7 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
-import com.example.gptrecipeapp.adapter.RecIngredientsAdapter
+import com.example.gptrecipeapp.ui.adapter.RecIngredientsAdapter
 import com.example.gptrecipeapp.databinding.FragmentRecIngredientsBinding
 import com.example.gptrecipeapp.model.IngredientsModel
 
