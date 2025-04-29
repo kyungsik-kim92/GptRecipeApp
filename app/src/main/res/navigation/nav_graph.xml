@@ -18,7 +18,7 @@
         tools:layout="@layout/fragment_rec" >
         <action
             android:id="@+id/action_navigation_rec_to_recIngredientsFragment"
-            app:destination="@id/recIngredientsFragment" />
+            app:destination="@id/navigation_rec_Ingredients" />
     </fragment>
 
     <fragment
@@ -27,7 +27,7 @@
         android:label="@string/title_favorite"
         tools:layout="@layout/fragment_favorite" />
     <fragment
-        android:id="@+id/recIngredientsFragment"
+        android:id="@+id/navigation_rec_Ingredients"
         android:name="com.example.gptrecipeapp.ui.recingredients.RecIngredientsFragment"
         android:label="RecIngredientsFragment"
         tools:layout="@layout/fragment_rec_ingredients"/>

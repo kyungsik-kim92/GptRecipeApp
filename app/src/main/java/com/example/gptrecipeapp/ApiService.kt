@@ -1,7 +1,5 @@
 package com.example.gptrecipeapp
 
-import android.content.Context
-import okhttp3.Cache
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
@@ -22,9 +20,7 @@ interface ApiService {
             val logger = HttpLoggingInterceptor().apply {
                 level = HttpLoggingInterceptor.Level.BODY
             }
-            val client = OkHttpClient.Builder()
-                .addInterceptor(logger)
-                .build()
+            val client = provideOkHttpClient(logger)
 
             return Retrofit.Builder()
                 .baseUrl(NetworkConstant.SERVER_BASE_URL)
@@ -35,15 +31,13 @@ interface ApiService {
         }
 
         private fun provideOkHttpClient(
-            context: Context,
             httpLoggingInterceptor: HttpLoggingInterceptor
         ): OkHttpClient {
-            with(OkHttpClient().newBuilder()) {
-                cache(Cache(context.cacheDir, (5 * 1024 * 1024).toLong()))
-                connectTimeout(60, TimeUnit.SECONDS)
-                readTimeout(60, TimeUnit.SECONDS)
-                writeTimeout(60, TimeUnit.SECONDS)
-                addInterceptor {
+            return OkHttpClient.Builder()
+                .connectTimeout(60, TimeUnit.SECONDS)
+                .readTimeout(60, TimeUnit.SECONDS)
+                .writeTimeout(60, TimeUnit.SECONDS)
+                .addInterceptor {
                     it.proceed(
                         it.request().newBuilder()
                             .addHeader("Content-Type", "application/json")
@@ -52,9 +46,8 @@ interface ApiService {
                             .build()
                     )
                 }
-                addInterceptor(httpLoggingInterceptor)
-                return build()
-            }
+                .addInterceptor(httpLoggingInterceptor)
+                .build()
         }
     }
 }
