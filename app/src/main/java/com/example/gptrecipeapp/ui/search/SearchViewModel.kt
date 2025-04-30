@@ -1,0 +1,68 @@
+package com.example.gptrecipeapp.ui.search
+
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import com.example.gptrecipeapp.GptRequestParam
+import com.example.gptrecipeapp.MessageRequestParam
+import com.example.gptrecipeapp.Repository
+import com.example.gptrecipeapp.SearchUiModel
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
+
+class SearchViewModel(
+    private val repository: Repository
+) : ViewModel() {
+
+    private val _uiModel = MutableStateFlow(
+        SearchUiModel(
+            searchKeyword = "",
+            isFetched = false,
+            isLoading = false,
+            ingredientsList = ArrayList()
+        )
+    )
+    val uiModel: StateFlow<SearchUiModel> = _uiModel
+
+    fun getIngredientsByRecipe(searchKeyword: String) {
+        viewModelScope.launch {
+            _uiModel.update { it.copy(isLoading = true) }
+
+            runCatching {
+                val response = withContext(Dispatchers.IO) {
+                    repository.getGptResponse(
+                        GptRequestParam(
+                            messages = listOf(
+                                MessageRequestParam(
+                                    role = "user",
+                                    content = getFormattedSearchKeyword(searchKeyword)
+                                )
+                            )
+                        )
+                    )
+                }
+
+                _uiModel.update {
+                    it.copy(
+                        searchKeyword = searchKeyword,
+                        isFetched = true,
+                        isLoading = false,
+                        ingredientsList = arrayListOf()
+                    )
+                }
+            }.onFailure {
+                _uiModel.update { it.copy(isLoading = false) }
+
+            }
+        }
+    }
+
+    private fun getFormattedSearchKeyword(searchKeyword: String): String {
+        return "${searchKeyword}(을)를 요리하기 위한 재료를 나열해줘\n" +
+                "답변은 아래와 같은 형식과 한국어만으로 표시해\n" +
+                "[{\"재료\":\"양파\"}, {\"재료\":\"김치\"}]"
+    }
+}
