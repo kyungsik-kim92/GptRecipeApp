@@ -1,5 +1,6 @@
 package com.example.gptrecipeapp
 
+import com.example.gptrecipeapp.model.GPT
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
@@ -12,7 +13,7 @@ interface ApiService {
     @POST("v1/chat/completions")
     suspend fun getGptResponse(
         @Body body: GptRequestParam
-    ): GPTResponse
+    ): GPT
 
     companion object {
         fun create(): ApiService {

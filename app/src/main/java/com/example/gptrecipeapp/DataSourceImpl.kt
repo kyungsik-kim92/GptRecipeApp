@@ -1,7 +1,9 @@
 package com.example.gptrecipeapp
 
-class DataSourceImpl(private val apiService: ApiService) : DataSource {
-    override suspend fun getGptResponse(body: GptRequestParam): GPTResponse {
-        return apiService.getGptResponse(body)
-    }
-}
+import com.example.gptrecipeapp.model.GPT
+
+//class DataSourceImpl(private val apiService: ApiService) : DataSource {
+//    override suspend fun getGptResponse(body: GptRequestParam): GPT {
+//        return apiService.getGptResponse(body)
+//    }
+//}
