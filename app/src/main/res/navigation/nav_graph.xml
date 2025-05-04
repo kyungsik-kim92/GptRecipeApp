@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <navigation xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/nav_graph"
     app:startDestination="@id/navigation_search">
 
@@ -9,13 +9,17 @@
         android:id="@+id/navigation_search"
         android:name="com.example.gptrecipeapp.ui.search.SearchFragment"
         android:label="@string/title_search"
-        tools:layout="@layout/fragment_search" />
+        tools:layout="@layout/fragment_search">
+        <action
+            android:id="@+id/action_navigation_search_to_navigation_search_ingredients"
+            app:destination="@id/navigation_search_ingredients" />
+    </fragment>
 
     <fragment
         android:id="@+id/navigation_rec"
         android:name="com.example.gptrecipeapp.ui.rec.RecFragment"
         android:label="@string/title_rec"
-        tools:layout="@layout/fragment_rec" >
+        tools:layout="@layout/fragment_rec">
         <action
             android:id="@+id/action_navigation_rec_to_recIngredientsFragment"
             app:destination="@id/navigation_rec_Ingredients" />
@@ -30,5 +34,14 @@
         android:id="@+id/navigation_rec_Ingredients"
         android:name="com.example.gptrecipeapp.ui.recingredients.RecIngredientsFragment"
         android:label="RecIngredientsFragment"
-        tools:layout="@layout/fragment_rec_ingredients"/>
+        tools:layout="@layout/fragment_rec_ingredients" />
+    <fragment
+        android:id="@+id/navigation_search_ingredients"
+        android:name="com.example.gptrecipeapp.ui.searchingredients.SearchIngredientsFragment"
+        android:label="SearchIngredientsFragment"
+        tools:layout="@layout/fragment_search_ingredients">
+        <argument
+            android:name="searchUiModel"
+            app:argType="com.example.gptrecipeapp.SearchUiModel"/>
+    </fragment>
 </navigation>

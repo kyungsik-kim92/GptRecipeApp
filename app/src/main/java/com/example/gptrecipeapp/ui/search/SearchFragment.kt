@@ -1,15 +1,18 @@
 package com.example.gptrecipeapp.ui.search
 
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.viewModels
+import androidx.lifecycle.lifecycleScope
+import androidx.navigation.fragment.findNavController
 import com.example.gptrecipeapp.ApiService
 import com.example.gptrecipeapp.RepositoryImpl
+import com.example.gptrecipeapp.SearchUiModel
 import com.example.gptrecipeapp.databinding.FragmentSearchBinding
+import kotlinx.coroutines.launch
 
 class SearchFragment : Fragment() {
     private var _binding: FragmentSearchBinding? = null
@@ -40,10 +43,33 @@ class SearchFragment : Fragment() {
             if (searchKeyword.isBlank()) {
                 return@setOnClickListener
             }
-            val search = viewModel.getIngredientsByRecipe(searchKeyword)
-            Log.d("ddd", "${search.toString()}")
+            viewModel.getIngredientsByRecipe(searchKeyword)
+            addObserver()
         }
 
+    }
+
+    private fun addObserver() {
+        lifecycleScope.launch {
+            viewModel.uiModel.collect { it ->
+                binding.progressBar.isVisible = it.isLoading
+
+                if (it.isFetched) {
+                    val searchUiModel = SearchUiModel(
+                        searchKeyword = it.searchKeyword,
+                        isFetched = it.isFetched,
+                        isLoading = it.isLoading,
+                        ingredientsList = it.ingredientsList
+                    )
+                    val action =
+                        SearchFragmentDirections.actionNavigationSearchToNavigationSearchIngredients(
+                            searchUiModel
+                        )
+                    findNavController().navigate(action)
+                }
+
+            }
+        }
     }
 
     override fun onDestroyView() {
