@@ -11,15 +11,15 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
-class RecIngredientsAdapter : ListAdapter<IngredientsModel, IngredientsViewHolder>(diffUtil) {
+class RecIngredientsAdapter : ListAdapter<IngredientsModel, RecIngredientsViewHolder>(diffUtil) {
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): IngredientsViewHolder {
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecIngredientsViewHolder {
         val binding =
             ItemRecIngredientsBinding.inflate(LayoutInflater.from(parent.context), parent, false)
-        return IngredientsViewHolder(binding)
+        return RecIngredientsViewHolder(binding)
     }
 
-    override fun onBindViewHolder(holder: IngredientsViewHolder, position: Int) {
+    override fun onBindViewHolder(holder: RecIngredientsViewHolder, position: Int) {
         holder.bind(getItem(position))
     }
 
@@ -42,7 +42,7 @@ class RecIngredientsAdapter : ListAdapter<IngredientsModel, IngredientsViewHolde
 }
 
 
-class IngredientsViewHolder(
+class RecIngredientsViewHolder(
     private val binding: ItemRecIngredientsBinding
 ) : RecyclerView.ViewHolder(binding.root) {
     fun bind(item: IngredientsModel) {

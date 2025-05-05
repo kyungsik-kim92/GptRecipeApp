@@ -51,9 +51,8 @@ class SearchFragment : Fragment() {
 
     private fun addObserver() {
         lifecycleScope.launch {
-            viewModel.uiModel.collect { it ->
+            viewModel.uiModel.collect {
                 binding.progressBar.isVisible = it.isLoading
-
                 if (it.isFetched) {
                     val searchUiModel = SearchUiModel(
                         searchKeyword = it.searchKeyword,
@@ -67,6 +66,7 @@ class SearchFragment : Fragment() {
                         )
                     findNavController().navigate(action)
                 }
+                it.isFetched = false
 
             }
         }
