@@ -9,7 +9,7 @@ import kotlinx.parcelize.Parcelize
 @Parcelize
 data class IngredientsModel(
     val ingredients: String,
-    private val initialIsSelected: Boolean = false
+    val initialIsSelected: Boolean = false
 ) : Parcelable {
     private val _isSelected = MutableStateFlow(initialIsSelected)
     val isSelected: StateFlow<Boolean> = _isSelected.asStateFlow()
