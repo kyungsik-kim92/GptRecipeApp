@@ -4,13 +4,17 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
+import com.example.gptrecipeapp.ApiService
+import com.example.gptrecipeapp.RecIngredientsUiModel
+import com.example.gptrecipeapp.RepositoryImpl
 import com.example.gptrecipeapp.databinding.FragmentRecIngredientsBinding
+import com.example.gptrecipeapp.model.IngredientsModel
 import com.example.gptrecipeapp.ui.adapter.RecIngredientsAdapter
 import kotlinx.coroutines.launch
 
@@ -19,7 +23,7 @@ class RecIngredientsFragment : Fragment() {
     private var _binding: FragmentRecIngredientsBinding? = null
     private val binding get() = _binding!!
 
-    private val viewModel: RecIngredientsViewModel by viewModels()
+    private lateinit var viewModel: RecIngredientsViewModel
 
     private val meatAdapter = RecIngredientsAdapter()
     private val seafoodAdapter = RecIngredientsAdapter()
@@ -27,6 +31,13 @@ class RecIngredientsFragment : Fragment() {
     private val fruitAdapter = RecIngredientsAdapter()
     private val processedAdapter = RecIngredientsAdapter()
     private val etcAdapter = RecIngredientsAdapter()
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        val apiService = ApiService.create()
+        val repository = RepositoryImpl(apiService)
+        viewModel = RecIngredientsViewModel(repository)
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -43,8 +54,8 @@ class RecIngredientsFragment : Fragment() {
             findNavController().popBackStack()
         }
         setupRecyclerViews()
+        setupClickListeners()
         observeViewModelData()
-
     }
 
     private fun setupRecyclerViews() {
@@ -56,9 +67,43 @@ class RecIngredientsFragment : Fragment() {
         binding.rvEtcList.adapter = etcAdapter
     }
 
+    private fun setupClickListeners() {
+        binding.btnSearch.setOnClickListener {
+            val ingredientsList = ArrayList<IngredientsModel>().apply {
+                addAll(ArrayList(meatAdapter.currentList.filter { it.isSelected.value }))
+                addAll(ArrayList(seafoodAdapter.currentList.filter { it.isSelected.value }))
+                addAll(ArrayList(vegetableAdapter.currentList.filter { it.isSelected.value }))
+                addAll(ArrayList(fruitAdapter.currentList.filter { it.isSelected.value }))
+                addAll(ArrayList(processedAdapter.currentList.filter { it.isSelected.value }))
+                addAll(ArrayList(etcAdapter.currentList.filter { it.isSelected.value }))
+            }
+            viewModel.getRecRecipes(ingredientsList)
+        }
+    }
+
     private fun observeViewModelData() {
         lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                launch {
+                    viewModel.uiModel.collect { uiState ->
+                        binding.progressBar.isVisible = uiState.isLoading
+
+                        if (uiState.isFetched) {
+                            val recIngredientsUiModel = RecIngredientsUiModel(
+                                isLoading = false,
+                                isFetched = true,
+                                searchKeywordList = ArrayList(uiState.searchKeywordList),
+                                ingredientsList = ArrayList(uiState.ingredientsList)
+                            )
+                            val action =
+                                RecIngredientsFragmentDirections.actionNavigationRecIngredientsToRecRecipeFragment(
+                                    recIngredientsUiModel
+                                )
+                            findNavController().navigate(action)
+                        }
+                    }
+                }
+
                 launch {
                     viewModel.meatList.collect { list ->
                         meatAdapter.submitList(list)

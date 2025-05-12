@@ -22,7 +22,7 @@
         tools:layout="@layout/fragment_rec">
         <action
             android:id="@+id/action_navigation_rec_to_recIngredientsFragment"
-            app:destination="@id/navigation_rec_Ingredients" />
+            app:destination="@id/navigation_rec_ingredients" />
     </fragment>
 
     <fragment
@@ -31,10 +31,15 @@
         android:label="@string/title_favorite"
         tools:layout="@layout/fragment_favorite" />
     <fragment
-        android:id="@+id/navigation_rec_Ingredients"
+        android:id="@+id/navigation_rec_ingredients"
         android:name="com.example.gptrecipeapp.ui.recingredients.RecIngredientsFragment"
         android:label="RecIngredientsFragment"
-        tools:layout="@layout/fragment_rec_ingredients" />
+        tools:layout="@layout/fragment_rec_ingredients">
+        <action
+            android:id="@+id/action_navigation_rec_Ingredients_to_recRecipeFragment"
+            app:destination="@id/navigation_rec_recipe" />
+
+    </fragment>
     <fragment
         android:id="@+id/navigation_search_ingredients"
         android:name="com.example.gptrecipeapp.ui.searchingredients.SearchIngredientsFragment"
@@ -42,6 +47,16 @@
         tools:layout="@layout/fragment_search_ingredients">
         <argument
             android:name="searchUiModel"
-            app:argType="com.example.gptrecipeapp.SearchUiModel"/>
+            app:argType="com.example.gptrecipeapp.SearchUiModel" />
     </fragment>
+    <fragment
+        android:id="@+id/navigation_rec_recipe"
+        android:name="com.example.gptrecipeapp.RecRecipeFragment"
+        android:label="RecRecipeFragment"
+        tools:layout="@layout/fragment_rec_recipe" >
+        <argument
+            android:name="recIngredientsUiModel"
+            app:argType="com.example.gptrecipeapp.RecIngredientsUiModel" />
+    </fragment>
+
 </navigation>

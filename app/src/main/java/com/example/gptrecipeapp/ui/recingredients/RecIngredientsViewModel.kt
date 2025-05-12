@@ -1,11 +1,35 @@
 package com.example.gptrecipeapp.ui.recingredients
 
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import com.example.gptrecipeapp.GptRequestParam
+import com.example.gptrecipeapp.MessageRequestParam
+import com.example.gptrecipeapp.RecIngredientsUiModel
+import com.example.gptrecipeapp.Repository
+import com.example.gptrecipeapp.model.GPT
 import com.example.gptrecipeapp.model.IngredientsModel
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
+import org.json.JSONArray
 
-class RecIngredientsViewModel : ViewModel() {
+class RecIngredientsViewModel(
+    private val repository: Repository
+) : ViewModel() {
+
+    private val _uiModel = MutableStateFlow(
+        RecIngredientsUiModel(
+            isLoading = false,
+            isFetched = false,
+            searchKeywordList = ArrayList(),
+            ingredientsList = ArrayList()
+        )
+    )
+    val uiModel: StateFlow<RecIngredientsUiModel> = _uiModel
+
     private val _meatList = MutableStateFlow<List<IngredientsModel>>(emptyList())
     val meatList = _meatList.asStateFlow()
 
@@ -35,6 +59,35 @@ class RecIngredientsViewModel : ViewModel() {
         _fruitList.value = getFruitList()
         _processedList.value = getProcessedList()
         _etcList.value = getEtcList()
+    }
+
+    fun getRecRecipes(ingredientsList: ArrayList<IngredientsModel>) {
+        _uiModel.value = _uiModel.value.copy(isLoading = true)
+
+        viewModelScope.launch {
+            try {
+                val response = withContext(Dispatchers.IO) {
+                    repository.getGptResponse(
+                        GptRequestParam(
+                            messages = arrayListOf(
+                                MessageRequestParam(
+                                    role = "user",
+                                    content = getFormattedSearchKeyword(ingredientsList)
+                                )
+                            )
+                        )
+                    )
+                }
+                _uiModel.value = _uiModel.value.copy(
+                    isLoading = false,
+                    isFetched = true,
+                    searchKeywordList = getSearchKeywordList(response),
+                    ingredientsList = ingredientsList
+                )
+            } catch (e: Exception) {
+                _uiModel.value = _uiModel.value.copy(isLoading = false)
+            }
+        }
     }
 
     fun getSelectedIngredients(): List<String> {
@@ -162,5 +215,36 @@ class RecIngredientsViewModel : ViewModel() {
             IngredientsModel(ingredients = "베이글", initialIsSelected = false),
             IngredientsModel(ingredients = "식빵", initialIsSelected = false),
         )
+    }
+
+    private fun getFormattedSearchKeyword(
+        ingredientsList: ArrayList<IngredientsModel>,
+    ): String {
+
+        var format = ""
+        ingredientsList.forEachIndexed { index, ingredientsModel ->
+            format += if (index == ingredientsList.lastIndex) {
+                ingredientsModel.ingredients
+            } else {
+                "${ingredientsModel.ingredients},"
+            }
+        }
+        return "$format 재료들로 조리할 수 있는 음식을 나열해줘\n" +
+                "답변은 아래와 같은 형식과 한국어만으로 표시해\n" +
+                "[{\"키워드\":\"김치찌개\"}, {\"키워드\":\"된장찌개\"}]"
+    }
+
+    private fun getSearchKeywordList(response: GPT): ArrayList<String> {
+        val searchKeywordList = ArrayList<String>()
+        val jsonArray = response.choices[0].message.content?.let { JSONArray(it) }
+
+        for (i in 0 until (jsonArray?.length() ?: 0)) {
+            jsonArray?.getJSONObject(i)?.apply {
+                if (has("키워드")) {
+                    searchKeywordList.add(get("키워드").toString())
+                }
+            }
+        }
+        return searchKeywordList
     }
 }
