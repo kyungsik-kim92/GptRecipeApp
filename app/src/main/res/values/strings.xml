@@ -35,5 +35,11 @@
 
     <string name="wellbeingRecipeTitle">레시피</string>
     <string name="wellbeingRecipeHint">건강하게 요리할 수 있는 방법을 추천해드려요.</string>
+    <string name="recRecipeTitle">레시피 추천</string>
+    <string name="recRecipeHint">선택하신 재료로 요리할 수 있는 메뉴입니다.\n레시피가 궁금한 요리를 선택해보세요!</string>
+    <string name="recipeTitle">레시피 검색</string>
+    <string name="recipeWellbeing">건강하게 먹고 싶다면?</string>
+    <string name="ingredients">재료</string>
+    <string name="recipe">레시피</string>
 
 </resources>
