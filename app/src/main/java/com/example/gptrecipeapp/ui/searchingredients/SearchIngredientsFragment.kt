@@ -8,8 +8,10 @@ import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
+import androidx.navigation.fragment.navArgs
 import com.example.gptrecipeapp.ApiService
 import com.example.gptrecipeapp.RepositoryImpl
+import com.example.gptrecipeapp.SearchIngredientsUiModel
 import com.example.gptrecipeapp.databinding.FragmentSearchIngredientsBinding
 import com.example.gptrecipeapp.ui.adapter.IngredientsAdapter
 import kotlinx.coroutines.launch
@@ -20,18 +22,15 @@ class SearchIngredientsFragment : Fragment() {
 
     private lateinit var viewModel: SearchIngredientsViewModel
     private var ingredientsAdapter = IngredientsAdapter()
+    private val args: SearchIngredientsFragmentArgs by navArgs()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         val apiService = ApiService.create()
         val repository = RepositoryImpl(apiService)
         viewModel = SearchIngredientsViewModel(repository)
-
-        val args = SearchIngredientsFragmentArgs.fromBundle(requireArguments())
-        val searchUiModel = args.searchUiModel
-
-        viewModel.setSearchKeyword(searchUiModel.searchKeyword)
-        viewModel.setIngredientsList(searchUiModel.ingredientsList)
+        viewModel.setSearchKeyword(args.searchUiModel.searchKeyword)
+        viewModel.setIngredientsList(args.searchUiModel.ingredientsList)
     }
 
     override fun onCreateView(
@@ -52,6 +51,15 @@ class SearchIngredientsFragment : Fragment() {
 
         binding.rvIngredientsList.adapter = ingredientsAdapter
         addObserver()
+
+        binding.btnSearch.setOnClickListener {
+            val ingredientsList =
+                ArrayList(ingredientsAdapter.currentList.filter { it.isSelected.value })
+            if (ingredientsList.isEmpty()) {
+                return@setOnClickListener
+            }
+            viewModel.getRecipeByIngredients(ingredientsList)
+        }
     }
 
     private fun addObserver() {
@@ -69,9 +77,21 @@ class SearchIngredientsFragment : Fragment() {
                         submitList(it.ingredientsList)
                     }
                 }
+                if (it.isFetched) {
+                    val searchIngredientsUiModel  = SearchIngredientsUiModel(
+                        searchKeyword = it.searchKeyword,
+                        ingredientsList = it.ingredientsList,
+                        recipeList = it.recipeList
+                    )
+
+                    val action = SearchIngredientsFragmentDirections
+                        .actionNavigationSearchIngredientsToRecipeFragment(searchIngredientsUiModel)
+                    findNavController().navigate(action)
+                }
             }
         }
     }
+
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
