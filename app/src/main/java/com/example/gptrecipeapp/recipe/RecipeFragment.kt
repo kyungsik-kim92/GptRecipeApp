@@ -5,7 +5,9 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.example.gptrecipeapp.ApiService
@@ -68,18 +70,36 @@ class RecipeFragment : Fragment() {
         binding.btnBack.setOnClickListener {
             findNavController().popBackStack()
         }
-        binding.rvIngredientsList.adapter = ingredientsAdapter
-        binding.rvRecipeList.adapter = recipeAdapter
-        binding.isIngredients = true
-        binding.isRecipe = false
+        with(binding) {
+            rvIngredientsList.adapter = ingredientsAdapter
+            rvRecipeList.adapter = recipeAdapter
+            isIngredients = true
+            isRecipe = false
+
+            btnIngredients.setOnClickListener {
+                with(binding) {
+                    isIngredients = true
+                    isRecipe = false
+                }
+            }
+
+            btnRecipe.setOnClickListener {
+                with(binding) {
+                    isIngredients = false
+                    isRecipe = true
+                }
+            }
+        }
     }
 
     private fun addObserver() {
         lifecycleScope.launch {
-            viewModel.uiModel.collect {
-                binding.tvRecipeTitle.text = it.searchKeyword
-                ingredientsAdapter.submitList(it.ingredientsList)
-                recipeAdapter.submitList(it.recipeList)
+            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                viewModel.uiModel.collect {
+                    binding.tvRecipeTitle.text = it.searchKeyword
+                    ingredientsAdapter.submitList(it.ingredientsList)
+                    recipeAdapter.submitList(it.recipeList)
+                }
             }
         }
     }
