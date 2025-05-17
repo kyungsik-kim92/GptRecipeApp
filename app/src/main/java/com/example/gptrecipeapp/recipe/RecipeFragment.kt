@@ -7,6 +7,7 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
+import androidx.navigation.fragment.navArgs
 import com.example.gptrecipeapp.ApiService
 import com.example.gptrecipeapp.RepositoryImpl
 import com.example.gptrecipeapp.databinding.FragmentRecipeBinding
@@ -23,11 +24,14 @@ class RecipeFragment : Fragment() {
     private var ingredientsAdapter = IngredientsAdapter()
     private var recipeAdapter = RecipeAdapter()
 
+    private val args: RecipeFragmentArgs by navArgs()
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         val apiService = ApiService.create()
         val repository = RepositoryImpl(apiService)
         viewModel = RecipeViewModel(repository)
+
     }
 
     override fun onCreateView(
@@ -44,7 +48,23 @@ class RecipeFragment : Fragment() {
         binding.btnBack.setOnClickListener {
             findNavController().popBackStack()
         }
+        binding.rvIngredientsList.adapter = ingredientsAdapter
+        binding.rvRecipeList.adapter = recipeAdapter
         addObserver()
+        binding.isIngredients = true
+        binding.isRecipe = false
+
+        args.searchIngredientsUiModel.searchKeyword.let { searchKeyword ->
+            viewModel.setSearchKeyword(searchKeyword)
+        }
+
+        args.searchIngredientsUiModel.ingredientsList.let { ingredientsList ->
+            viewModel.setIngredientsList(ingredientsList)
+        }
+
+        args.searchIngredientsUiModel.recipeList.let { recipeList ->
+            viewModel.setRecipeList(recipeList)
+        }
 
     }
 
