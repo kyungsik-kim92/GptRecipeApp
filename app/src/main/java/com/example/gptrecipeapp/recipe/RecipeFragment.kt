@@ -1,7 +1,6 @@
 package com.example.gptrecipeapp.recipe
 
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -46,16 +45,12 @@ class RecipeFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        binding.btnBack.setOnClickListener {
-            findNavController().popBackStack()
-            Log.d("RecipeFragment", "Back button clicked")
-        }
-        binding.rvIngredientsList.adapter = ingredientsAdapter
-        binding.rvRecipeList.adapter = recipeAdapter
+        setupUI()
         addObserver()
-        binding.isIngredients = true
-        binding.isRecipe = false
+        loadArgData()
+    }
 
+    private fun loadArgData() {
         args.searchIngredientsUiModel.searchKeyword.let { searchKeyword ->
             viewModel.setSearchKeyword(searchKeyword)
         }
@@ -67,7 +62,16 @@ class RecipeFragment : Fragment() {
         args.searchIngredientsUiModel.recipeList.let { recipeList ->
             viewModel.setRecipeList(recipeList)
         }
+    }
 
+    private fun setupUI() {
+        binding.btnBack.setOnClickListener {
+            findNavController().popBackStack()
+        }
+        binding.rvIngredientsList.adapter = ingredientsAdapter
+        binding.rvRecipeList.adapter = recipeAdapter
+        binding.isIngredients = true
+        binding.isRecipe = false
     }
 
     private fun addObserver() {
