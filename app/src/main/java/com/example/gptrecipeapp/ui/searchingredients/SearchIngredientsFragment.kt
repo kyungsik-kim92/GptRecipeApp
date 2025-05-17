@@ -78,7 +78,7 @@ class SearchIngredientsFragment : Fragment() {
                     }
                 }
                 if (it.isFetched) {
-                    val searchIngredientsUiModel  = SearchIngredientsUiModel(
+                    val searchIngredientsUiModel = SearchIngredientsUiModel(
                         searchKeyword = it.searchKeyword,
                         ingredientsList = it.ingredientsList,
                         recipeList = it.recipeList
@@ -88,6 +88,7 @@ class SearchIngredientsFragment : Fragment() {
                         .actionNavigationSearchIngredientsToRecipeFragment(searchIngredientsUiModel)
                     findNavController().navigate(action)
                 }
+                it.isFetched = false
             }
         }
     }

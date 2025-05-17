@@ -1,6 +1,7 @@
 package com.example.gptrecipeapp.recipe
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -47,6 +48,7 @@ class RecipeFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         binding.btnBack.setOnClickListener {
             findNavController().popBackStack()
+            Log.d("RecipeFragment", "Back button clicked")
         }
         binding.rvIngredientsList.adapter = ingredientsAdapter
         binding.rvRecipeList.adapter = recipeAdapter
