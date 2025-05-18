@@ -50,16 +50,19 @@
             app:argType="com.example.gptrecipeapp.SearchUiModel" />
         <action
             android:id="@+id/action_navigation_search_ingredients_to_recipeFragment"
-            app:destination="@id/navigation_recipe"/>
+            app:destination="@id/navigation_recipe" />
     </fragment>
     <fragment
         android:id="@+id/navigation_rec_recipe"
-        android:name="com.example.gptrecipeapp.RecRecipeFragment"
+        android:name="com.example.gptrecipeapp.ui.recrecipe.RecRecipeFragment"
         android:label="RecRecipeFragment"
         tools:layout="@layout/fragment_rec_recipe">
         <argument
             android:name="recIngredientsUiModel"
             app:argType="com.example.gptrecipeapp.RecIngredientsUiModel" />
+        <action
+            android:id="@+id/action_navigation_rec_recipe_to_navigation_recipe"
+            app:destination="@id/navigation_recipe" />
     </fragment>
     <fragment
         android:id="@+id/navigation_recipe"

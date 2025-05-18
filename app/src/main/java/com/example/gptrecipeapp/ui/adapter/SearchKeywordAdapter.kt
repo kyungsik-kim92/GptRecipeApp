@@ -10,21 +10,21 @@ import com.example.gptrecipeapp.databinding.ItemSearchKeywordBinding
 
 class SearchKeywordAdapter : ListAdapter<String, SearchKeywordViewHolder>(diffUtil) {
 
-    private lateinit var listener: OnItemSelectedListener
+//    private lateinit var listener: OnItemSelectedListener
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): SearchKeywordViewHolder {
         val binding =
             ItemSearchKeywordBinding.inflate(LayoutInflater.from(parent.context), parent, false)
-        return SearchKeywordViewHolder(binding, listener)
+        return SearchKeywordViewHolder(binding)
     }
 
     override fun onBindViewHolder(holder: SearchKeywordViewHolder, position: Int) {
         holder.bind(getItem(position))
     }
 
-    fun setOnItemSelectedListener(listener: OnItemSelectedListener) {
-        this.listener = listener
-    }
+//    fun setOnItemSelectedListener(listener: OnItemSelectedListener) {
+//        this.listener = listener
+//    }
 
     companion object {
         val diffUtil = object : DiffUtil.ItemCallback<String>() {
@@ -39,12 +39,12 @@ class SearchKeywordAdapter : ListAdapter<String, SearchKeywordViewHolder>(diffUt
 
 class SearchKeywordViewHolder(
     private val binding: ItemSearchKeywordBinding,
-    private val listener: OnItemSelectedListener
+//    private val listener: OnItemSelectedListener
 ) : RecyclerView.ViewHolder(binding.root) {
     fun bind(keyword: String) {
         binding.searchKeyword = keyword
-        itemView.setOnClickListener {
-            listener.onItemSelected(keyword)
-        }
+//        itemView.setOnClickListener {
+//            listener.onItemSelected(keyword)
+//        }
     }
 }

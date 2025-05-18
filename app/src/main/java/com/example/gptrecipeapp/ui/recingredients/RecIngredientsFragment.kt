@@ -101,6 +101,7 @@ class RecIngredientsFragment : Fragment() {
                                 )
                             findNavController().navigate(action)
                         }
+                        uiState.isFetched = false
                     }
                 }
 
