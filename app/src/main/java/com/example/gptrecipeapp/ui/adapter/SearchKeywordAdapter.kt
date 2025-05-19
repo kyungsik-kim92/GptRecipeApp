@@ -5,26 +5,21 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
-import com.example.gptrecipeapp.OnItemSelectedListener
 import com.example.gptrecipeapp.databinding.ItemSearchKeywordBinding
 
-class SearchKeywordAdapter : ListAdapter<String, SearchKeywordViewHolder>(diffUtil) {
-
-//    private lateinit var listener: OnItemSelectedListener
+class SearchKeywordAdapter(
+    private val onItemClick: () -> Unit
+) : ListAdapter<String, SearchKeywordViewHolder>(diffUtil) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): SearchKeywordViewHolder {
         val binding =
             ItemSearchKeywordBinding.inflate(LayoutInflater.from(parent.context), parent, false)
-        return SearchKeywordViewHolder(binding)
+        return SearchKeywordViewHolder(binding, onItemClick)
     }
 
     override fun onBindViewHolder(holder: SearchKeywordViewHolder, position: Int) {
         holder.bind(getItem(position))
     }
-
-//    fun setOnItemSelectedListener(listener: OnItemSelectedListener) {
-//        this.listener = listener
-//    }
 
     companion object {
         val diffUtil = object : DiffUtil.ItemCallback<String>() {
@@ -39,12 +34,12 @@ class SearchKeywordAdapter : ListAdapter<String, SearchKeywordViewHolder>(diffUt
 
 class SearchKeywordViewHolder(
     private val binding: ItemSearchKeywordBinding,
-//    private val listener: OnItemSelectedListener
+    private val onItemClick: () -> Unit
 ) : RecyclerView.ViewHolder(binding.root) {
     fun bind(keyword: String) {
         binding.searchKeyword = keyword
-//        itemView.setOnClickListener {
-//            listener.onItemSelected(keyword)
-//        }
+        itemView.setOnClickListener {
+            onItemClick()
+        }
     }
 }

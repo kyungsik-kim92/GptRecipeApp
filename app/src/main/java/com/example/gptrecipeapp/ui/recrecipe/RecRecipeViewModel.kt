@@ -1,13 +1,19 @@
 package com.example.gptrecipeapp.ui.recrecipe
 
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import com.example.gptrecipeapp.GptRequestParam
+import com.example.gptrecipeapp.MessageRequestParam
 import com.example.gptrecipeapp.RecRecipeUiModel
 import com.example.gptrecipeapp.Repository
 import com.example.gptrecipeapp.model.GPT
 import com.example.gptrecipeapp.model.IngredientsModel
 import com.example.gptrecipeapp.model.RecipeModel
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import org.json.JSONArray
 
 class RecRecipeViewModel(
@@ -41,6 +47,45 @@ class RecRecipeViewModel(
     fun setIngredientsList(ingredientsList: ArrayList<IngredientsModel>) {
         _uiModel.value = _uiModel.value.copy().apply {
             this.ingredientsList = ingredientsList
+        }
+    }
+
+    fun getRecipeByIngredients() {
+        _uiModel.value = _uiModel.value.copy(
+            isLoading = true
+        )
+
+        val searchKeyword = _uiModel.value.searchKeyword
+        val ingredientsList = _uiModel.value.ingredientsList
+
+        viewModelScope.launch(Dispatchers.IO) {
+            runCatching {
+                val response = repository.getGptResponse(
+                    GptRequestParam(
+                        messages = arrayListOf(
+                            MessageRequestParam(
+                                role = "user",
+                                content = getFormattedSearchKeyword(searchKeyword, ingredientsList)
+                            )
+                        )
+                    )
+                )
+                withContext(Dispatchers.Main) {
+                    _uiModel.value = _uiModel.value.copy(
+                        searchKeyword = searchKeyword,
+                        isFetched = true,
+                        isLoading = false,
+                        ingredientsList = ingredientsList,
+                        recipeList = getRecipeList(response),
+                    )
+                }
+            }.onFailure {
+                withContext(Dispatchers.Main) {
+                    _uiModel.value = _uiModel.value.copy(
+                        isLoading = false,
+                    )
+                }
+            }
         }
     }
 
