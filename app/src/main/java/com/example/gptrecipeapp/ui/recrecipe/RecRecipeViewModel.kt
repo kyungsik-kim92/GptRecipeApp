@@ -1,11 +1,12 @@
 package com.example.gptrecipeapp.ui.recrecipe
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.gptrecipeapp.GptRequestParam
 import com.example.gptrecipeapp.MessageRequestParam
-import com.example.gptrecipeapp.UniteUiModel
 import com.example.gptrecipeapp.Repository
+import com.example.gptrecipeapp.UniteUiModel
 import com.example.gptrecipeapp.model.GPT
 import com.example.gptrecipeapp.model.IngredientsModel
 import com.example.gptrecipeapp.model.RecipeModel
@@ -54,9 +55,8 @@ class RecRecipeViewModel(
         _uiModel.value = _uiModel.value.copy(
             isLoading = true
         )
+        val ingredientsList = _uiModel.value.searchKeyword
 
-        val searchKeyword = _uiModel.value.searchKeyword
-        val ingredientsList = _uiModel.value.ingredientsList
 
         viewModelScope.launch(Dispatchers.IO) {
             runCatching {
@@ -65,17 +65,18 @@ class RecRecipeViewModel(
                         messages = arrayListOf(
                             MessageRequestParam(
                                 role = "user",
-                                content = getFormattedSearchKeyword(searchKeyword, ingredientsList)
+                                content = getFormattedSearchKeyword(ingredientsList)
                             )
                         )
                     )
                 )
                 withContext(Dispatchers.Main) {
+                    val parsedIngredients = getIngredientsList(response)
                     _uiModel.value = _uiModel.value.copy(
-                        searchKeyword = searchKeyword,
+                        searchKeyword = ingredientsList,
                         isFetched = true,
                         isLoading = false,
-                        ingredientsList = ingredientsList,
+                        ingredientsList = parsedIngredients,
                         recipeList = getRecipeList(response),
                     )
                 }
@@ -89,23 +90,10 @@ class RecRecipeViewModel(
         }
     }
 
-    private fun getFormattedSearchKeyword(
-        searchKeyword: String,
-        ingredientsList: ArrayList<IngredientsModel>,
-    ): String {
-
-        var format = ""
-        ingredientsList.forEachIndexed { index, ingredientsModel ->
-            format += if (index == ingredientsList.lastIndex) {
-                ingredientsModel.ingredients
-            } else {
-                "${ingredientsModel.ingredients},"
-            }
-        }
-        return "$format 재료들로 ${searchKeyword}(을)를 요리하기 위한 순서를 일반적인 방식(레시피)과 건강한 방식(웰빙)을 나열해줘\n" +
+    private fun getFormattedSearchKeyword(searchKeyword: String): String {
+        return "${searchKeyword}(을)를 요리하기 위한 재료를 나열해줘\n" +
                 "답변은 아래와 같은 형식과 한국어만으로 표시해\n" +
-                "주의사항: 두개의 JSON Array 를 생성하지말고 하나의 JSON Array 로 답변을 표시해\n" +
-                "[{\"레시피\":\"기름에 돼지고기를 볶는다\"}, {\"레시피\":\"물을 붓는다\"}, {\"웰빙\":\"따뜻한 물을 붓는다\"}, {\"웰빙\":\"땅콩을 갈아 넣는다\"}]"
+                "[{\"재료\":\"양파\"}, {\"재료\":\"김치\"}]"
     }
 
     private fun getRecipeList(response: GPT): ArrayList<RecipeModel> {
@@ -125,6 +113,27 @@ class RecRecipeViewModel(
             }
         }
         return recipeList
+    }
+
+    private fun getIngredientsList(response: GPT): ArrayList<IngredientsModel> {
+        val ingredientsList = ArrayList<IngredientsModel>()
+        val jsonArray = response.choices[0].message.content?.let { JSONArray(it) }
+
+        for (i in 0 until (jsonArray?.length() ?: 0)) {
+            jsonArray?.getJSONObject(i)?.apply {
+                if (has("재료")) {
+                    val ingredient = get("재료").toString()
+                    Log.d("RecRecipeViewModel", "Found ingredient: $ingredient")
+                    ingredientsList.add(
+                        IngredientsModel(
+                            ingredients = ingredient,
+                            initialIsSelected = true
+                        )
+                    )
+                }
+            }
+        }
+        return ingredientsList
     }
 
 }

@@ -90,23 +90,6 @@ class RecIngredientsViewModel(
         }
     }
 
-    fun getSelectedIngredients(): List<String> {
-        val selectedIngredients = mutableListOf<String>()
-
-        val collectSelected = { list: List<IngredientsModel> ->
-            list.filter { it.isSelected.value }.mapTo(selectedIngredients) { it.ingredients }
-        }
-
-        collectSelected(meatList.value)
-        collectSelected(seafoodList.value)
-        collectSelected(vegetableList.value)
-        collectSelected(fruitList.value)
-        collectSelected(processedList.value)
-        collectSelected(etcList.value)
-
-        return selectedIngredients
-    }
-
     private fun getMeatList(): MutableList<IngredientsModel> {
         return mutableListOf(
             IngredientsModel(ingredients = "닭고기", initialIsSelected = false),
