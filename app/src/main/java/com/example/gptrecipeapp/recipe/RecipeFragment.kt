@@ -53,15 +53,15 @@ class RecipeFragment : Fragment() {
     }
 
     private fun loadArgData() {
-        args.searchIngredientsUiModel.searchKeyword.let { searchKeyword ->
+        args.uniteUiModel.searchKeyword.let { searchKeyword ->
             viewModel.setSearchKeyword(searchKeyword)
         }
 
-        args.searchIngredientsUiModel.ingredientsList.let { ingredientsList ->
+        args.uniteUiModel.ingredientsList.let { ingredientsList ->
             viewModel.setIngredientsList(ingredientsList)
         }
 
-        args.searchIngredientsUiModel.recipeList.let { recipeList ->
+        args.uniteUiModel.recipeList.let { recipeList ->
             viewModel.setRecipeList(recipeList)
         }
     }

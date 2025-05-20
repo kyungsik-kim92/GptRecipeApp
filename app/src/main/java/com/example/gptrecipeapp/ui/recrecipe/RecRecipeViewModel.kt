@@ -4,7 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.gptrecipeapp.GptRequestParam
 import com.example.gptrecipeapp.MessageRequestParam
-import com.example.gptrecipeapp.RecRecipeUiModel
+import com.example.gptrecipeapp.UniteUiModel
 import com.example.gptrecipeapp.Repository
 import com.example.gptrecipeapp.model.GPT
 import com.example.gptrecipeapp.model.IngredientsModel
@@ -20,7 +20,7 @@ class RecRecipeViewModel(
     private val repository: Repository
 ) : ViewModel() {
     private val _uiModel = MutableStateFlow(
-        RecRecipeUiModel(
+        UniteUiModel(
             isFetched = false,
             isLoading = false,
             searchKeyword = "",
@@ -29,7 +29,7 @@ class RecRecipeViewModel(
             recipeList = ArrayList(),
         )
     )
-    val uiModel: StateFlow<RecRecipeUiModel> = _uiModel
+    val uiModel: StateFlow<UniteUiModel> = _uiModel
 
 
     fun setSearchKeyword(searchKeyword: String) {

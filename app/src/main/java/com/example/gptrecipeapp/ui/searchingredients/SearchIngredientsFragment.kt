@@ -11,7 +11,7 @@ import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.example.gptrecipeapp.ApiService
 import com.example.gptrecipeapp.RepositoryImpl
-import com.example.gptrecipeapp.SearchIngredientsUiModel
+import com.example.gptrecipeapp.UniteUiModel
 import com.example.gptrecipeapp.databinding.FragmentSearchIngredientsBinding
 import com.example.gptrecipeapp.ui.adapter.IngredientsAdapter
 import kotlinx.coroutines.launch
@@ -78,14 +78,14 @@ class SearchIngredientsFragment : Fragment() {
                     }
                 }
                 if (it.isFetched) {
-                    val searchIngredientsUiModel = SearchIngredientsUiModel(
+                    val uniteUiModel = UniteUiModel(
                         searchKeyword = it.searchKeyword,
                         ingredientsList = it.ingredientsList,
                         recipeList = it.recipeList
                     )
 
                     val action = SearchIngredientsFragmentDirections
-                        .actionNavigationSearchIngredientsToRecipeFragment(searchIngredientsUiModel)
+                        .actionNavigationSearchIngredientsToRecipeFragment(uniteUiModel)
                     findNavController().navigate(action)
                 }
                 it.isFetched = false

@@ -8,7 +8,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.gptrecipeapp.databinding.ItemSearchKeywordBinding
 
 class SearchKeywordAdapter(
-    private val onItemClick: () -> Unit
+    private val onItemClick: (String) -> Unit
 ) : ListAdapter<String, SearchKeywordViewHolder>(diffUtil) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): SearchKeywordViewHolder {
@@ -34,12 +34,12 @@ class SearchKeywordAdapter(
 
 class SearchKeywordViewHolder(
     private val binding: ItemSearchKeywordBinding,
-    private val onItemClick: () -> Unit
+    private val onItemClick: (String) -> Unit
 ) : RecyclerView.ViewHolder(binding.root) {
     fun bind(keyword: String) {
         binding.searchKeyword = keyword
         itemView.setOnClickListener {
-            onItemClick()
+            onItemClick(keyword)
         }
     }
 }

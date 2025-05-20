@@ -1,16 +1,12 @@
 package com.example.gptrecipeapp.recipe
 
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
 import com.example.gptrecipeapp.RecipeUiModel
 import com.example.gptrecipeapp.Repository
 import com.example.gptrecipeapp.model.IngredientsModel
 import com.example.gptrecipeapp.model.RecipeModel
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 
 class RecipeViewModel(
     private val repository: Repository

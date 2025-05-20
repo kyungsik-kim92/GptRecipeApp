@@ -13,7 +13,7 @@ import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.example.gptrecipeapp.ApiService
 import com.example.gptrecipeapp.RepositoryImpl
-import com.example.gptrecipeapp.SearchIngredientsUiModel
+import com.example.gptrecipeapp.UniteUiModel
 import com.example.gptrecipeapp.databinding.FragmentRecRecipeBinding
 import com.example.gptrecipeapp.ui.adapter.SearchKeywordAdapter
 import kotlinx.coroutines.launch
@@ -24,7 +24,8 @@ class RecRecipeFragment : Fragment() {
 
     private lateinit var viewModel: RecRecipeViewModel
 
-    private val searchKeywordAdapter = SearchKeywordAdapter {
+    private val searchKeywordAdapter = SearchKeywordAdapter { searchKeyword ->
+        viewModel.setSearchKeyword(searchKeyword)
         viewModel.getRecipeByIngredients()
     }
 
@@ -64,14 +65,14 @@ class RecRecipeFragment : Fragment() {
                     binding.progressBar.isVisible = uiState.isLoading
                     searchKeywordAdapter.submitList(uiState.searchKeywordList)
                     if (uiState.isFetched) {
-                        val searchIngredientsUiModel = SearchIngredientsUiModel(
+                        val uniteUiModel = UniteUiModel(
                             searchKeyword = uiState.searchKeyword,
                             ingredientsList = uiState.ingredientsList,
                             recipeList = uiState.recipeList
                         )
                         val action =
                             RecRecipeFragmentDirections.actionNavigationRecRecipeToNavigationRecipe(
-                                searchIngredientsUiModel
+                                uniteUiModel
                             )
                         findNavController().navigate(action)
                     }
