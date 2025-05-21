@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
@@ -87,6 +88,9 @@ class RecipeFragment : Fragment() {
                 with(binding) {
                     isIngredients = false
                     isRecipe = true
+                    if (viewModel.uiModel.value.recipeList.isEmpty()) {
+                        viewModel.getRecipe()
+                    }
                 }
             }
         }
@@ -99,6 +103,7 @@ class RecipeFragment : Fragment() {
                     binding.tvRecipeTitle.text = it.searchKeyword
                     ingredientsAdapter.submitList(it.ingredientsList)
                     recipeAdapter.submitList(it.recipeList)
+                    binding.progressBar.isVisible = it.isLoading
                 }
             }
         }

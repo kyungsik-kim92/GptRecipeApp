@@ -8,4 +8,5 @@ data class RecipeUiModel(
     var searchKeyword: String,
     var ingredientsList: ArrayList<IngredientsModel>,
     var recipeList: ArrayList<RecipeModel>,
+    var isLoading: Boolean
 )

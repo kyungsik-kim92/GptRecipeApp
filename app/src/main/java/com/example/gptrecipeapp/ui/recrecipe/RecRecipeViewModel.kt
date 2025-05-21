@@ -1,6 +1,5 @@
 package com.example.gptrecipeapp.ui.recrecipe
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.gptrecipeapp.GptRequestParam
@@ -9,7 +8,6 @@ import com.example.gptrecipeapp.Repository
 import com.example.gptrecipeapp.UniteUiModel
 import com.example.gptrecipeapp.model.GPT
 import com.example.gptrecipeapp.model.IngredientsModel
-import com.example.gptrecipeapp.model.RecipeModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -51,12 +49,11 @@ class RecRecipeViewModel(
         }
     }
 
-    fun getRecipeByIngredients() {
+    fun getIngredients(isIngredients: Boolean = true) {
         _uiModel.value = _uiModel.value.copy(
             isLoading = true
         )
-        val ingredientsList = _uiModel.value.searchKeyword
-
+        val searchKeyword = _uiModel.value.searchKeyword
 
         viewModelScope.launch(Dispatchers.IO) {
             runCatching {
@@ -65,20 +62,22 @@ class RecRecipeViewModel(
                         messages = arrayListOf(
                             MessageRequestParam(
                                 role = "user",
-                                content = getFormattedSearchKeyword(ingredientsList)
+                                content = getFormattedSearchKeyword(searchKeyword)
                             )
                         )
                     )
                 )
                 withContext(Dispatchers.Main) {
-                    val parsedIngredients = getIngredientsList(response)
-                    _uiModel.value = _uiModel.value.copy(
-                        searchKeyword = ingredientsList,
-                        isFetched = true,
-                        isLoading = false,
-                        ingredientsList = parsedIngredients,
-                        recipeList = getRecipeList(response),
-                    )
+                    if (isIngredients) {
+                        val parsedIngredients = getIngredientsList(response)
+                        _uiModel.value = _uiModel.value.copy(
+                            searchKeyword = searchKeyword,
+                            isFetched = true,
+                            isLoading = false,
+                            ingredientsList = parsedIngredients,
+                            recipeList = ArrayList()
+                        )
+                    }
                 }
             }.onFailure {
                 withContext(Dispatchers.Main) {
@@ -96,25 +95,6 @@ class RecRecipeViewModel(
                 "[{\"재료\":\"양파\"}, {\"재료\":\"김치\"}]"
     }
 
-    private fun getRecipeList(response: GPT): ArrayList<RecipeModel> {
-        val recipeList = ArrayList<RecipeModel>()
-        val jsonArray = response.choices[0].message.content?.let { JSONArray(it) }
-
-        for (i in 0 until (jsonArray?.length() ?: 0)) {
-            jsonArray?.getJSONObject(i)?.apply {
-                if (has("레시피")) {
-                    recipeList.add(
-                        RecipeModel(
-                            initialIsSelected = true,
-                            recipe = get("레시피").toString()
-                        )
-                    )
-                }
-            }
-        }
-        return recipeList
-    }
-
     private fun getIngredientsList(response: GPT): ArrayList<IngredientsModel> {
         val ingredientsList = ArrayList<IngredientsModel>()
         val jsonArray = response.choices[0].message.content?.let { JSONArray(it) }
@@ -123,7 +103,6 @@ class RecRecipeViewModel(
             jsonArray?.getJSONObject(i)?.apply {
                 if (has("재료")) {
                     val ingredient = get("재료").toString()
-                    Log.d("RecRecipeViewModel", "Found ingredient: $ingredient")
                     ingredientsList.add(
                         IngredientsModel(
                             ingredients = ingredient,
@@ -135,5 +114,4 @@ class RecRecipeViewModel(
         }
         return ingredientsList
     }
-
 }

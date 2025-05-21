@@ -26,7 +26,7 @@ class RecRecipeFragment : Fragment() {
 
     private val searchKeywordAdapter = SearchKeywordAdapter { searchKeyword ->
         viewModel.setSearchKeyword(searchKeyword)
-        viewModel.getRecipeByIngredients()
+        viewModel.getIngredients()
     }
 
     private val args: RecRecipeFragmentArgs by navArgs()
