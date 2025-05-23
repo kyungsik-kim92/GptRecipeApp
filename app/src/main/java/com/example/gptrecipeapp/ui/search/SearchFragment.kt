@@ -1,9 +1,14 @@
 package com.example.gptrecipeapp.ui.search
 
+import android.content.Context
+import android.content.Context.INPUT_METHOD_SERVICE
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.inputmethod.EditorInfo
+import android.view.inputmethod.InputMethodManager
+import androidx.core.content.ContextCompat.getSystemService
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
@@ -39,12 +44,15 @@ class SearchFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         binding.btnSearch.setOnClickListener {
-            val searchKeyword = binding.etRecipe.text.toString()
-            if (searchKeyword.isBlank()) {
-                return@setOnClickListener
+            search()
+        }
+        binding.etRecipe.setOnEditorActionListener { _, actionId, _ ->
+            if (actionId == EditorInfo.IME_ACTION_SEARCH || actionId == EditorInfo.IME_ACTION_DONE) {
+                search()
+                true
+            } else {
+                false
             }
-            viewModel.getIngredientsByRecipe(searchKeyword)
-            addObserver()
         }
 
     }
@@ -70,6 +78,21 @@ class SearchFragment : Fragment() {
 
             }
         }
+    }
+
+    private fun search() {
+        val searchKeyword = binding.etRecipe.text.toString()
+        if (searchKeyword.isBlank()) {
+            return
+        }
+        viewModel.getIngredientsByRecipe(searchKeyword)
+        addObserver()
+        hideKeyboard()
+    }
+
+    private fun hideKeyboard() {
+        val imm = context?.getSystemService(INPUT_METHOD_SERVICE) as InputMethodManager
+        imm.hideSoftInputFromWindow(binding.etRecipe.windowToken, 0)
     }
 
     override fun onDestroyView() {
