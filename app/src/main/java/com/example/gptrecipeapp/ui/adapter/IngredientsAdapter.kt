@@ -1,5 +1,6 @@
 package com.example.gptrecipeapp.ui.adapter
 
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
@@ -49,6 +50,7 @@ class IngredientsViewHolder(
             item.isSelected.collect { isSelected ->
                 binding.tvIngredients.isSelected = isSelected
                 binding.invalidateAll()
+                Log.d("Ddd",item.toString())
             }
         }
         itemView.setOnClickListener {

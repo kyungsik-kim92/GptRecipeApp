@@ -78,9 +78,14 @@ class SearchIngredientsFragment : Fragment() {
                     }
                 }
                 if (it.isFetched) {
+                    val selectedIngredients =
+                        ArrayList(it.ingredientsList.filter { ingredients ->
+                            ingredients.isSelected.value
+                        })
+
                     val uniteUiModel = UniteUiModel(
                         searchKeyword = it.searchKeyword,
-                        ingredientsList = it.ingredientsList,
+                        ingredientsList = selectedIngredients,
                         recipeList = it.recipeList
                     )
 

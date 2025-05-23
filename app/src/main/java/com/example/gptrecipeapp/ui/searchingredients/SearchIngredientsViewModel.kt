@@ -18,6 +18,9 @@ import org.json.JSONArray
 
 class SearchIngredientsViewModel(private val repository: Repository) : ViewModel() {
 
+    private val _originalIngredientsList =
+        MutableStateFlow<ArrayList<IngredientsModel>>(ArrayList())
+
     private val _uiModel = MutableStateFlow(
         UniteUiModel(
             isFetched = false,
@@ -36,6 +39,7 @@ class SearchIngredientsViewModel(private val repository: Repository) : ViewModel
     }
 
     fun setIngredientsList(ingredientsList: ArrayList<IngredientsModel>) {
+        _originalIngredientsList.value = ArrayList(ingredientsList)
         _uiModel.value = _uiModel.value.copy().apply {
             this.ingredientsList = ingredientsList
         }
@@ -68,7 +72,7 @@ class SearchIngredientsViewModel(private val repository: Repository) : ViewModel
                         searchKeyword = searchKeyword,
                         isFetched = true,
                         isLoading = false,
-                        ingredientsList = ingredientsList,
+                        ingredientsList = _originalIngredientsList.value,
                         recipeList = getRecipeList(response),
                     )
                 }
@@ -89,7 +93,7 @@ class SearchIngredientsViewModel(private val repository: Repository) : ViewModel
 
         var format = ""
         ingredientsList.forEachIndexed { index, ingredientsModel ->
-            format += if(index == ingredientsList.lastIndex) {
+            format += if (index == ingredientsList.lastIndex) {
                 ingredientsModel.ingredients
             } else {
                 "${ingredientsModel.ingredients},"
@@ -105,9 +109,9 @@ class SearchIngredientsViewModel(private val repository: Repository) : ViewModel
         val recipeList = ArrayList<RecipeModel>()
         val jsonArray = response.choices[0].message.content?.let { JSONArray(it) }
 
-        for(i in 0 until (jsonArray?.length() ?: 0)) {
+        for (i in 0 until (jsonArray?.length() ?: 0)) {
             jsonArray?.getJSONObject(i)?.apply {
-                if(has("레시피")) {
+                if (has("레시피")) {
                     recipeList.add(
                         RecipeModel(
                             initialIsSelected = true,
