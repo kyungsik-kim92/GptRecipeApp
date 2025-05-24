@@ -72,7 +72,14 @@
         <argument
             android:name="uniteUiModel"
             app:argType="com.example.gptrecipeapp.UniteUiModel" />
+        <action
+            android:id="@+id/action_navigation_recipe_to_wellbeingRecipeFragment"
+            app:destination="@id/navigation_wellbeing_recipe" />
     </fragment>
+    <fragment
+        android:id="@+id/navigation_wellbeing_recipe"
+        android:name="com.example.gptrecipeapp.ui.wellbeingrecipe.WellbeingRecipeFragment"
+        android:label="WellbeingRecipeFragment" />
 
 
 </navigation>
