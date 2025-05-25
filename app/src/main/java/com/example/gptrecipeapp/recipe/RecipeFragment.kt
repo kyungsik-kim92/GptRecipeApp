@@ -24,7 +24,7 @@ class RecipeFragment : Fragment() {
 
     private lateinit var viewModel: RecipeViewModel
 
-    private var ingredientsAdapter = IngredientsAdapter()
+    private var ingredientsAdapter = IngredientsAdapter(isClickable = false)
     private var recipeAdapter = RecipeAdapter()
 
     private val args: RecipeFragmentArgs by navArgs()

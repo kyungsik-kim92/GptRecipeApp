@@ -1,6 +1,5 @@
 package com.example.gptrecipeapp.ui.adapter
 
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
@@ -13,11 +12,13 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
 
-class IngredientsAdapter : ListAdapter<IngredientsModel, IngredientsViewHolder>(diffUtil) {
+class IngredientsAdapter(
+    private val isClickable: Boolean = true
+) : ListAdapter<IngredientsModel, IngredientsViewHolder>(diffUtil) {
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): IngredientsViewHolder {
         val binding =
             ItemIngredientsBinding.inflate(LayoutInflater.from(parent.context), parent, false)
-        return IngredientsViewHolder(binding)
+        return IngredientsViewHolder(binding, isClickable)
     }
 
     override fun onBindViewHolder(holder: IngredientsViewHolder, position: Int) {
@@ -42,7 +43,8 @@ class IngredientsAdapter : ListAdapter<IngredientsModel, IngredientsViewHolder>(
 }
 
 class IngredientsViewHolder(
-    private val binding: ItemIngredientsBinding
+    private val binding: ItemIngredientsBinding,
+    private val isClickable: Boolean = true
 ) : RecyclerView.ViewHolder(binding.root) {
     fun bind(item: IngredientsModel) {
         binding.ingredientsModel = item
@@ -50,11 +52,12 @@ class IngredientsViewHolder(
             item.isSelected.collect { isSelected ->
                 binding.tvIngredients.isSelected = isSelected
                 binding.invalidateAll()
-                Log.d("Ddd",item.toString())
             }
         }
-        itemView.setOnClickListener {
-            item.setIsSelected(!item.isSelected.value)
+        if (isClickable){
+            itemView.setOnClickListener {
+                item.setIsSelected(!item.isSelected.value)
+            }
         }
     }
 }

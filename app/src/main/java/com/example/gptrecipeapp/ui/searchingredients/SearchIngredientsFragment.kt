@@ -21,7 +21,7 @@ class SearchIngredientsFragment : Fragment() {
     private val binding get() = _binding!!
 
     private lateinit var viewModel: SearchIngredientsViewModel
-    private var ingredientsAdapter = IngredientsAdapter()
+    private var ingredientsAdapter = IngredientsAdapter(isClickable = true)
     private val args: SearchIngredientsFragmentArgs by navArgs()
 
     override fun onCreate(savedInstanceState: Bundle?) {
