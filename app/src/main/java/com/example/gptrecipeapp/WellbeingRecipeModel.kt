@@ -7,8 +7,8 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.parcelize.Parcelize
 
 @Parcelize
-data class WellBeingRecipeModel(
-    val wellBeingRecipe: String,
+data class WellbeingRecipeModel(
+    val wellbeingRecipe: String,
     val initialIsSelected: Boolean = false
 ) : Parcelable {
     private val _isSelected = MutableStateFlow(initialIsSelected)
