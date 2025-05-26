@@ -6,7 +6,9 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.example.gptrecipeapp.ApiService
@@ -21,7 +23,7 @@ class SearchIngredientsFragment : Fragment() {
     private val binding get() = _binding!!
 
     private lateinit var viewModel: SearchIngredientsViewModel
-    private var ingredientsAdapter = IngredientsAdapter(isClickable = true)
+    private val  ingredientsAdapter = IngredientsAdapter(isClickable = true)
     private val args: SearchIngredientsFragmentArgs by navArgs()
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -64,36 +66,38 @@ class SearchIngredientsFragment : Fragment() {
 
     private fun addObserver() {
         lifecycleScope.launch {
-            viewModel.uiModel.collect {
-                binding.progressBar.isVisible = it.isLoading
+            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                viewModel.uiModel.collect {
+                    binding.progressBar.isVisible = it.isLoading
 
-                with(binding) {
-                    // 레시피 검색어
-                    with(tvRecipeTitle) {
-                        text = it.searchKeyword
+                    with(binding) {
+                        // 레시피 검색어
+                        with(tvRecipeTitle) {
+                            text = it.searchKeyword
+                        }
+                        // 재료 어댑터
+                        with(ingredientsAdapter) {
+                            submitList(it.ingredientsList)
+                        }
                     }
-                    // 재료 어댑터
-                    with(ingredientsAdapter) {
-                        submitList(it.ingredientsList)
+                    if (it.isFetched) {
+                        val selectedIngredients =
+                            ArrayList(it.ingredientsList.filter { ingredients ->
+                                ingredients.isSelected.value
+                            })
+
+                        val uniteUiModel = UniteUiModel(
+                            searchKeyword = it.searchKeyword,
+                            ingredientsList = selectedIngredients,
+                            recipeList = it.recipeList
+                        )
+
+                        val action = SearchIngredientsFragmentDirections
+                            .actionNavigationSearchIngredientsToRecipeFragment(uniteUiModel)
+                        findNavController().navigate(action)
                     }
+                    it.isFetched = false
                 }
-                if (it.isFetched) {
-                    val selectedIngredients =
-                        ArrayList(it.ingredientsList.filter { ingredients ->
-                            ingredients.isSelected.value
-                        })
-
-                    val uniteUiModel = UniteUiModel(
-                        searchKeyword = it.searchKeyword,
-                        ingredientsList = selectedIngredients,
-                        recipeList = it.recipeList
-                    )
-
-                    val action = SearchIngredientsFragmentDirections
-                        .actionNavigationSearchIngredientsToRecipeFragment(uniteUiModel)
-                    findNavController().navigate(action)
-                }
-                it.isFetched = false
             }
         }
     }
