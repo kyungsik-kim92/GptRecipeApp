@@ -68,7 +68,8 @@ class RecRecipeFragment : Fragment() {
                         val uniteUiModel = UniteUiModel(
                             searchKeyword = uiState.searchKeyword,
                             ingredientsList = uiState.ingredientsList,
-                            recipeList = uiState.recipeList
+                            recipeList = uiState.recipeList,
+                            wellbeingRecipeList = uiState.wellbeingRecipeList
                         )
                         val action =
                             RecRecipeFragmentDirections.actionNavigationRecRecipeToNavigationRecipe(

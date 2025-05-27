@@ -14,4 +14,5 @@ data class UniteUiModel(
     var searchKeywordList: ArrayList<String> = ArrayList(),
     var ingredientsList: ArrayList<IngredientsModel>,
     var recipeList: ArrayList<RecipeModel>,
+    var wellbeingRecipeList: ArrayList<WellbeingRecipeModel>
 ) : Parcelable

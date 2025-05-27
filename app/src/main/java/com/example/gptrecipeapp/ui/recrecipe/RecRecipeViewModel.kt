@@ -26,6 +26,7 @@ class RecRecipeViewModel(
             searchKeywordList = ArrayList(),
             ingredientsList = ArrayList(),
             recipeList = ArrayList(),
+            wellbeingRecipeList = ArrayList()
         )
     )
     val uiModel: StateFlow<UniteUiModel> = _uiModel

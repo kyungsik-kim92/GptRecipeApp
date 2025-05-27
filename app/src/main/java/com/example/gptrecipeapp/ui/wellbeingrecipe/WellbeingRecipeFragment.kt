@@ -10,6 +10,7 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
+import androidx.navigation.fragment.navArgs
 import com.example.gptrecipeapp.databinding.FragmentWellbeingRecipeBinding
 import com.example.gptrecipeapp.ui.adapter.WellbeingRecipeAdapter
 import kotlinx.coroutines.launch
@@ -20,6 +21,13 @@ class WellbeingRecipeFragment : Fragment() {
     private val wellbeingRecipeAdapter = WellbeingRecipeAdapter()
 
     private val viewModel by viewModels<WellbeingRecipeViewModel>()
+
+    private val args by navArgs<WellbeingRecipeFragmentArgs>()
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        viewModel.setWellBeingRecipeList(args.recipeUiModel.wellbeingRecipeModel)
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater,

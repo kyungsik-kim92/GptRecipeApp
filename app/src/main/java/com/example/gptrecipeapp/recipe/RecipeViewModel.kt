@@ -6,6 +6,7 @@ import com.example.gptrecipeapp.GptRequestParam
 import com.example.gptrecipeapp.MessageRequestParam
 import com.example.gptrecipeapp.RecipeUiModel
 import com.example.gptrecipeapp.Repository
+import com.example.gptrecipeapp.WellbeingRecipeModel
 import com.example.gptrecipeapp.model.GPT
 import com.example.gptrecipeapp.model.IngredientsModel
 import com.example.gptrecipeapp.model.RecipeModel
@@ -26,7 +27,8 @@ class RecipeViewModel(
             searchKeyword = "",
             ingredientsList = ArrayList(),
             recipeList = ArrayList(),
-            isLoading = false
+            isLoading = false,
+            wellbeingRecipeModel = ArrayList()
         )
     )
     val uiModel: StateFlow<RecipeUiModel> = _uiModel
@@ -46,6 +48,12 @@ class RecipeViewModel(
     fun setRecipeList(recipeList: ArrayList<RecipeModel>) {
         _uiModel.value = _uiModel.value.copy().apply {
             this.recipeList = recipeList
+        }
+    }
+
+    fun setWellBeingRecipeList(wellbeingRecipeList: ArrayList<WellbeingRecipeModel>) {
+        _uiModel.value = _uiModel.value.copy().apply {
+            this.wellbeingRecipeModel = wellbeingRecipeList
         }
     }
 

@@ -23,7 +23,7 @@ class SearchIngredientsFragment : Fragment() {
     private val binding get() = _binding!!
 
     private lateinit var viewModel: SearchIngredientsViewModel
-    private val  ingredientsAdapter = IngredientsAdapter(isClickable = true)
+    private val ingredientsAdapter = IngredientsAdapter(isClickable = true)
     private val args: SearchIngredientsFragmentArgs by navArgs()
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -89,7 +89,8 @@ class SearchIngredientsFragment : Fragment() {
                         val uniteUiModel = UniteUiModel(
                             searchKeyword = it.searchKeyword,
                             ingredientsList = selectedIngredients,
-                            recipeList = it.recipeList
+                            recipeList = it.recipeList,
+                            wellbeingRecipeList = it.wellbeingRecipeList
                         )
 
                         val action = SearchIngredientsFragmentDirections

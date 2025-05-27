@@ -79,7 +79,12 @@
     <fragment
         android:id="@+id/navigation_wellbeing_recipe"
         android:name="com.example.gptrecipeapp.ui.wellbeingrecipe.WellbeingRecipeFragment"
-        android:label="WellbeingRecipeFragment" />
+        android:label="WellbeingRecipeFragment">
+        <argument
+            android:name="recipeUiModel"
+            app:argType="com.example.gptrecipeapp.RecipeUiModel" />
+
+    </fragment>
 
 
 </navigation>

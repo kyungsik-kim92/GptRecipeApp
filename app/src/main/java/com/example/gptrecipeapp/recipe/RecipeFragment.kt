@@ -12,6 +12,7 @@ import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.example.gptrecipeapp.ApiService
+import com.example.gptrecipeapp.RecipeUiModel
 import com.example.gptrecipeapp.RepositoryImpl
 import com.example.gptrecipeapp.databinding.FragmentRecipeBinding
 import com.example.gptrecipeapp.ui.adapter.IngredientsAdapter
@@ -65,6 +66,10 @@ class RecipeFragment : Fragment() {
         args.uniteUiModel.recipeList.let { recipeList ->
             viewModel.setRecipeList(recipeList)
         }
+
+        args.uniteUiModel.wellbeingRecipeList.let { wellbeingList ->
+            viewModel.setWellBeingRecipeList(wellbeingList)
+        }
     }
 
     private fun setupUI() {
@@ -93,6 +98,9 @@ class RecipeFragment : Fragment() {
                     }
                 }
             }
+            btnWellBeing.setOnClickListener {
+                routeWellbeing()
+            }
         }
     }
 
@@ -104,6 +112,29 @@ class RecipeFragment : Fragment() {
                     ingredientsAdapter.submitList(it.ingredientsList)
                     recipeAdapter.submitList(it.recipeList)
                     binding.progressBar.isVisible = it.isLoading
+
+                }
+            }
+        }
+    }
+
+    private fun routeWellbeing() {
+        lifecycleScope.launch {
+            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                viewModel.uiModel.collect {
+                    val recipeUiModel = RecipeUiModel(
+                        id = it.id,
+                        searchKeyword = it.searchKeyword,
+                        recipeList = it.recipeList,
+                        ingredientsList = it.ingredientsList,
+                        isLoading = it.isLoading,
+                        wellbeingRecipeModel = it.wellbeingRecipeModel
+                    )
+                    val action =
+                        RecipeFragmentDirections.actionNavigationRecipeToWellbeingRecipeFragment(
+                            recipeUiModel
+                        )
+                    findNavController().navigate(action)
                 }
             }
         }

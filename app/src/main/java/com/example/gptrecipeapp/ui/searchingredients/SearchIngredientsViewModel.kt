@@ -6,6 +6,7 @@ import com.example.gptrecipeapp.GptRequestParam
 import com.example.gptrecipeapp.MessageRequestParam
 import com.example.gptrecipeapp.Repository
 import com.example.gptrecipeapp.UniteUiModel
+import com.example.gptrecipeapp.WellbeingRecipeModel
 import com.example.gptrecipeapp.model.GPT
 import com.example.gptrecipeapp.model.IngredientsModel
 import com.example.gptrecipeapp.model.RecipeModel
@@ -28,6 +29,7 @@ class SearchIngredientsViewModel(private val repository: Repository) : ViewModel
             searchKeyword = "",
             ingredientsList = ArrayList(),
             recipeList = ArrayList(),
+            wellbeingRecipeList = ArrayList()
         )
     )
     val uiModel: StateFlow<UniteUiModel> = _uiModel
@@ -74,6 +76,7 @@ class SearchIngredientsViewModel(private val repository: Repository) : ViewModel
                         isLoading = false,
                         ingredientsList = _originalIngredientsList.value,
                         recipeList = getRecipeList(response),
+                        wellbeingRecipeList = getWellBeingRecipeList(response)
                     )
                 }
             }.onFailure {
@@ -122,5 +125,24 @@ class SearchIngredientsViewModel(private val repository: Repository) : ViewModel
             }
         }
         return recipeList
+    }
+
+    private fun getWellBeingRecipeList(response: GPT): ArrayList<WellbeingRecipeModel> {
+        val wellBeingRecipeList = ArrayList<WellbeingRecipeModel>()
+        val jsonArray = response.choices[0].message.content?.let { JSONArray(it) }
+
+        for (i in 0 until (jsonArray?.length() ?: 0)) {
+            jsonArray?.getJSONObject(i)?.apply {
+                if (has("웰빙")) {
+                    wellBeingRecipeList.add(
+                        WellbeingRecipeModel(
+                            initialIsSelected = true,
+                            wellbeingRecipe = get("웰빙").toString()
+                        )
+                    )
+                }
+            }
+        }
+        return wellBeingRecipeList
     }
 }
