@@ -119,25 +119,20 @@ class RecipeFragment : Fragment() {
     }
 
     private fun routeWellbeing() {
-        lifecycleScope.launch {
-            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
-                viewModel.uiModel.collect {
-                    val recipeUiModel = RecipeUiModel(
-                        id = it.id,
-                        searchKeyword = it.searchKeyword,
-                        recipeList = it.recipeList,
-                        ingredientsList = it.ingredientsList,
-                        isLoading = it.isLoading,
-                        wellbeingRecipeModel = it.wellbeingRecipeModel
-                    )
-                    val action =
-                        RecipeFragmentDirections.actionNavigationRecipeToWellbeingRecipeFragment(
-                            recipeUiModel
-                        )
-                    findNavController().navigate(action)
-                }
-            }
-        }
+        val uiModel = viewModel.uiModel.value
+        val recipeUiModel = RecipeUiModel(
+            id = uiModel.id,
+            searchKeyword = uiModel.searchKeyword,
+            recipeList = uiModel.recipeList,
+            ingredientsList = uiModel.ingredientsList,
+            isLoading = uiModel.isLoading,
+            wellbeingRecipeModel = uiModel.wellbeingRecipeModel
+        )
+        val action =
+            RecipeFragmentDirections.actionNavigationRecipeToWellbeingRecipeFragment(
+                recipeUiModel
+            )
+        findNavController().navigate(action)
     }
 
     override fun onDestroyView() {
