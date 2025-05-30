@@ -12,4 +12,7 @@ import com.example.gptrecipeapp.room.entity.LocalRecipeEntity
 abstract class AppDatabase : RoomDatabase() {
     abstract val recipeDao: RecipeDao
 
+    companion object {
+        const val DB_NAME = "recipe.db"
+    }
 }
