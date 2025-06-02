@@ -3,9 +3,11 @@ package com.example.gptrecipeapp.ui.wellbeingrecipe
 import androidx.lifecycle.ViewModel
 import com.example.gptrecipeapp.WellbeingRecipeModel
 import com.example.gptrecipeapp.WellbeingRecipeUiModel
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 
+@HiltViewModel
 class WellbeingRecipeViewModel() : ViewModel() {
 
     private val _uiModel = MutableStateFlow(

@@ -10,6 +10,7 @@ import com.example.gptrecipeapp.RepositoryImpl
 import com.example.gptrecipeapp.SearchUiModel
 import com.example.gptrecipeapp.model.GPT
 import com.example.gptrecipeapp.model.IngredientsModel
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -18,6 +19,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import org.json.JSONArray
 
+@HiltViewModel
 class SearchViewModel(
     private val repository: Repository
 ) : ViewModel() {
