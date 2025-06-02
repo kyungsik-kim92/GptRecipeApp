@@ -2,11 +2,9 @@ package com.example.gptrecipeapp.ui.search
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.gptrecipeapp.ApiService
 import com.example.gptrecipeapp.GptRequestParam
 import com.example.gptrecipeapp.MessageRequestParam
 import com.example.gptrecipeapp.Repository
-import com.example.gptrecipeapp.RepositoryImpl
 import com.example.gptrecipeapp.SearchUiModel
 import com.example.gptrecipeapp.model.GPT
 import com.example.gptrecipeapp.model.IngredientsModel
@@ -18,9 +16,10 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import org.json.JSONArray
+import javax.inject.Inject
 
 @HiltViewModel
-class SearchViewModel(
+class SearchViewModel @Inject constructor(
     private val repository: Repository
 ) : ViewModel() {
 

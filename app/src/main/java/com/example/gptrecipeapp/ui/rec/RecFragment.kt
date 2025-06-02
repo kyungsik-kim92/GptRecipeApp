@@ -7,7 +7,9 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import com.example.gptrecipeapp.databinding.FragmentRecBinding
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class RecFragment : Fragment() {
     private var _binding: FragmentRecBinding? = null
     private val binding get() = _binding!!

@@ -17,9 +17,11 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import org.json.JSONArray
+import javax.inject.Inject
 
 @HiltViewModel
-class SearchIngredientsViewModel(private val repository: Repository) : ViewModel() {
+class SearchIngredientsViewModel @Inject constructor(private val repository: Repository) :
+    ViewModel() {
 
     private val _originalIngredientsList =
         MutableStateFlow<ArrayList<IngredientsModel>>(ArrayList())

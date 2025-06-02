@@ -2,8 +2,9 @@ package com.example.gptrecipeapp
 
 import com.example.gptrecipeapp.model.GPT
 import com.example.gptrecipeapp.room.entity.LocalRecipeEntity
+import javax.inject.Inject
 
-class RepositoryImpl(private val dataSource: DataSource) : Repository {
+class RepositoryImpl @Inject constructor(private val dataSource: DataSource) : Repository {
     override suspend fun getGptResponse(body: GptRequestParam): GPT {
         return dataSource.getGptResponse(body)
     }

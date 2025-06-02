@@ -6,34 +6,28 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
-import com.example.gptrecipeapp.ApiService
-import com.example.gptrecipeapp.RepositoryImpl
 import com.example.gptrecipeapp.UniteUiModel
 import com.example.gptrecipeapp.databinding.FragmentSearchIngredientsBinding
 import com.example.gptrecipeapp.ui.adapter.IngredientsAdapter
+import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 
+
+@AndroidEntryPoint
 class SearchIngredientsFragment : Fragment() {
     private var _binding: FragmentSearchIngredientsBinding? = null
     private val binding get() = _binding!!
 
-    private lateinit var viewModel: SearchIngredientsViewModel
+    private val viewModel: SearchIngredientsViewModel by viewModels()
     private val ingredientsAdapter = IngredientsAdapter(isClickable = true)
     private val args: SearchIngredientsFragmentArgs by navArgs()
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        val apiService = ApiService.create()
-        val repository = RepositoryImpl(apiService)
-        viewModel = SearchIngredientsViewModel(repository)
-        viewModel.setSearchKeyword(args.searchUiModel.searchKeyword)
-        viewModel.setIngredientsList(args.searchUiModel.ingredientsList)
-    }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -47,6 +41,9 @@ class SearchIngredientsFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        viewModel.setSearchKeyword(args.searchUiModel.searchKeyword)
+        viewModel.setIngredientsList(args.searchUiModel.ingredientsList)
+
         binding.btnBack.setOnClickListener {
             findNavController().popBackStack()
         }

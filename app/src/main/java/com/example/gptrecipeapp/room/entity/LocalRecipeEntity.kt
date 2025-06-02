@@ -11,5 +11,5 @@ data class LocalRecipeEntity(
     var searchKeyword: String = "",
     var ingredientsList: ArrayList<IngredientsEntity> = ArrayList(),
     var recipeList: ArrayList<RecipeEntity> = ArrayList(),
-    var wellBeingRecipeList: ArrayList<WellBeingRecipeEntity> = ArrayList(),
+    var wellBeingRecipeList: ArrayList<WellbeingRecipeEntity> = ArrayList(),
 )

@@ -6,9 +6,10 @@ import com.example.gptrecipeapp.WellbeingRecipeUiModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import javax.inject.Inject
 
 @HiltViewModel
-class WellbeingRecipeViewModel() : ViewModel() {
+class WellbeingRecipeViewModel @Inject constructor() : ViewModel() {
 
     private val _uiModel = MutableStateFlow(
         WellbeingRecipeUiModel(

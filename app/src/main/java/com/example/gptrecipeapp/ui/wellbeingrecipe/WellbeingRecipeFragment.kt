@@ -13,21 +13,20 @@ import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.example.gptrecipeapp.databinding.FragmentWellbeingRecipeBinding
 import com.example.gptrecipeapp.ui.adapter.WellbeingRecipeAdapter
+import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 
+
+@AndroidEntryPoint
 class WellbeingRecipeFragment : Fragment() {
     private var _binding: FragmentWellbeingRecipeBinding? = null
     private val binding get() = _binding!!
     private val wellbeingRecipeAdapter = WellbeingRecipeAdapter()
 
-    private val viewModel by viewModels<WellbeingRecipeViewModel>()
+    private val viewModel: WellbeingRecipeViewModel by viewModels()
 
     private val args by navArgs<WellbeingRecipeFragmentArgs>()
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        viewModel.setWellBeingRecipeList(args.recipeUiModel.wellbeingRecipeModel)
-    }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -40,6 +39,7 @@ class WellbeingRecipeFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        viewModel.setWellBeingRecipeList(args.recipeUiModel.wellbeingRecipeModel)
         binding.btnBack.setOnClickListener {
             findNavController().popBackStack()
         }

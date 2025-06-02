@@ -6,37 +6,31 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
-import com.example.gptrecipeapp.ApiService
 import com.example.gptrecipeapp.RecipeUiModel
-import com.example.gptrecipeapp.RepositoryImpl
 import com.example.gptrecipeapp.databinding.FragmentRecipeBinding
 import com.example.gptrecipeapp.ui.adapter.IngredientsAdapter
 import com.example.gptrecipeapp.ui.adapter.RecipeAdapter
+import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 
+@AndroidEntryPoint
 class RecipeFragment : Fragment() {
     private var _binding: FragmentRecipeBinding? = null
     private val binding get() = _binding!!
 
-    private lateinit var viewModel: RecipeViewModel
+    private val viewModel: RecipeViewModel by viewModels()
 
     private var ingredientsAdapter = IngredientsAdapter(isClickable = false)
     private var recipeAdapter = RecipeAdapter()
 
     private val args: RecipeFragmentArgs by navArgs()
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        val apiService = ApiService.create()
-        val repository = RepositoryImpl(apiService)
-        viewModel = RecipeViewModel(repository)
-
-    }
 
     override fun onCreateView(
         inflater: LayoutInflater,

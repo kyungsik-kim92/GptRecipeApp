@@ -16,10 +16,11 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import org.json.JSONArray
+import javax.inject.Inject
 
 
 @HiltViewModel
-class RecRecipeViewModel(
+class RecRecipeViewModel @Inject constructor(
     private val repository: Repository
 ) : ViewModel() {
     private val _uiModel = MutableStateFlow(

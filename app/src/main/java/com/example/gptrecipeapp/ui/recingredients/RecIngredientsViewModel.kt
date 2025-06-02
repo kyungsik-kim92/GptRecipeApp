@@ -16,10 +16,11 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import org.json.JSONArray
+import javax.inject.Inject
 
 
 @HiltViewModel
-class RecIngredientsViewModel(
+class RecIngredientsViewModel @Inject constructor(
     private val repository: Repository
 ) : ViewModel() {
 

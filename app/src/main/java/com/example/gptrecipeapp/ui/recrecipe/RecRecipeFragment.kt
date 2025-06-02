@@ -6,23 +6,24 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
-import com.example.gptrecipeapp.ApiService
-import com.example.gptrecipeapp.RepositoryImpl
 import com.example.gptrecipeapp.UniteUiModel
 import com.example.gptrecipeapp.databinding.FragmentRecRecipeBinding
 import com.example.gptrecipeapp.ui.adapter.SearchKeywordAdapter
+import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 
+@AndroidEntryPoint
 class RecRecipeFragment : Fragment() {
     private var _binding: FragmentRecRecipeBinding? = null
     private val binding get() = _binding!!
 
-    private lateinit var viewModel: RecRecipeViewModel
+    private val viewModel: RecRecipeViewModel by viewModels()
 
     private val searchKeywordAdapter = SearchKeywordAdapter { searchKeyword ->
         viewModel.setSearchKeyword(searchKeyword)
@@ -31,14 +32,6 @@ class RecRecipeFragment : Fragment() {
 
     private val args: RecRecipeFragmentArgs by navArgs()
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        val apiService = ApiService.create()
-        val repository = RepositoryImpl(apiService)
-        viewModel = RecRecipeViewModel(repository)
-        viewModel.setSearchKeywordList(args.recIngredientsUiModel.searchKeywordList)
-        viewModel.setIngredientsList(args.recIngredientsUiModel.ingredientsList)
-    }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -51,6 +44,9 @@ class RecRecipeFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        viewModel.setSearchKeywordList(args.recIngredientsUiModel.searchKeywordList)
+        viewModel.setIngredientsList(args.recIngredientsUiModel.ingredientsList)
+
         binding.btnBack.setOnClickListener {
             findNavController().popBackStack()
         }

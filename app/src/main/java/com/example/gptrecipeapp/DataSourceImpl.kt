@@ -3,8 +3,9 @@ package com.example.gptrecipeapp
 import com.example.gptrecipeapp.model.GPT
 import com.example.gptrecipeapp.room.dao.RecipeDao
 import com.example.gptrecipeapp.room.entity.LocalRecipeEntity
+import javax.inject.Inject
 
-class DataSourceImpl(
+class DataSourceImpl @Inject constructor(
     private val apiService: ApiService,
     private val recipeDao: RecipeDao
 ) : DataSource {

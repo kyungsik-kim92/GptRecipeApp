@@ -6,24 +6,26 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
-import com.example.gptrecipeapp.ApiService
 import com.example.gptrecipeapp.RecIngredientsUiModel
-import com.example.gptrecipeapp.RepositoryImpl
 import com.example.gptrecipeapp.databinding.FragmentRecIngredientsBinding
 import com.example.gptrecipeapp.model.IngredientsModel
 import com.example.gptrecipeapp.ui.adapter.RecIngredientsAdapter
+import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 
+
+@AndroidEntryPoint
 class RecIngredientsFragment : Fragment() {
 
     private var _binding: FragmentRecIngredientsBinding? = null
     private val binding get() = _binding!!
 
-    private lateinit var viewModel: RecIngredientsViewModel
+    private val viewModel: RecIngredientsViewModel by viewModels()
 
     private val meatAdapter = RecIngredientsAdapter()
     private val seafoodAdapter = RecIngredientsAdapter()
@@ -31,13 +33,6 @@ class RecIngredientsFragment : Fragment() {
     private val fruitAdapter = RecIngredientsAdapter()
     private val processedAdapter = RecIngredientsAdapter()
     private val etcAdapter = RecIngredientsAdapter()
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        val apiService = ApiService.create()
-        val repository = RepositoryImpl(apiService)
-        viewModel = RecIngredientsViewModel(repository)
-    }
 
     override fun onCreateView(
         inflater: LayoutInflater,
