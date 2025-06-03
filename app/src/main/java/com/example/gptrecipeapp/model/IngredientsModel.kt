@@ -1,6 +1,7 @@
 package com.example.gptrecipeapp.model
 
 import android.os.Parcelable
+import com.example.gptrecipeapp.room.entity.IngredientsEntity
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -18,3 +19,13 @@ data class IngredientsModel(
         _isSelected.value = selected
     }
 }
+
+fun IngredientsModel.toEntity() = IngredientsEntity(
+    ingredients = this.ingredients,
+    isSelected = this.isSelected.value
+)
+
+fun IngredientsEntity.toModel() = IngredientsModel(
+    ingredients = this.ingredients,
+    initialIsSelected = this.isSelected
+)

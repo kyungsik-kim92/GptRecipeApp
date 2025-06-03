@@ -10,6 +10,9 @@ import com.example.gptrecipeapp.WellbeingRecipeModel
 import com.example.gptrecipeapp.model.GPT
 import com.example.gptrecipeapp.model.IngredientsModel
 import com.example.gptrecipeapp.model.RecipeModel
+import com.example.gptrecipeapp.model.toEntity
+import com.example.gptrecipeapp.room.entity.LocalRecipeEntity
+import com.example.gptrecipeapp.toEntity
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -31,6 +34,7 @@ class RecipeViewModel @Inject constructor(
             ingredientsList = ArrayList(),
             recipeList = ArrayList(),
             isLoading = false,
+            isSubscribe = false,
             wellbeingRecipeModel = ArrayList()
         )
     )
@@ -57,6 +61,12 @@ class RecipeViewModel @Inject constructor(
     fun setWellBeingRecipeList(wellbeingRecipeList: ArrayList<WellbeingRecipeModel>) {
         _uiModel.value = _uiModel.value.copy().apply {
             this.wellbeingRecipeModel = wellbeingRecipeList
+        }
+    }
+
+    fun setSubscribe(flag: Boolean) {
+        _uiModel.value = _uiModel.value.copy().apply {
+            this.isSubscribe = flag
         }
     }
 
@@ -130,5 +140,44 @@ class RecipeViewModel @Inject constructor(
                 "답변은 아래와 같은 형식과 한국어만으로 표시해\n" +
                 "주의사항: 두개의 JSON Array 를 생성하지말고 하나의 JSON Array 로 답변을 표시해\n" +
                 "[{\"레시피\":\"기름에 돼지고기를 볶는다\"}, {\"레시피\":\"물을 붓는다\"}, {\"웰빙\":\"따뜻한 물을 붓는다\"}, {\"웰빙\":\"땅콩을 갈아 넣는다\"}]"
+    }
+
+    fun insertRecipe() {
+        val searchKeyword = _uiModel.value.searchKeyword
+        val ingredientsList = _uiModel.value.ingredientsList
+        val recipeList = _uiModel.value.recipeList
+        val wellbeingRecipeList = _uiModel.value.wellbeingRecipeModel
+
+        viewModelScope.launch(Dispatchers.IO) {
+            val localRecipeEntity = LocalRecipeEntity(
+                searchKeyword = searchKeyword,
+                ingredientsList = ArrayList(ingredientsList.map { it.toEntity() }),
+                recipeList = ArrayList(recipeList.map { it.toEntity() }),
+                wellbeingRecipeList = ArrayList(wellbeingRecipeList.map { it.toEntity() })
+            )
+            val id = repository.insertRecipe(localRecipeEntity)
+
+            withContext(Dispatchers.Main) {
+                _uiModel.value = _uiModel.value.copy().apply {
+                    this.id = id
+                    this.isSubscribe = true
+                }
+            }
+        }
+    }
+
+    fun deleteRecipe() {
+        val id = _uiModel.value.id
+
+        viewModelScope.launch(Dispatchers.IO) {
+            repository.deleteRecipe(id)
+
+            withContext(Dispatchers.Main) {
+                _uiModel.value = _uiModel.value.copy().apply {
+                    this.id = 0
+                    this.isSubscribe = false
+                }
+            }
+        }
     }
 }

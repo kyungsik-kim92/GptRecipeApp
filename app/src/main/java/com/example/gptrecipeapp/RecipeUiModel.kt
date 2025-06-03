@@ -13,5 +13,6 @@ data class RecipeUiModel(
     var ingredientsList: ArrayList<IngredientsModel>,
     var recipeList: ArrayList<RecipeModel>,
     var isLoading: Boolean,
+    var isSubscribe: Boolean,
     var wellbeingRecipeModel: ArrayList<WellbeingRecipeModel>
 ) : Parcelable

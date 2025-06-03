@@ -95,6 +95,17 @@ class RecipeFragment : Fragment() {
             btnWellBeing.setOnClickListener {
                 routeWellbeing()
             }
+            with(btnSubscribe) {
+                setOnClickListener {
+                    val flag = !(viewModel.uiModel.value.isSubscribe)
+                    viewModel.setSubscribe(flag)
+                    if (flag) {
+                        viewModel.insertRecipe()
+                    } else {
+                        viewModel.deleteRecipe()
+                    }
+                }
+            }
         }
     }
 
@@ -120,6 +131,7 @@ class RecipeFragment : Fragment() {
             recipeList = uiModel.recipeList,
             ingredientsList = uiModel.ingredientsList,
             isLoading = uiModel.isLoading,
+            isSubscribe = uiModel.isSubscribe,
             wellbeingRecipeModel = uiModel.wellbeingRecipeModel
         )
         val action =
