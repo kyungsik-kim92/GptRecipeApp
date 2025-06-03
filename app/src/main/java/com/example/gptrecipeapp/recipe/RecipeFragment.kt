@@ -4,6 +4,8 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
+import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
@@ -12,6 +14,7 @@ import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
+import com.example.gptrecipeapp.R
 import com.example.gptrecipeapp.RecipeUiModel
 import com.example.gptrecipeapp.databinding.FragmentRecipeBinding
 import com.example.gptrecipeapp.ui.adapter.IngredientsAdapter
@@ -101,8 +104,10 @@ class RecipeFragment : Fragment() {
                     viewModel.setSubscribe(flag)
                     if (flag) {
                         viewModel.insertRecipe()
+                        Toast.makeText(this.context, "즐겨찾기에 추가되었습니다", Toast.LENGTH_SHORT).show()
                     } else {
                         viewModel.deleteRecipe()
+                        Toast.makeText(this.context, "즐겨찾기에 제거되었습니다", Toast.LENGTH_SHORT).show()
                     }
                 }
             }
@@ -118,8 +123,18 @@ class RecipeFragment : Fragment() {
                     recipeAdapter.submitList(it.recipeList)
                     binding.progressBar.isVisible = it.isLoading
 
+                    updateSubscribeButton(it.isSubscribe)
+
                 }
             }
+        }
+    }
+
+    private fun updateSubscribeButton(isSubscribe: Boolean) {
+        binding.btnSubscribe.background = if (isSubscribe) {
+            ContextCompat.getDrawable(requireContext(), R.drawable.ic_clamp_subscribe_fill)
+        } else {
+            ContextCompat.getDrawable(requireContext(), R.drawable.ic_clamp_subscribe_outline)
         }
     }
 
