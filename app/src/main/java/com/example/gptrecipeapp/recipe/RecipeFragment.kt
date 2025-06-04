@@ -34,7 +34,6 @@ class RecipeFragment : Fragment() {
 
     private val args: RecipeFragmentArgs by navArgs()
 
-
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -52,20 +51,11 @@ class RecipeFragment : Fragment() {
     }
 
     private fun loadArgData() {
-        args.uniteUiModel.searchKeyword.let { searchKeyword ->
-            viewModel.setSearchKeyword(searchKeyword)
-        }
-
-        args.uniteUiModel.ingredientsList.let { ingredientsList ->
-            viewModel.setIngredientsList(ingredientsList)
-        }
-
-        args.uniteUiModel.recipeList.let { recipeList ->
-            viewModel.setRecipeList(recipeList)
-        }
-
-        args.uniteUiModel.wellbeingRecipeList.let { wellbeingList ->
-            viewModel.setWellBeingRecipeList(wellbeingList)
+        args.uniteUiModel?.let { uniteUiModel ->
+            viewModel.setSearchKeyword(uniteUiModel.searchKeyword)
+            viewModel.setIngredientsList(uniteUiModel.ingredientsList)
+            viewModel.setRecipeList(uniteUiModel.recipeList)
+            viewModel.setWellBeingRecipeList(uniteUiModel.wellbeingRecipeList)
         }
     }
 

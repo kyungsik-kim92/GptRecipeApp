@@ -12,6 +12,7 @@ import com.example.gptrecipeapp.model.IngredientsModel
 import com.example.gptrecipeapp.model.RecipeModel
 import com.example.gptrecipeapp.model.toEntity
 import com.example.gptrecipeapp.room.entity.LocalRecipeEntity
+import com.example.gptrecipeapp.room.entity.toModel
 import com.example.gptrecipeapp.toEntity
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
@@ -176,6 +177,26 @@ class RecipeViewModel @Inject constructor(
                 _uiModel.value = _uiModel.value.copy().apply {
                     this.id = 0
                     this.isSubscribe = false
+                }
+            }
+        }
+    }
+
+    fun findRecipe(id: Long) {
+        viewModelScope.launch(Dispatchers.IO) {
+            val recipeModel = repository.findRecipe(id)
+
+            recipeModel?.let {
+                withContext(Dispatchers.Main) {
+                    _uiModel.value = RecipeUiModel(
+                        id = recipeModel.id,
+                        searchKeyword = recipeModel.searchKeyword,
+                        isSubscribe = true,
+                        isLoading = false,
+                        ingredientsList = ArrayList(recipeModel.ingredientsList.map { it.toModel() }),
+                        recipeList = ArrayList(recipeModel.recipeList.map { it.toModel() }),
+                        wellbeingRecipeModel = ArrayList(recipeModel.wellbeingRecipeList.map { it.toModel() }),
+                    )
                 }
             }
         }

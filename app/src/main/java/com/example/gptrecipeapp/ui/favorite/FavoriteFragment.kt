@@ -10,6 +10,8 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
+import androidx.navigation.fragment.findNavController
+import com.example.gptrecipeapp.FavoriteModel
 import com.example.gptrecipeapp.databinding.FragmentFavoriteBinding
 import com.example.gptrecipeapp.ui.adapter.FavoriteAdapter
 import dagger.hilt.android.AndroidEntryPoint
@@ -22,7 +24,9 @@ class FavoriteFragment : Fragment() {
 
     private val viewModel: FavoriteViewModel by viewModels()
 
-    private val favoriteAdapter = FavoriteAdapter()
+    private val favoriteAdapter = FavoriteAdapter { favoriteModel ->
+        navigateToRecipe(favoriteModel)
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -37,7 +41,6 @@ class FavoriteFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         binding.rvFavoriteList.adapter = favoriteAdapter
         addObserver()
-        viewModel.getFavoriteList()
     }
 
 
@@ -52,6 +55,14 @@ class FavoriteFragment : Fragment() {
                 }
             }
         }
+    }
+
+    private fun navigateToRecipe(favoriteModel: FavoriteModel) {
+        val action = FavoriteFragmentDirections.actionNavigationFavoriteToNavigationRecipe(
+            recipeId = favoriteModel.id,
+            uniteUiModel = null
+        )
+        findNavController().navigate(action)
     }
 
 

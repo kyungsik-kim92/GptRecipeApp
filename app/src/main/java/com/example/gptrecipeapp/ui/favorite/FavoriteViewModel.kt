@@ -21,10 +21,15 @@ class FavoriteViewModel @Inject constructor(
 
     private val _uiModel = MutableStateFlow(
         FavoriteUiModel(
-            favoriteList = ArrayList()
+            favoriteList = ArrayList(),
+            isLoading = false
         )
     )
     val uiModel: StateFlow<FavoriteUiModel> = _uiModel
+
+    init {
+        getFavoriteList()
+    }
 
     fun getFavoriteList() {
         _uiModel.value = _uiModel.value.copy(isLoading = true)

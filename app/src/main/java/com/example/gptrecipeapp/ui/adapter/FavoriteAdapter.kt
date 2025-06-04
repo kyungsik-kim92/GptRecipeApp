@@ -8,11 +8,13 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.gptrecipeapp.FavoriteModel
 import com.example.gptrecipeapp.databinding.ItemFavoriteBinding
 
-class FavoriteAdapter : ListAdapter<FavoriteModel, FavoriteViewHolder>(diffUtil) {
+class FavoriteAdapter(
+    private val onItemClick: (favoriteModel: FavoriteModel) -> Unit
+) : ListAdapter<FavoriteModel, FavoriteViewHolder>(diffUtil) {
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): FavoriteViewHolder {
         val binding =
             ItemFavoriteBinding.inflate(LayoutInflater.from(parent.context), parent, false)
-        return FavoriteViewHolder(binding)
+        return FavoriteViewHolder(binding, onItemClick)
     }
 
     override fun onBindViewHolder(holder: FavoriteViewHolder, position: Int) {
@@ -33,9 +35,14 @@ class FavoriteAdapter : ListAdapter<FavoriteModel, FavoriteViewHolder>(diffUtil)
     }
 }
 
-class FavoriteViewHolder(private val binding: ItemFavoriteBinding) :
-    RecyclerView.ViewHolder(binding.root) {
+class FavoriteViewHolder(
+    private val binding: ItemFavoriteBinding,
+    private val onItemClick: (favoriteModel: FavoriteModel) -> Unit
+) : RecyclerView.ViewHolder(binding.root) {
     fun bind(item: FavoriteModel) {
         binding.favoriteModel = item
+        itemView.setOnClickListener {
+            onItemClick(item)
+        }
     }
 }
