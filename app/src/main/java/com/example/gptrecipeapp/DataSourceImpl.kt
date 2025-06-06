@@ -3,6 +3,7 @@ package com.example.gptrecipeapp
 import com.example.gptrecipeapp.model.GPT
 import com.example.gptrecipeapp.room.dao.RecipeDao
 import com.example.gptrecipeapp.room.entity.LocalRecipeEntity
+import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 
 class DataSourceImpl @Inject constructor(
@@ -31,5 +32,9 @@ class DataSourceImpl @Inject constructor(
 
     override suspend fun isFavoriteByName(recipeName: String): Boolean {
         return recipeDao.findRecipeByName(recipeName) != null
+    }
+
+    override fun getAllFavoritesFlow(): Flow<List<LocalRecipeEntity>> {
+        return recipeDao.getAllFavoritesFlow()
     }
 }

@@ -2,6 +2,7 @@ package com.example.gptrecipeapp
 
 import com.example.gptrecipeapp.model.GPT
 import com.example.gptrecipeapp.room.entity.LocalRecipeEntity
+import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 
 class RepositoryImpl @Inject constructor(private val dataSource: DataSource) : Repository {
@@ -28,6 +29,10 @@ class RepositoryImpl @Inject constructor(private val dataSource: DataSource) : R
 
     override suspend fun findRecipe(id: Long): LocalRecipeEntity? {
         return dataSource.findRecipe(id)
+    }
+
+    override fun getAllFavoritesFlow(): Flow<List<LocalRecipeEntity>> {
+        return dataSource.getAllFavoritesFlow()
     }
 
 }

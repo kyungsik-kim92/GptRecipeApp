@@ -2,6 +2,7 @@ package com.example.gptrecipeapp
 
 import com.example.gptrecipeapp.model.GPT
 import com.example.gptrecipeapp.room.entity.LocalRecipeEntity
+import kotlinx.coroutines.flow.Flow
 
 interface Repository {
     suspend fun getGptResponse(
@@ -16,4 +17,6 @@ interface Repository {
     suspend fun deleteRecipe(id: Long)
 
     suspend fun findRecipe(id: Long): LocalRecipeEntity?
+
+    fun getAllFavoritesFlow(): Flow<List<LocalRecipeEntity>>
 }
