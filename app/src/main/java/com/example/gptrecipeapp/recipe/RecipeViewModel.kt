@@ -201,4 +201,15 @@ class RecipeViewModel @Inject constructor(
             }
         }
     }
+
+    fun checkIfFavoriteByName(recipeName: String) {
+        viewModelScope.launch(Dispatchers.IO) {
+            val isFavorite = repository.isFavoriteByName(recipeName)
+            withContext(Dispatchers.Main) {
+                _uiModel.value = _uiModel.value.copy().apply {
+                    this.isSubscribe = isFavorite
+                }
+            }
+        }
+    }
 }

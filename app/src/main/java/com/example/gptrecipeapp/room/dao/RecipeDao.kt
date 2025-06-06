@@ -21,4 +21,7 @@ interface RecipeDao {
     @Query("SELECT DISTINCT * FROM LocalRecipeEntity WHERE id = :id")
     suspend fun findRecipe(id: Long): LocalRecipeEntity?
 
+    @Query("SELECT * FROM LocalRecipeEntity WHERE searchKeyword = :recipeName LIMIT 1")
+    suspend fun findRecipeByName(recipeName: String): LocalRecipeEntity?
+
 }

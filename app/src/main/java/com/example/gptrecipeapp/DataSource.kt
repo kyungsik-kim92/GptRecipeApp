@@ -16,4 +16,6 @@ interface DataSource {
 
     suspend fun findRecipe(id: Long): LocalRecipeEntity?
 
+    suspend fun isFavoriteByName(recipeName: String): Boolean
+
 }

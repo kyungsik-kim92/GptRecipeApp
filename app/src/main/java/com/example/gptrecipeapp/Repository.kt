@@ -7,6 +7,7 @@ interface Repository {
     suspend fun getGptResponse(
         body: GptRequestParam
     ): GPT
+    suspend fun isFavoriteByName(recipeName: String): Boolean
 
     suspend fun getAll(): List<LocalRecipeEntity>
 

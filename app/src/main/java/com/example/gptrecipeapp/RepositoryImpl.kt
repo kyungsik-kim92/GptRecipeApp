@@ -9,6 +9,11 @@ class RepositoryImpl @Inject constructor(private val dataSource: DataSource) : R
         return dataSource.getGptResponse(body)
     }
 
+    override suspend fun isFavoriteByName(recipeName: String): Boolean {
+        return dataSource.isFavoriteByName(recipeName)
+    }
+
+
     override suspend fun getAll(): List<LocalRecipeEntity> {
         return dataSource.getAll()
     }
@@ -24,4 +29,5 @@ class RepositoryImpl @Inject constructor(private val dataSource: DataSource) : R
     override suspend fun findRecipe(id: Long): LocalRecipeEntity? {
         return dataSource.findRecipe(id)
     }
+
 }

@@ -28,4 +28,8 @@ class DataSourceImpl @Inject constructor(
     override suspend fun findRecipe(id: Long): LocalRecipeEntity? {
         return recipeDao.findRecipe(id)
     }
+
+    override suspend fun isFavoriteByName(recipeName: String): Boolean {
+        return recipeDao.findRecipeByName(recipeName) != null
+    }
 }
