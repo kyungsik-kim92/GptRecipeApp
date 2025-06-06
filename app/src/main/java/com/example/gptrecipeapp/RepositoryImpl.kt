@@ -23,13 +23,19 @@ class RepositoryImpl @Inject constructor(private val dataSource: DataSource) : R
         return dataSource.insertRecipe(recipe)
     }
 
-    override suspend fun deleteRecipe(id: Long) {
-        return dataSource.deleteRecipe(id)
+    override suspend fun deleteRecipeByName(recipeName: String) {
+        return dataSource.deleteRecipeByName(recipeName)
     }
 
     override suspend fun findRecipe(id: Long): LocalRecipeEntity? {
         return dataSource.findRecipe(id)
     }
+
+
+    override suspend fun findRecipeByName(recipeName: String): LocalRecipeEntity? {
+        return dataSource.findRecipeByName(recipeName)
+    }
+
 
     override fun getAllFavoritesFlow(): Flow<List<LocalRecipeEntity>> {
         return dataSource.getAllFavoritesFlow()

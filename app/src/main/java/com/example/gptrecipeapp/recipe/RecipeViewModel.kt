@@ -150,28 +150,38 @@ class RecipeViewModel @Inject constructor(
         val wellbeingRecipeList = _uiModel.value.wellbeingRecipeModel
 
         viewModelScope.launch(Dispatchers.IO) {
-            val localRecipeEntity = LocalRecipeEntity(
-                searchKeyword = searchKeyword,
-                ingredientsList = ArrayList(ingredientsList.map { it.toEntity() }),
-                recipeList = ArrayList(recipeList.map { it.toEntity() }),
-                wellbeingRecipeList = ArrayList(wellbeingRecipeList.map { it.toEntity() })
-            )
-            val id = repository.insertRecipe(localRecipeEntity)
+            val existingRecipe = repository.findRecipeByName(searchKeyword)
 
-            withContext(Dispatchers.Main) {
-                _uiModel.value = _uiModel.value.copy().apply {
-                    this.id = id
-                    this.isSubscribe = true
+            if (existingRecipe != null) {
+                withContext(Dispatchers.Main) {
+                    _uiModel.value = _uiModel.value.copy().apply {
+                        this.id = existingRecipe.id
+                        this.isSubscribe = true
+                    }
+                }
+            } else {
+                val localRecipeEntity = LocalRecipeEntity(
+                    searchKeyword = searchKeyword,
+                    ingredientsList = ArrayList(ingredientsList.map { it.toEntity() }),
+                    recipeList = ArrayList(recipeList.map { it.toEntity() }),
+                    wellbeingRecipeList = ArrayList(wellbeingRecipeList.map { it.toEntity() })
+                )
+                val id = repository.insertRecipe(localRecipeEntity)
+
+                withContext(Dispatchers.Main) {
+                    _uiModel.value = _uiModel.value.copy().apply {
+                        this.id = id
+                        this.isSubscribe = true
+                    }
                 }
             }
         }
     }
 
     fun deleteRecipe() {
-        val id = _uiModel.value.id
-
+        val searchKeyword = _uiModel.value.searchKeyword
         viewModelScope.launch(Dispatchers.IO) {
-            repository.deleteRecipe(id)
+            repository.deleteRecipeByName(searchKeyword)
 
             withContext(Dispatchers.Main) {
                 _uiModel.value = _uiModel.value.copy().apply {

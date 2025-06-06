@@ -14,9 +14,11 @@ interface Repository {
 
     suspend fun insertRecipe(recipe: LocalRecipeEntity): Long
 
-    suspend fun deleteRecipe(id: Long)
+    suspend fun deleteRecipeByName(recipeName: String)
 
     suspend fun findRecipe(id: Long): LocalRecipeEntity?
+
+    suspend fun findRecipeByName(recipeName: String): LocalRecipeEntity?
 
     fun getAllFavoritesFlow(): Flow<List<LocalRecipeEntity>>
 }

@@ -22,16 +22,20 @@ class DataSourceImpl @Inject constructor(
         return recipeDao.insertRecipe(recipe)
     }
 
-    override suspend fun deleteRecipe(id: Long) {
-        return recipeDao.deleteRecipe(id)
+    override suspend fun deleteRecipeByName(recipeName: String) {
+        return recipeDao.deleteRecipeByName(recipeName)
     }
 
-    override suspend fun findRecipe(id: Long): LocalRecipeEntity? {
-        return recipeDao.findRecipe(id)
+    override suspend fun findRecipeByName(recipeName: String): LocalRecipeEntity? {
+        return recipeDao.findRecipeByName(recipeName)
     }
 
     override suspend fun isFavoriteByName(recipeName: String): Boolean {
         return recipeDao.findRecipeByName(recipeName) != null
+    }
+
+    override suspend fun findRecipe(id: Long): LocalRecipeEntity? {
+        return recipeDao.findRecipe(id)
     }
 
     override fun getAllFavoritesFlow(): Flow<List<LocalRecipeEntity>> {

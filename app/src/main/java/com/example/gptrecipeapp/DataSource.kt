@@ -13,11 +13,13 @@ interface DataSource {
 
     suspend fun insertRecipe(recipe: LocalRecipeEntity): Long
 
-    suspend fun deleteRecipe(id: Long)
+    suspend fun deleteRecipeByName(recipeName: String)
 
-    suspend fun findRecipe(id: Long): LocalRecipeEntity?
+    suspend fun findRecipeByName(recipeName: String): LocalRecipeEntity?
 
     suspend fun isFavoriteByName(recipeName: String): Boolean
+
+    suspend fun findRecipe(id: Long): LocalRecipeEntity?
 
     fun getAllFavoritesFlow(): Flow<List<LocalRecipeEntity>>
 

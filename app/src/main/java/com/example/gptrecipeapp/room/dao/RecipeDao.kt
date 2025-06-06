@@ -16,8 +16,8 @@ interface RecipeDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertRecipe(recipe: LocalRecipeEntity): Long
 
-    @Query("DELETE FROM LocalRecipeEntity WHERE id = :id")
-    suspend fun deleteRecipe(id: Long)
+    @Query("DELETE FROM LocalRecipeEntity WHERE searchKeyword = :recipeName")
+    suspend fun deleteRecipeByName(recipeName: String)
 
     @Query("SELECT DISTINCT * FROM LocalRecipeEntity WHERE id = :id")
     suspend fun findRecipe(id: Long): LocalRecipeEntity?
