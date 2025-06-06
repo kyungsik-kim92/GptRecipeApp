@@ -10,8 +10,11 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
+import androidx.navigation.NavOptions
 import androidx.navigation.fragment.findNavController
 import com.example.gptrecipeapp.FavoriteModel
+import com.example.gptrecipeapp.MainActivity
+import com.example.gptrecipeapp.R
 import com.example.gptrecipeapp.UniteUiModel
 import com.example.gptrecipeapp.databinding.FragmentFavoriteBinding
 import com.example.gptrecipeapp.ui.adapter.FavoriteAdapter
@@ -61,7 +64,7 @@ class FavoriteFragment : Fragment() {
     private fun navigateToRecipe(favoriteModel: FavoriteModel) {
         val uniteUiModel = UniteUiModel(
             searchKeyword = favoriteModel.searchKeyword,
-            ingredientsList =favoriteModel.ingredientsList,
+            ingredientsList = favoriteModel.ingredientsList,
             recipeList = favoriteModel.recipeList,
             wellbeingRecipeList = favoriteModel.wellbeingRecipeList
         )
@@ -69,9 +72,12 @@ class FavoriteFragment : Fragment() {
             recipeId = favoriteModel.id,
             uniteUiModel = uniteUiModel
         )
-        findNavController().navigate(action)
-    }
 
+        val navOptions = NavOptions.Builder()
+            .setPopUpTo(R.id.navigation_favorite, false)
+            .build()
+        findNavController().navigate(action.actionId, action.arguments, navOptions)
+    }
 
     override fun onDestroyView() {
         super.onDestroyView()
