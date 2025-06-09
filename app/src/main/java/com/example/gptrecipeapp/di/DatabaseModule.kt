@@ -5,8 +5,8 @@ import androidx.room.Room
 import com.example.gptrecipeapp.ApiService
 import com.example.gptrecipeapp.DataSource
 import com.example.gptrecipeapp.DataSourceImpl
-import com.example.gptrecipeapp.Repository
-import com.example.gptrecipeapp.RepositoryImpl
+import com.example.domain.repo.Repository
+import com.example.data.repo.RepositoryImpl
 import com.example.gptrecipeapp.room.dao.RecipeDao
 import com.example.gptrecipeapp.room.local.AppDatabase
 import dagger.Module

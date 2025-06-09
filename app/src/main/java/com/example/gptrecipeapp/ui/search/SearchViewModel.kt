@@ -4,7 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.gptrecipeapp.GptRequestParam
 import com.example.gptrecipeapp.MessageRequestParam
-import com.example.gptrecipeapp.Repository
+import com.example.domain.repo.Repository
 import com.example.gptrecipeapp.SearchUiModel
 import com.example.gptrecipeapp.model.GPT
 import com.example.gptrecipeapp.model.IngredientsModel

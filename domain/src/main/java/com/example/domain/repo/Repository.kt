@@ -1,4 +1,4 @@
-package com.example.gptrecipeapp
+package com.example.domain.repo
 
 import com.example.gptrecipeapp.model.GPT
 import com.example.gptrecipeapp.room.entity.LocalRecipeEntity

@@ -5,7 +5,7 @@ import androidx.lifecycle.viewModelScope
 import com.example.gptrecipeapp.GptRequestParam
 import com.example.gptrecipeapp.MessageRequestParam
 import com.example.gptrecipeapp.RecIngredientsUiModel
-import com.example.gptrecipeapp.Repository
+import com.example.domain.repo.Repository
 import com.example.gptrecipeapp.model.GPT
 import com.example.gptrecipeapp.model.IngredientsModel
 import dagger.hilt.android.lifecycle.HiltViewModel

@@ -3,7 +3,7 @@ package com.example.gptrecipeapp.ui.favorite
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.gptrecipeapp.FavoriteUiModel
-import com.example.gptrecipeapp.Repository
+import com.example.domain.repo.Repository
 import com.example.gptrecipeapp.room.entity.toFavoriteModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers

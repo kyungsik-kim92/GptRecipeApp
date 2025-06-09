@@ -1,5 +1,6 @@
-package com.example.gptrecipeapp
+package com.example.data.repo
 
+import com.example.domain.repo.Repository
 import com.example.gptrecipeapp.model.GPT
 import com.example.gptrecipeapp.room.entity.LocalRecipeEntity
 import kotlinx.coroutines.flow.Flow
