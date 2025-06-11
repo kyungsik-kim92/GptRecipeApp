@@ -1,4 +1,4 @@
-package com.example.gptrecipeapp
+package com.example.data.database.network
 
 import com.example.gptrecipeapp.model.GPT
 import retrofit2.http.Body

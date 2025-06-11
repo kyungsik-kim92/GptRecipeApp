@@ -1,8 +1,10 @@
-package com.example.gptrecipeapp
+package com.example.data.database.source.impl
 
 import com.example.gptrecipeapp.model.GPT
-import com.example.gptrecipeapp.room.dao.RecipeDao
-import com.example.gptrecipeapp.room.entity.LocalRecipeEntity
+import com.example.data.database.dao.RecipeDao
+import com.example.data.database.entity.LocalRecipeEntity
+import com.example.data.database.network.ApiService
+import com.example.data.database.source.DataSource
 import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 

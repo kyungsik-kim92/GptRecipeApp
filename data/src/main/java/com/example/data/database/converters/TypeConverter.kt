@@ -1,9 +1,9 @@
-package com.example.gptrecipeapp.room
+package com.example.data.database.converters
 
 import androidx.room.TypeConverter
-import com.example.gptrecipeapp.room.entity.IngredientsEntity
-import com.example.gptrecipeapp.room.entity.RecipeEntity
-import com.example.gptrecipeapp.room.entity.WellbeingRecipeEntity
+import com.example.data.database.entity.IngredientsEntity
+import com.example.data.database.entity.RecipeEntity
+import com.example.data.database.entity.WellbeingRecipeEntity
 import com.google.gson.Gson
 
 class CustomTypeConverters {

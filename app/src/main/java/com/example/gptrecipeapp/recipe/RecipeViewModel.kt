@@ -11,8 +11,8 @@ import com.example.gptrecipeapp.model.GPT
 import com.example.gptrecipeapp.model.IngredientsModel
 import com.example.gptrecipeapp.model.RecipeModel
 import com.example.gptrecipeapp.model.toEntity
-import com.example.gptrecipeapp.room.entity.LocalRecipeEntity
-import com.example.gptrecipeapp.room.entity.toModel
+import com.example.data.database.entity.LocalRecipeEntity
+import com.example.data.database.entity.toModel
 import com.example.gptrecipeapp.toEntity
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers

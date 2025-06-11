@@ -1,4 +1,4 @@
-package com.example.gptrecipeapp
+package com.example.data.database.network
 
 object NetworkConstant {
 

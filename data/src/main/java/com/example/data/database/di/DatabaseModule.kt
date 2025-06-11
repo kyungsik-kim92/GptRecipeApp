@@ -1,14 +1,14 @@
-package com.example.gptrecipeapp.di
+package com.example.data.database.di
 
 import android.content.Context
 import androidx.room.Room
 import com.example.gptrecipeapp.ApiService
-import com.example.gptrecipeapp.DataSource
-import com.example.gptrecipeapp.DataSourceImpl
+import com.example.data.database.source.DataSource
+import com.example.data.database.source.impl.DataSourceImpl
 import com.example.domain.repo.Repository
 import com.example.data.repo.RepositoryImpl
-import com.example.gptrecipeapp.room.dao.RecipeDao
-import com.example.gptrecipeapp.room.local.AppDatabase
+import com.example.data.database.dao.RecipeDao
+import com.example.data.database.AppDatabase
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn

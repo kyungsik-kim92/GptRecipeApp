@@ -14,8 +14,6 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
-import com.example.gptrecipeapp.MainActivity
-import com.example.gptrecipeapp.R
 import com.example.gptrecipeapp.SearchUiModel
 import com.example.gptrecipeapp.databinding.FragmentSearchBinding
 import dagger.hilt.android.AndroidEntryPoint

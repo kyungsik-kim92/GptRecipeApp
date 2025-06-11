@@ -1,7 +1,7 @@
-package com.example.gptrecipeapp
+package com.example.data.database.source
 
 import com.example.gptrecipeapp.model.GPT
-import com.example.gptrecipeapp.room.entity.LocalRecipeEntity
+import com.example.data.database.entity.LocalRecipeEntity
 import kotlinx.coroutines.flow.Flow
 
 interface DataSource {

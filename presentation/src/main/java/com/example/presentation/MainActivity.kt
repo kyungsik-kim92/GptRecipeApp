@@ -1,4 +1,4 @@
-package com.example.gptrecipeapp
+package com.example.presentation
 
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity

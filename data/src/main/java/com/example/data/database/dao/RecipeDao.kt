@@ -1,4 +1,4 @@
-package com.example.gptrecipeapp.room.dao
+package com.example.data.database.dao
 
 import androidx.room.Dao
 import androidx.room.Insert

@@ -1,4 +1,4 @@
-package com.example.gptrecipeapp.di
+package com.example.data.database.di
 
 import com.example.gptrecipeapp.ApiService
 import com.example.gptrecipeapp.NetworkConstant
