@@ -1,4 +1,4 @@
-package com.example.gptrecipeapp.ui.favorite
+package com.example.presentation.ui.favorite
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope

@@ -1,4 +1,4 @@
-package com.example.gptrecipeapp.ui.search
+package com.example.presentation.ui.search
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope

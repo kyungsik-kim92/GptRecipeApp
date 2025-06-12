@@ -17,7 +17,7 @@
 
     <fragment
         android:id="@+id/navigation_rec"
-        android:name="com.example.gptrecipeapp.ui.rec.RecFragment"
+        android:name="com.example.presentation.ui.rec.RecFragment"
         android:label="@string/title_rec"
         tools:layout="@layout/fragment_rec">
         <action

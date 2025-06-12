@@ -1,4 +1,4 @@
-package com.example.gptrecipeapp.ui.search
+package com.example.presentation.ui.search
 
 import android.content.Context.INPUT_METHOD_SERVICE
 import android.os.Bundle

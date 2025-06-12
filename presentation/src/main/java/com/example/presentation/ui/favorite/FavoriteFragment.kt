@@ -1,4 +1,4 @@
-package com.example.gptrecipeapp.ui.favorite
+package com.example.presentation.ui.favorite
 
 import android.os.Bundle
 import android.view.LayoutInflater

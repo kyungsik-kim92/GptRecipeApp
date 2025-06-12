@@ -1,4 +1,4 @@
-package com.example.gptrecipeapp.ui.wellbeingrecipe
+package com.example.presentation.ui.wellbeingrecipe
 
 import androidx.lifecycle.ViewModel
 import com.example.gptrecipeapp.WellbeingRecipeModel

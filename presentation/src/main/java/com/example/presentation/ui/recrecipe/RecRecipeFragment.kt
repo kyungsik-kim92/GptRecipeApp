@@ -1,4 +1,4 @@
-package com.example.gptrecipeapp.ui.recrecipe
+package com.example.presentation.ui.recrecipe
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -23,7 +23,7 @@ class RecRecipeFragment : Fragment() {
     private var _binding: FragmentRecRecipeBinding? = null
     private val binding get() = _binding!!
 
-    private val viewModel: RecRecipeViewModel by viewModels()
+    private val viewModel: com.example.presentation.ui.recrecipe.RecRecipeViewModel by viewModels()
 
     private val searchKeywordAdapter = SearchKeywordAdapter { searchKeyword ->
         viewModel.setSearchKeyword(searchKeyword)

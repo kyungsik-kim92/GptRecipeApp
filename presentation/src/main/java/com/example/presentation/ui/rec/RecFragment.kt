@@ -1,4 +1,4 @@
-package com.example.gptrecipeapp.ui.rec
+package com.example.presentation.ui.rec
 
 import android.os.Bundle
 import android.view.LayoutInflater

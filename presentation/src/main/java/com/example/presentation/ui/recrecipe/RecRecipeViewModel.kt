@@ -1,4 +1,4 @@
-package com.example.gptrecipeapp.ui.recrecipe
+package com.example.presentation.ui.recrecipe
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope

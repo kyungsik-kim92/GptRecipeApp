@@ -1,4 +1,4 @@
-package com.example.gptrecipeapp.ui.recingredients
+package com.example.presentation.ui.recingredients
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
