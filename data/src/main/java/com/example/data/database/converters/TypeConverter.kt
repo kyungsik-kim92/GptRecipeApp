@@ -1,9 +1,9 @@
 package com.example.data.database.converters
 
 import androidx.room.TypeConverter
-import com.example.data.database.entity.IngredientsEntity
-import com.example.data.database.entity.RecipeEntity
-import com.example.data.database.entity.WellbeingRecipeEntity
+import com.example.data.local.entity.IngredientsEntity
+import com.example.data.local.entity.RecipeEntity
+import com.example.data.local.entity.WellbeingRecipeEntity
 import com.google.gson.Gson
 
 class CustomTypeConverters {

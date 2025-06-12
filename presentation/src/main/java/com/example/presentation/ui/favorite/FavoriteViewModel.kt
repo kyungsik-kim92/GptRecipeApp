@@ -4,7 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.gptrecipeapp.FavoriteUiModel
 import com.example.domain.repo.Repository
-import com.example.data.database.entity.toFavoriteModel
+import com.example.data.local.entity.toFavoriteModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow

@@ -70,7 +70,7 @@
     </fragment>
     <fragment
         android:id="@+id/navigation_recipe"
-        android:name="com.example.gptrecipeapp.recipe.RecipeFragment"
+        android:name="com.example.presentation.ui.recipe.RecipeFragment"
         android:label="RecipeFragment"
         tools:layout="@layout/fragment_recipe">
         <argument

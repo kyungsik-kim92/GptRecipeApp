@@ -5,7 +5,7 @@ import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
 import com.example.gptrecipeapp.room.CustomTypeConverters
 import com.example.data.database.dao.RecipeDao
-import com.example.data.database.entity.LocalRecipeEntity
+import com.example.data.local.entity.LocalRecipeEntity
 
 @Database(entities = [LocalRecipeEntity::class], version = 1, exportSchema = false)
 @TypeConverters(CustomTypeConverters::class)

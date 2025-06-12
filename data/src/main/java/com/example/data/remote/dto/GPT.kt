@@ -1,4 +1,4 @@
-package com.example.gptrecipeapp.model
+package com.example.data.remote.dto
 
 data class GPT(
     val choices: ArrayList<Choice> = ArrayList()

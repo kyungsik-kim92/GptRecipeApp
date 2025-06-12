@@ -1,7 +1,7 @@
 package com.example.gptrecipeapp.model
 
 import android.os.Parcelable
-import com.example.data.database.entity.IngredientsEntity
+import com.example.data.local.entity.IngredientsEntity
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
