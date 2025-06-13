@@ -10,4 +10,4 @@ data class RecIngredientsUiModel(
     var isFetched: Boolean,
     var searchKeywordList: ArrayList<String>,
     var ingredientsList: ArrayList<IngredientsModel>,
-):Parcelable
+) : Parcelable

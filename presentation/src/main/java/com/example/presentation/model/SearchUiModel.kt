@@ -10,4 +10,4 @@ data class SearchUiModel(
     var isFetched: Boolean,
     var isLoading: Boolean,
     var ingredientsList: ArrayList<IngredientsModel>,
-):Parcelable
+) : Parcelable

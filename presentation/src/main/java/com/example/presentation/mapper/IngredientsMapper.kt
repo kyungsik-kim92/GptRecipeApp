@@ -4,11 +4,13 @@ import com.example.domain.model.Ingredient
 import com.example.presentation.model.IngredientsModel
 
 fun Ingredient.toPresentation() = IngredientsModel(
+    id = this.id,
     ingredients = this.ingredients,
-    initialIsSelected = this.isSelected
+    isSelected = this.isSelected
 )
 
 fun IngredientsModel.toDomain() = Ingredient(
-    isSelected = this.isSelected.value,
+    id = this.id,
+    isSelected = this.isSelected,
     ingredients = this.ingredients
 )

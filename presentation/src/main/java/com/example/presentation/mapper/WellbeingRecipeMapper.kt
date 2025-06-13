@@ -5,10 +5,11 @@ import com.example.presentation.model.WellbeingRecipeModel
 
 fun WellbeingRecipeModel.toEntity() = WellbeingRecipeEntity(
     wellbeingRecipe = this.wellbeingRecipe,
-    isSelected = this.isSelected.value
-)
-fun WellbeingRecipeEntity.toPresentation() = WellbeingRecipeModel(
-    initialIsSelected = this.isSelected,
-    wellbeingRecipe = this.wellbeingRecipe
+    isSelected = this.isSelected
 )
 
+//fun WellbeingRecipeEntity.toPresentation() = WellbeingRecipeModel(
+//    isSelected = this.isSelected,
+//    wellbeingRecipe = this.wellbeingRecipe
+//)
+//
