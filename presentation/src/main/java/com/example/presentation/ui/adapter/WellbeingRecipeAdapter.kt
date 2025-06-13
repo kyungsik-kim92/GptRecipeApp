@@ -5,8 +5,8 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
-import com.example.gptrecipeapp.WellbeingRecipeModel
-import com.example.gptrecipeapp.databinding.ItemWellbeingRecipeBinding
+import com.example.presentation.databinding.ItemWellbeingRecipeBinding
+import com.example.presentation.model.WellbeingRecipeModel
 
 class WellbeingRecipeAdapter :
     ListAdapter<WellbeingRecipeModel, WellbeingRecipeViewHolder>(diffUtil) {

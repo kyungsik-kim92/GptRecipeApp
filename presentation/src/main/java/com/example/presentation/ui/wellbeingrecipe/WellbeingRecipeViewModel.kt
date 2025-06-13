@@ -1,8 +1,8 @@
 package com.example.presentation.ui.wellbeingrecipe
 
 import androidx.lifecycle.ViewModel
-import com.example.gptrecipeapp.WellbeingRecipeModel
-import com.example.gptrecipeapp.WellbeingRecipeUiModel
+import com.example.presentation.model.WellbeingRecipeModel
+import com.example.presentation.model.WellbeingRecipeUiModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow

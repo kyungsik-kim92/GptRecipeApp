@@ -4,7 +4,7 @@ import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
-import com.example.gptrecipeapp.room.entity.LocalRecipeEntity
+import com.example.data.local.entity.LocalRecipeEntity
 import kotlinx.coroutines.flow.Flow
 
 

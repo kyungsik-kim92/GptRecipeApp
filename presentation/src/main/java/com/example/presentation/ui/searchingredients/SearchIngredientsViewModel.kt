@@ -2,14 +2,14 @@ package com.example.presentation.ui.searchingredients
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.gptrecipeapp.GptRequestParam
-import com.example.gptrecipeapp.MessageRequestParam
+import com.example.data.remote.dto.GPT
+import com.example.data.remote.dto.GptRequestParam
+import com.example.data.remote.dto.MessageRequestParam
 import com.example.domain.repo.Repository
-import com.example.gptrecipeapp.UniteUiModel
-import com.example.gptrecipeapp.WellbeingRecipeModel
-import com.example.gptrecipeapp.model.GPT
-import com.example.gptrecipeapp.model.IngredientsModel
-import com.example.gptrecipeapp.model.RecipeModel
+import com.example.presentation.model.IngredientsModel
+import com.example.presentation.model.RecipeModel
+import com.example.presentation.model.UniteUiModel
+import com.example.presentation.model.WellbeingRecipeModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow

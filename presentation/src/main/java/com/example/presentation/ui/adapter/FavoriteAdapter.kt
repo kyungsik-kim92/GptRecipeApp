@@ -5,8 +5,8 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
-import com.example.gptrecipeapp.FavoriteModel
-import com.example.gptrecipeapp.databinding.ItemFavoriteBinding
+import com.example.presentation.databinding.ItemFavoriteBinding
+import com.example.presentation.model.FavoriteModel
 
 class FavoriteAdapter(
     private val onItemClick: (favoriteModel: FavoriteModel) -> Unit

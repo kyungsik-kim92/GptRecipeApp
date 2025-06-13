@@ -12,10 +12,10 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
-import com.example.gptrecipeapp.RecIngredientsUiModel
-import com.example.gptrecipeapp.databinding.FragmentRecIngredientsBinding
-import com.example.gptrecipeapp.model.IngredientsModel
-import com.example.gptrecipeapp.ui.adapter.RecIngredientsAdapter
+import com.example.presentation.databinding.FragmentRecIngredientsBinding
+import com.example.presentation.model.IngredientsModel
+import com.example.presentation.model.RecIngredientsUiModel
+import com.example.presentation.ui.adapter.RecIngredientsAdapter
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 

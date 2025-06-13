@@ -14,8 +14,8 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
-import com.example.gptrecipeapp.SearchUiModel
-import com.example.gptrecipeapp.databinding.FragmentSearchBinding
+import com.example.presentation.databinding.FragmentSearchBinding
+import com.example.presentation.model.SearchUiModel
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 

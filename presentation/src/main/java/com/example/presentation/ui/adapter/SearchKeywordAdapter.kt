@@ -5,7 +5,7 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
-import com.example.gptrecipeapp.databinding.ItemSearchKeywordBinding
+import com.example.presentation.databinding.ItemSearchKeywordBinding
 
 class SearchKeywordAdapter(
     private val onItemClick: (String) -> Unit

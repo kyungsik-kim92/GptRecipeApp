@@ -5,7 +5,7 @@
 
         <variable
             name="recipeModel"
-            type="com.example.gptrecipeapp.model.RecipeModel" />
+            type="com.example.presentation.model.RecipeModel" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout xmlns:app="http://schemas.android.com/apk/res-auto"

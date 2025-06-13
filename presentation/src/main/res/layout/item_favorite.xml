@@ -7,7 +7,7 @@
 
         <variable
             name="favoriteModel"
-            type="com.example.gptrecipeapp.FavoriteModel" />
+            type="com.example.presentation.model.FavoriteModel" />
 
     </data>
 

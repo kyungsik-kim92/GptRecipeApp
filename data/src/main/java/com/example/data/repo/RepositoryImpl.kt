@@ -1,8 +1,10 @@
 package com.example.data.repo
 
+import com.example.data.database.source.DataSource
+import com.example.data.local.entity.LocalRecipeEntity
+import com.example.data.remote.dto.GPT
+import com.example.data.remote.dto.GptRequestParam
 import com.example.domain.repo.Repository
-import com.example.gptrecipeapp.model.GPT
-import com.example.gptrecipeapp.room.entity.LocalRecipeEntity
 import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 

@@ -7,7 +7,7 @@
 
         <variable
             name="ingredientsModel"
-            type="com.example.gptrecipeapp.model.IngredientsModel" />
+            type="com.example.presentation.model.IngredientsModel" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout

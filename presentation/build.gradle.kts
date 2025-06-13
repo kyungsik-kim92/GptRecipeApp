@@ -34,7 +34,6 @@ android {
     kotlinOptions {
         jvmTarget = "11"
     }
-
     buildFeatures {
         dataBinding = true
         viewBinding = true
@@ -51,6 +50,9 @@ dependencies {
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
+
+    // flexbox
+    implementation("com.google.android.flexbox:flexbox:3.0.0")
 
     // Navigation-UI
     implementation("androidx.navigation:navigation-fragment-ktx:2.8.9")

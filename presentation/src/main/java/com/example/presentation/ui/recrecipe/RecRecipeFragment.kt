@@ -12,9 +12,9 @@ import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
-import com.example.gptrecipeapp.UniteUiModel
-import com.example.gptrecipeapp.databinding.FragmentRecRecipeBinding
-import com.example.gptrecipeapp.ui.adapter.SearchKeywordAdapter
+import com.example.presentation.databinding.FragmentRecRecipeBinding
+import com.example.presentation.model.UniteUiModel
+import com.example.presentation.ui.adapter.SearchKeywordAdapter
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 

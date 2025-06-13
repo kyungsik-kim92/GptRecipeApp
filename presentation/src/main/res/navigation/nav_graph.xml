@@ -7,7 +7,7 @@
 
     <fragment
         android:id="@+id/navigation_search"
-        android:name="com.example.gptrecipeapp.ui.search.SearchFragment"
+        android:name="com.example.presentation.ui.search.SearchFragment"
         android:label="@string/title_search"
         tools:layout="@layout/fragment_search">
         <action
@@ -27,7 +27,7 @@
 
     <fragment
         android:id="@+id/navigation_favorite"
-        android:name="com.example.gptrecipeapp.ui.favorite.FavoriteFragment"
+        android:name="com.example.presentation.ui.favorite.FavoriteFragment"
         android:label="@string/title_favorite"
         tools:layout="@layout/fragment_favorite">
         <action
@@ -36,7 +36,7 @@
     </fragment>
     <fragment
         android:id="@+id/navigation_rec_ingredients"
-        android:name="com.example.gptrecipeapp.ui.recingredients.RecIngredientsFragment"
+        android:name="com.example.presentation.ui.recingredients.RecIngredientsFragment"
         android:label="RecIngredientsFragment"
         tools:layout="@layout/fragment_rec_ingredients">
         <action
@@ -46,7 +46,7 @@
     </fragment>
     <fragment
         android:id="@+id/navigation_search_ingredients"
-        android:name="com.example.gptrecipeapp.ui.searchingredients.SearchIngredientsFragment"
+        android:name="com.example.presentation.ui.searchingredients.SearchIngredientsFragment"
         android:label="SearchIngredientsFragment"
         tools:layout="@layout/fragment_search_ingredients">
         <argument
@@ -58,7 +58,7 @@
     </fragment>
     <fragment
         android:id="@+id/navigation_rec_recipe"
-        android:name="com.example.gptrecipeapp.ui.recrecipe.RecRecipeFragment"
+        android:name="com.example.presentation.ui.recrecipe.RecRecipeFragment"
         android:label="RecRecipeFragment"
         tools:layout="@layout/fragment_rec_recipe">
         <argument
@@ -87,7 +87,7 @@
     </fragment>
     <fragment
         android:id="@+id/navigation_wellbeing_recipe"
-        android:name="com.example.gptrecipeapp.ui.wellbeingrecipe.WellbeingRecipeFragment"
+        android:name="com.example.presentation.ui.wellbeingrecipe.WellbeingRecipeFragment"
         android:label="WellbeingRecipeFragment"
         tools:layout="@layout/fragment_wellbeing_recipe">
         <argument

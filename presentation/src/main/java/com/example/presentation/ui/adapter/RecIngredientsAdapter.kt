@@ -5,8 +5,8 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
-import com.example.gptrecipeapp.databinding.ItemRecIngredientsBinding
-import com.example.gptrecipeapp.model.IngredientsModel
+import com.example.presentation.databinding.ItemRecIngredientsBinding
+import com.example.presentation.model.IngredientsModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch

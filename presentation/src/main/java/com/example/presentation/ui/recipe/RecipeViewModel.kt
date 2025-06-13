@@ -2,18 +2,17 @@ package com.example.presentation.ui.recipe
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.data.remote.dto.GptRequestParam
-import com.example.data.remote.dto.MessageRequestParam
-import com.example.gptrecipeapp.RecipeUiModel
-import com.example.domain.repo.Repository
-import com.example.gptrecipeapp.WellbeingRecipeModel
-import com.example.data.remote.dto.GPT
-import com.example.gptrecipeapp.model.IngredientsModel
-import com.example.gptrecipeapp.model.RecipeModel
-import com.example.gptrecipeapp.model.toEntity
 import com.example.data.local.entity.LocalRecipeEntity
 import com.example.data.local.entity.toModel
-import com.example.gptrecipeapp.toEntity
+import com.example.data.remote.dto.GPT
+import com.example.data.remote.dto.GptRequestParam
+import com.example.data.remote.dto.MessageRequestParam
+import com.example.domain.repo.Repository
+import com.example.presentation.mapper.toEntity
+import com.example.presentation.model.IngredientsModel
+import com.example.presentation.model.RecipeModel
+import com.example.presentation.model.RecipeUiModel
+import com.example.presentation.model.WellbeingRecipeModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow

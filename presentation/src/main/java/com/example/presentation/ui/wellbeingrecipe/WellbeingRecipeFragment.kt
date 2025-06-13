@@ -11,8 +11,8 @@ import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
-import com.example.gptrecipeapp.databinding.FragmentWellbeingRecipeBinding
-import com.example.gptrecipeapp.ui.adapter.WellbeingRecipeAdapter
+import com.example.presentation.databinding.FragmentWellbeingRecipeBinding
+import com.example.presentation.ui.adapter.WellbeingRecipeAdapter
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 

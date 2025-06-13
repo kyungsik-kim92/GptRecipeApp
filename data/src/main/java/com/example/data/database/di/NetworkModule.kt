@@ -1,7 +1,7 @@
 package com.example.data.database.di
 
-import com.example.gptrecipeapp.ApiService
-import com.example.gptrecipeapp.NetworkConstant
+import com.example.data.database.network.ApiService
+import com.example.data.database.network.NetworkConstant
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn

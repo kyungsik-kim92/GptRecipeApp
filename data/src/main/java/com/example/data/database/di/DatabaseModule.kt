@@ -2,13 +2,13 @@ package com.example.data.database.di
 
 import android.content.Context
 import androidx.room.Room
-import com.example.gptrecipeapp.ApiService
+import com.example.data.database.AppDatabase
+import com.example.data.database.dao.RecipeDao
+import com.example.data.database.network.ApiService
 import com.example.data.database.source.DataSource
 import com.example.data.database.source.impl.DataSourceImpl
-import com.example.domain.repo.Repository
 import com.example.data.repo.RepositoryImpl
-import com.example.data.database.dao.RecipeDao
-import com.example.data.database.AppDatabase
+import com.example.domain.repo.Repository
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn

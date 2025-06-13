@@ -14,11 +14,11 @@ import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
-import com.example.gptrecipeapp.R
-import com.example.gptrecipeapp.RecipeUiModel
-import com.example.gptrecipeapp.databinding.FragmentRecipeBinding
-import com.example.gptrecipeapp.ui.adapter.IngredientsAdapter
-import com.example.gptrecipeapp.ui.adapter.RecipeAdapter
+import com.example.presentation.R
+import com.example.presentation.databinding.FragmentRecipeBinding
+import com.example.presentation.model.RecipeUiModel
+import com.example.presentation.ui.adapter.IngredientsAdapter
+import com.example.presentation.ui.adapter.RecipeAdapter
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 

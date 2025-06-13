@@ -11,10 +11,10 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
-import com.example.gptrecipeapp.FavoriteModel
-import com.example.gptrecipeapp.UniteUiModel
-import com.example.gptrecipeapp.databinding.FragmentFavoriteBinding
-import com.example.gptrecipeapp.ui.adapter.FavoriteAdapter
+import com.example.presentation.databinding.FragmentFavoriteBinding
+import com.example.presentation.model.FavoriteModel
+import com.example.presentation.model.UniteUiModel
+import com.example.presentation.ui.adapter.FavoriteAdapter
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 

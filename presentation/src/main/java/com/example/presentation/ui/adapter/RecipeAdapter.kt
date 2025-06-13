@@ -5,8 +5,8 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
-import com.example.gptrecipeapp.databinding.ItemRecipeBinding
-import com.example.gptrecipeapp.model.RecipeModel
+import com.example.presentation.databinding.ItemRecipeBinding
+import com.example.presentation.model.RecipeModel
 
 class RecipeAdapter : ListAdapter<RecipeModel, RecipeViewHolder>(diffUtil) {
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecipeViewHolder {
