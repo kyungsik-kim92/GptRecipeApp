@@ -1,7 +1,7 @@
 package com.example.data.remote.dto
 
 data class GPT(
-    val choices: ArrayList<Choice> = ArrayList()
+    val choices: List<Choice> = emptyList()
 )
 
 data class Choice(
