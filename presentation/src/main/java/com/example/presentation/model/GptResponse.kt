@@ -1,4 +1,4 @@
-package com.example.gptrecipeapp
+package com.example.presentation.model
 
 data class GPTResponse(
     val choices: ArrayList<ChoiceResponse> = ArrayList()

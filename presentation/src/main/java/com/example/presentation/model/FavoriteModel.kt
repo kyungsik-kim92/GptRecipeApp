@@ -1,8 +1,6 @@
-package com.example.gptrecipeapp
+package com.example.presentation.model
 
 import android.os.Parcelable
-import com.example.gptrecipeapp.model.IngredientsModel
-import com.example.gptrecipeapp.model.RecipeModel
 import kotlinx.parcelize.Parcelize
 
 

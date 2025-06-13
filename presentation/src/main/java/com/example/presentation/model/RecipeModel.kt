@@ -1,4 +1,4 @@
-package com.example.gptrecipeapp.model
+package com.example.presentation.model
 
 import android.os.Parcelable
 import com.example.data.local.entity.RecipeEntity
@@ -21,12 +21,3 @@ data class RecipeModel(
     }
 }
 
-fun RecipeModel.toEntity() = RecipeEntity(
-    recipe = this.recipe,
-    isSelected = this.isSelected.value
-)
-
-fun RecipeEntity.toModel() = RecipeModel(
-    initialIsSelected = this.isSelected,
-    recipe = this.recipe
-)

@@ -1,4 +1,4 @@
-package com.example.gptrecipeapp
+package com.example.presentation.model
 
 data class WellbeingRecipeUiModel(
     var wellBeingRecipeList: ArrayList<WellbeingRecipeModel>
