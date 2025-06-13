@@ -7,7 +7,7 @@ fun WellbeingRecipeModel.toEntity() = WellbeingRecipeEntity(
     wellbeingRecipe = this.wellbeingRecipe,
     isSelected = this.isSelected.value
 )
-fun WellbeingRecipeEntity.toModel() = WellbeingRecipeModel(
+fun WellbeingRecipeEntity.toPresentation() = WellbeingRecipeModel(
     initialIsSelected = this.isSelected,
     wellbeingRecipe = this.wellbeingRecipe
 )
