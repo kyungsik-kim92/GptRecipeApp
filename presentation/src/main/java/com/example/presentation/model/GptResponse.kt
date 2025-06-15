@@ -1,7 +1,7 @@
 package com.example.presentation.model
 
 data class GPTResponse(
-    val choices: ArrayList<ChoiceResponse> = ArrayList()
+    val choices: List<ChoiceResponse> = emptyList()
 )
 
 data class ChoiceResponse(

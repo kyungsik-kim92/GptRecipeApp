@@ -9,5 +9,5 @@ data class SearchUiModel(
     var searchKeyword: String,
     var isFetched: Boolean,
     var isLoading: Boolean,
-    var ingredientsList: ArrayList<IngredientsModel>,
+    var ingredientsList: List<IngredientsModel>,
 ) : Parcelable

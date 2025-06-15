@@ -6,9 +6,9 @@ import com.example.presentation.model.FavoriteModel
 fun LocalRecipe.toFavoriteModel() = FavoriteModel(
     id = this.id,
     searchKeyword = this.searchKeyword,
-    ingredientsList = ArrayList(this.ingredientsList.map { it.toPresentation() }),
-    recipeList = ArrayList(this.recipeList.map { it.toPresentation() }),
-    wellbeingRecipeList = ArrayList(this.wellbeingRecipeList.map { it. })
+    ingredientsList = this.ingredientsList.map { it.toPresentation() },
+    recipeList = this.recipeList.map { it.toPresentation() },
+    wellbeingRecipeList = this.wellbeingRecipeList.map { it.toPresentation() }
 )
 
 fun FavoriteModel.toDomain() = LocalRecipe(

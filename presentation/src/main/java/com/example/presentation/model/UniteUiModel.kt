@@ -9,8 +9,8 @@ data class UniteUiModel(
     var isFetched: Boolean = false,
     var isLoading: Boolean = false,
     var searchKeyword: String = "",
-    var searchKeywordList: ArrayList<String> = ArrayList(),
-    var ingredientsList: ArrayList<IngredientsModel>,
-    var recipeList: ArrayList<RecipeModel>,
-    var wellbeingRecipeList: ArrayList<WellbeingRecipeModel>
+    var searchKeywordList: List<String> = emptyList(),
+    var ingredientsList: List<IngredientsModel>,
+    var recipeList: List<RecipeModel>,
+    var wellbeingRecipeList: List<WellbeingRecipeModel>
 ) : Parcelable

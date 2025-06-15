@@ -8,6 +8,6 @@ import kotlinx.parcelize.Parcelize
 data class RecIngredientsUiModel(
     var isLoading: Boolean,
     var isFetched: Boolean,
-    var searchKeywordList: ArrayList<String>,
-    var ingredientsList: ArrayList<IngredientsModel>,
+    var searchKeywordList: List<String>,
+    var ingredientsList: List<IngredientsModel>,
 ) : Parcelable

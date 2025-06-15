@@ -8,9 +8,9 @@ import kotlinx.parcelize.Parcelize
 data class RecipeUiModel(
     var id: Long,
     var searchKeyword: String,
-    var ingredientsList: ArrayList<IngredientsModel>,
-    var recipeList: ArrayList<RecipeModel>,
+    var ingredientsList: List<IngredientsModel>,
+    var recipeList: List<RecipeModel>,
     var isLoading: Boolean,
     var isSubscribe: Boolean,
-    var wellbeingRecipeModel: ArrayList<WellbeingRecipeModel>
+    var wellbeingRecipeModel: List<WellbeingRecipeModel>
 ) : Parcelable

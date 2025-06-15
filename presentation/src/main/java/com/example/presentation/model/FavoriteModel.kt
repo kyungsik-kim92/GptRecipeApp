@@ -6,9 +6,9 @@ import kotlinx.parcelize.Parcelize
 
 @Parcelize
 data class FavoriteModel(
-    var id: Long = 0,
-    var searchKeyword: String = "",
-    var ingredientsList: ArrayList<IngredientsModel>,
-    var recipeList: ArrayList<RecipeModel>,
-    var wellbeingRecipeList: ArrayList<WellbeingRecipeModel>
+    val id: Long = 0,
+    val searchKeyword: String = "",
+    val ingredientsList: List<IngredientsModel> = emptyList(),
+    val recipeList: List<RecipeModel> = emptyList(),
+    val wellbeingRecipeList: List<WellbeingRecipeModel> = emptyList()
 ) : Parcelable
