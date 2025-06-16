@@ -1,21 +1,11 @@
 package com.example.presentation.model
 
 import android.os.Parcelable
-import com.example.data.local.entity.WellbeingRecipeEntity
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.parcelize.Parcelize
 
 @Parcelize
 data class WellbeingRecipeModel(
+    val id: String,
     val wellbeingRecipe: String,
-    val initialIsSelected: Boolean = false
-) : Parcelable {
-    private val _isSelected = MutableStateFlow(initialIsSelected)
-    val isSelected: StateFlow<Boolean> = _isSelected.asStateFlow()
-
-    fun setIsSelected(selected: Boolean) {
-        _isSelected.value = selected
-    }
-}
+    val isSelected: Boolean = false
+) : Parcelable

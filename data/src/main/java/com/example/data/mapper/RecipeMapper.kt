@@ -4,6 +4,7 @@ import com.example.data.local.entity.RecipeEntity
 import com.example.domain.model.Recipe
 
 fun RecipeEntity.toDomain() = Recipe(
+    id = this.recipe,
     isSelected = this.isSelected,
     recipe = this.recipe
 )
