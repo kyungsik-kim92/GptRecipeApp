@@ -7,18 +7,16 @@ import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.example.presentation.databinding.ItemIngredientsBinding
 import com.example.presentation.model.IngredientsModel
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
 
 
 class IngredientsAdapter(
-    private val isClickable: Boolean = true
+    private val isClickable: Boolean = true,
+    private val onItemClick: (String) -> Unit
 ) : ListAdapter<IngredientsModel, IngredientsViewHolder>(diffUtil) {
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): IngredientsViewHolder {
         val binding =
             ItemIngredientsBinding.inflate(LayoutInflater.from(parent.context), parent, false)
-        return IngredientsViewHolder(binding, isClickable)
+        return IngredientsViewHolder(binding, isClickable, onItemClick)
     }
 
     override fun onBindViewHolder(holder: IngredientsViewHolder, position: Int) {
@@ -44,19 +42,16 @@ class IngredientsAdapter(
 
 class IngredientsViewHolder(
     private val binding: ItemIngredientsBinding,
-    private val isClickable: Boolean = true
+    private val isClickable: Boolean = true,
+    private val onItemClick: (String) -> Unit
 ) : RecyclerView.ViewHolder(binding.root) {
     fun bind(item: IngredientsModel) {
         binding.ingredientsModel = item
-        CoroutineScope(Dispatchers.Main).launch {
-            item.isSelected.collect { isSelected ->
-                binding.tvIngredients.isSelected = isSelected
-                binding.invalidateAll()
-            }
-        }
+        binding.tvIngredients.isSelected = item.isSelected
+        binding.invalidateAll()
         if (isClickable) {
             itemView.setOnClickListener {
-                item.setIsSelected(!item.isSelected.value)
+                onItemClick(item.id)
             }
         }
     }
