@@ -7,16 +7,15 @@ import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.example.presentation.databinding.ItemRecIngredientsBinding
 import com.example.presentation.model.IngredientsModel
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
 
-class RecIngredientsAdapter : ListAdapter<IngredientsModel, RecIngredientsViewHolder>(diffUtil) {
+class RecIngredientsAdapter(
+    private val onItemClick: (String) -> Unit
+) : ListAdapter<IngredientsModel, RecIngredientsViewHolder>(diffUtil) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecIngredientsViewHolder {
         val binding =
             ItemRecIngredientsBinding.inflate(LayoutInflater.from(parent.context), parent, false)
-        return RecIngredientsViewHolder(binding)
+        return RecIngredientsViewHolder(binding, onItemClick)
     }
 
     override fun onBindViewHolder(holder: RecIngredientsViewHolder, position: Int) {
@@ -43,18 +42,15 @@ class RecIngredientsAdapter : ListAdapter<IngredientsModel, RecIngredientsViewHo
 
 
 class RecIngredientsViewHolder(
-    private val binding: ItemRecIngredientsBinding
+    private val binding: ItemRecIngredientsBinding,
+    private val onItemClick: (String) -> Unit
 ) : RecyclerView.ViewHolder(binding.root) {
     fun bind(item: IngredientsModel) {
         binding.ingredientsModel = item
-        CoroutineScope(Dispatchers.Main).launch {
-            item.isSelected.collect { isSelected ->
-                binding.tvIngredients.isSelected = isSelected
-                binding.invalidateAll()
-            }
-        }
+        binding.tvIngredients.isSelected = item.isSelected
+        binding.invalidateAll()
         itemView.setOnClickListener {
-            item.setIsSelected(!item.isSelected.value)
+            onItemClick(item.id)
         }
     }
 }
