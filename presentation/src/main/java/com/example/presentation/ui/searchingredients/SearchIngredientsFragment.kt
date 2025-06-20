@@ -25,7 +25,11 @@ class SearchIngredientsFragment : Fragment() {
     private val binding get() = _binding!!
 
     private val viewModel: SearchIngredientsViewModel by viewModels()
-    private val ingredientsAdapter = IngredientsAdapter(isClickable = true)
+    private val ingredientsAdapter = IngredientsAdapter(
+        isClickable = true,
+        onItemClick = { ingredientsId ->
+
+        })
     private val args: SearchIngredientsFragmentArgs by navArgs()
 
 
@@ -53,7 +57,7 @@ class SearchIngredientsFragment : Fragment() {
 
         binding.btnSearch.setOnClickListener {
             val ingredientsList =
-                ArrayList(ingredientsAdapter.currentList.filter { it.isSelected.value })
+                viewModel.uiModel.value.ingredientsList.filter { it.isSelected }
             if (ingredientsList.isEmpty()) {
                 return@setOnClickListener
             }
@@ -68,35 +72,33 @@ class SearchIngredientsFragment : Fragment() {
                     binding.progressBar.isVisible = it.isLoading
 
                     with(binding) {
-                        // 레시피 검색어
                         with(tvRecipeTitle) {
                             text = it.searchKeyword
                         }
-                        // 재료 어댑터
                         with(ingredientsAdapter) {
                             submitList(it.ingredientsList)
                         }
                     }
-                    if (it.isFetched) {
-                        val selectedIngredients =
-                            ArrayList(it.ingredientsList.filter { ingredients ->
-                                ingredients.isSelected.value
-                            })
-
-                        val uniteUiModel = UniteUiModel(
-                            searchKeyword = it.searchKeyword,
-                            ingredientsList = selectedIngredients,
-                            recipeList = it.recipeList,
-                            wellbeingRecipeList = it.wellbeingRecipeList
-                        )
-
-                        val action = SearchIngredientsFragmentDirections
-                            .actionNavigationSearchIngredientsToRecipeFragment(uniteUiModel)
-                        findNavController().navigate(action)
-                    }
-                    it.isFetched = false
+                    routeRecipeFragment(it)
                 }
             }
+        }
+    }
+
+    private fun routeRecipeFragment(uiState: UniteUiModel) {
+        if (uiState.isFetched) {
+            val selectedIngredients = uiState.ingredientsList.filter { it.isSelected }
+
+            val uniteUiModel = UniteUiModel(
+                searchKeyword = uiState.searchKeyword,
+                ingredientsList = selectedIngredients,
+                recipeList = uiState.recipeList,
+                wellbeingRecipeList = uiState.wellbeingRecipeList,
+                isFetched = false
+            )
+            val action = SearchIngredientsFragmentDirections
+                .actionNavigationSearchIngredientsToRecipeFragment(uniteUiModel)
+            findNavController().navigate(action)
         }
     }
 
