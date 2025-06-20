@@ -2,25 +2,20 @@ package com.example.presentation.ui.search
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.data.remote.dto.GPT
-import com.example.data.remote.dto.GptRequestParam
-import com.example.data.remote.dto.MessageRequestParam
-import com.example.domain.repo.Repository
+import com.example.domain.usecase.GenerateRecipeUseCase
 import com.example.presentation.model.IngredientsModel
 import com.example.presentation.model.SearchUiModel
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 import org.json.JSONArray
 import javax.inject.Inject
 
 @HiltViewModel
 class SearchViewModel @Inject constructor(
-    private val repository: Repository
+    private val generateRecipeUseCase: GenerateRecipeUseCase
 ) : ViewModel() {
 
     private val _uiModel = MutableStateFlow(
@@ -28,7 +23,7 @@ class SearchViewModel @Inject constructor(
             searchKeyword = "",
             isFetched = false,
             isLoading = false,
-            ingredientsList = ArrayList()
+            ingredientsList = emptyList()
         )
     )
     val uiModel: StateFlow<SearchUiModel> = _uiModel
@@ -36,33 +31,27 @@ class SearchViewModel @Inject constructor(
     fun getIngredientsByRecipe(searchKeyword: String) {
         viewModelScope.launch {
             _uiModel.update { it.copy(isLoading = true) }
+            val keyword = getFormattedSearchKeyword(searchKeyword)
 
-            runCatching {
-                val response = withContext(Dispatchers.IO) {
-                    repository.getGptResponse(
-                        GptRequestParam(
-                            messages = listOf(
-                                MessageRequestParam(
-                                    role = "user",
-                                    content = getFormattedSearchKeyword(searchKeyword)
-                                )
-                            )
+            generateRecipeUseCase(keyword)
+                .onSuccess { response ->
+                    val ingredientsList = getIngredientsList(response.content)
+                    _uiModel.update {
+                        it.copy(
+                            searchKeyword = searchKeyword,
+                            isFetched = true,
+                            isLoading = false,
+                            ingredientsList = ingredientsList
                         )
-                    )
+                    }
                 }
-
-                _uiModel.update {
-                    it.copy(
-                        searchKeyword = searchKeyword,
-                        isFetched = true,
-                        isLoading = false,
-                        ingredientsList = getIngredientsList(response)
-                    )
+                .onFailure { exception ->
+                    _uiModel.update {
+                        it.copy(
+                            isLoading = false,
+                        )
+                    }
                 }
-            }.onFailure {
-                _uiModel.update { it.copy(isLoading = false) }
-
-            }
         }
     }
 
@@ -72,23 +61,22 @@ class SearchViewModel @Inject constructor(
                 "[{\"재료\":\"양파\"}, {\"재료\":\"김치\"}]"
     }
 
-    private fun getIngredientsList(response: GPT): ArrayList<IngredientsModel> {
-        val ingredientsList = ArrayList<IngredientsModel>()
-        val jsonArray =
-            response.choices[0].message.content?.let { JSONArray(it) } ?: return ingredientsList
-
-        for (i in 0 until jsonArray.length()) {
-            val jsonObject = jsonArray.getJSONObject(i)
-            if (jsonObject.has("재료")) {
-                ingredientsList.add(
+    private fun getIngredientsList(response: String): List<IngredientsModel> {
+        return try {
+            val jsonArray = JSONArray(response)
+            (0 until jsonArray.length()).mapIndexed { index, i ->
+                val jsonObject = jsonArray.getJSONObject(i)
+                if (jsonObject.has("재료")) {
+                    val ingredientName = jsonObject.getString("재료")
                     IngredientsModel(
-                        initialIsSelected = true,
-                        ingredients = jsonObject.get("재료").toString()
+                        id = "search_ingredient_$index",
+                        ingredients = ingredientName,
+                        isSelected = true
                     )
-                )
-            }
+                } else null
+            }.filterNotNull()
+        } catch (e: Exception) {
+            emptyList()
         }
-
-        return ingredientsList
     }
 }
