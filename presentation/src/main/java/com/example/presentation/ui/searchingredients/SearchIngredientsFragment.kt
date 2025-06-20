@@ -28,7 +28,7 @@ class SearchIngredientsFragment : Fragment() {
     private val ingredientsAdapter = IngredientsAdapter(
         isClickable = true,
         onItemClick = { ingredientsId ->
-
+            viewModel.toggleIngredientSelection(ingredientsId)
         })
     private val args: SearchIngredientsFragmentArgs by navArgs()
 

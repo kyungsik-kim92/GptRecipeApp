@@ -121,4 +121,14 @@ class SearchIngredientsViewModel @Inject constructor(
             emptyList()
         }
     }
+
+    fun toggleIngredientSelection(ingredientId: String) {
+        _uiModel.value = _uiModel.value.copy(
+            ingredientsList = _uiModel.value.ingredientsList.map { ingredient ->
+                if (ingredient.id == ingredientId) {
+                    ingredient.copy(isSelected = !ingredient.isSelected)
+                } else ingredient
+            }
+        )
+    }
 }
