@@ -2,34 +2,29 @@ package com.example.presentation.ui.recingredients
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.data.remote.dto.GPT
-import com.example.data.remote.dto.GptRequestParam
-import com.example.data.remote.dto.MessageRequestParam
-import com.example.domain.repo.Repository
+import com.example.domain.usecase.GenerateRecipeUseCase
 import com.example.presentation.model.IngredientsModel
 import com.example.presentation.model.RecIngredientsUiModel
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 import org.json.JSONArray
 import javax.inject.Inject
 
 
 @HiltViewModel
 class RecIngredientsViewModel @Inject constructor(
-    private val repository: Repository
+    private val generateRecipeUseCase: GenerateRecipeUseCase
 ) : ViewModel() {
 
     private val _uiModel = MutableStateFlow(
         RecIngredientsUiModel(
             isLoading = false,
             isFetched = false,
-            searchKeywordList = ArrayList(),
-            ingredientsList = ArrayList()
+            searchKeywordList = emptyList(),
+            ingredientsList = emptyList()
         )
     )
     val uiModel: StateFlow<RecIngredientsUiModel> = _uiModel
@@ -65,147 +60,140 @@ class RecIngredientsViewModel @Inject constructor(
         _etcList.value = getEtcList()
     }
 
-    fun getRecRecipes(ingredientsList: ArrayList<IngredientsModel>) {
+    fun getRecRecipes(ingredientsList: List<IngredientsModel>) {
         _uiModel.value = _uiModel.value.copy(isLoading = true)
 
+        val response = getFormattedSearchKeyword(ingredientsList)
+
         viewModelScope.launch {
-            try {
-                val response = withContext(Dispatchers.IO) {
-                    repository.getGptResponse(
-                        GptRequestParam(
-                            messages = arrayListOf(
-                                MessageRequestParam(
-                                    role = "user",
-                                    content = getFormattedSearchKeyword(ingredientsList)
-                                )
-                            )
-                        )
+            generateRecipeUseCase(response)
+                .onSuccess { response ->
+                    val searchKeywords = getSearchKeywordList(response.content)
+                    _uiModel.value = _uiModel.value.copy(
+                        isLoading = false,
+                        isFetched = true,
+                        searchKeywordList = searchKeywords,
+                        ingredientsList = ingredientsList
                     )
                 }
-                _uiModel.value = _uiModel.value.copy(
-                    isLoading = false,
-                    isFetched = true,
-                    searchKeywordList = getSearchKeywordList(response),
-                    ingredientsList = ingredientsList
-                )
-            } catch (e: Exception) {
-                _uiModel.value = _uiModel.value.copy(isLoading = false)
-            }
+                .onFailure { exception ->
+                    _uiModel.value = _uiModel.value.copy(
+                        isLoading = false
+                    )
+                }
         }
     }
 
-    private fun getMeatList(): MutableList<IngredientsModel> {
-        return mutableListOf(
-            IngredientsModel(ingredients = "닭고기", initialIsSelected = false),
-            IngredientsModel(ingredients = "돼지고기", initialIsSelected = false),
-            IngredientsModel(ingredients = "소고기", initialIsSelected = false),
-            IngredientsModel(ingredients = "양고기", initialIsSelected = false),
-            IngredientsModel(ingredients = "오리고기", initialIsSelected = false)
+    private fun getMeatList(): List<IngredientsModel> {
+        return listOf(
+            IngredientsModel(id = "chicken", ingredients = "닭고기", isSelected = false),
+            IngredientsModel(id = "pork", ingredients = "돼지고기", isSelected = false),
+            IngredientsModel(id = "beef", ingredients = "소고기", isSelected = false),
+            IngredientsModel(id = "lamb", ingredients = "양고기", isSelected = false),
+            IngredientsModel(id = "duck", ingredients = "오리고기", isSelected = false)
         )
     }
 
-    private fun getSeafoodList(): MutableList<IngredientsModel> {
-        return mutableListOf(
-            IngredientsModel(ingredients = "전복", initialIsSelected = false),
-            IngredientsModel(ingredients = "굴", initialIsSelected = false),
-            IngredientsModel(ingredients = "꽃게", initialIsSelected = false),
-            IngredientsModel(ingredients = "낙지", initialIsSelected = false),
-            IngredientsModel(ingredients = "쭈꾸미", initialIsSelected = false),
-            IngredientsModel(ingredients = "문어", initialIsSelected = false),
-            IngredientsModel(ingredients = "오징어", initialIsSelected = false),
-            IngredientsModel(ingredients = "미역", initialIsSelected = false),
-            IngredientsModel(ingredients = "새우", initialIsSelected = false),
-            IngredientsModel(ingredients = "전어", initialIsSelected = false),
-            IngredientsModel(ingredients = "연어", initialIsSelected = false),
-            IngredientsModel(ingredients = "갈치", initialIsSelected = false),
-            IngredientsModel(ingredients = "꽁치", initialIsSelected = false),
-            IngredientsModel(ingredients = "고등어", initialIsSelected = false),
-            IngredientsModel(ingredients = "멸치", initialIsSelected = false),
-            IngredientsModel(ingredients = "조개", initialIsSelected = false),
-            IngredientsModel(ingredients = "바지락", initialIsSelected = false),
-            IngredientsModel(ingredients = "꼬막", initialIsSelected = false),
-            IngredientsModel(ingredients = "골뱅이", initialIsSelected = false),
+    private fun getSeafoodList(): List<IngredientsModel> {
+        return listOf(
+            IngredientsModel(id = "abalone", ingredients = "전복", isSelected = false),
+            IngredientsModel(id = "oyster", ingredients = "굴", isSelected = false),
+            IngredientsModel(id = "crab", ingredients = "꽃게", isSelected = false),
+            IngredientsModel(id = "small_octopus", ingredients = "낙지", isSelected = false),
+            IngredientsModel(id = "webfoot_octopus", ingredients = "쭈꾸미", isSelected = false),
+            IngredientsModel(id = "octopus", ingredients = "문어", isSelected = false),
+            IngredientsModel(id = "squid", ingredients = "오징어", isSelected = false),
+            IngredientsModel(id = "seaweed", ingredients = "미역", isSelected = false),
+            IngredientsModel(id = "shrimp", ingredients = "새우", isSelected = false),
+            IngredientsModel(id = "gizzard_shad", ingredients = "전어", isSelected = false),
+            IngredientsModel(id = "salmon", ingredients = "연어", isSelected = false),
+            IngredientsModel(id = "hairtail", ingredients = "갈치", isSelected = false),
+            IngredientsModel(id = "saury", ingredients = "꽁치", isSelected = false),
+            IngredientsModel(id = "mackerel", ingredients = "고등어", isSelected = false),
+            IngredientsModel(id = "anchovy", ingredients = "멸치", isSelected = false),
+            IngredientsModel(id = "clam", ingredients = "조개", isSelected = false),
+            IngredientsModel(id = "manila_clam", ingredients = "바지락", isSelected = false),
+            IngredientsModel(id = "cockle", ingredients = "꼬막", isSelected = false),
+            IngredientsModel(id = "sea_snail", ingredients = "골뱅이", isSelected = false)
         )
     }
 
-    private fun getVegetableList(): MutableList<IngredientsModel> {
-        return mutableListOf(
-            IngredientsModel(ingredients = "김치", initialIsSelected = false),
-            IngredientsModel(ingredients = "배추", initialIsSelected = false),
-            IngredientsModel(ingredients = "양배추", initialIsSelected = false),
-            IngredientsModel(ingredients = "상추", initialIsSelected = false),
-            IngredientsModel(ingredients = "깻잎", initialIsSelected = false),
-            IngredientsModel(ingredients = "시금치", initialIsSelected = false),
-            IngredientsModel(ingredients = "대파", initialIsSelected = false),
-            IngredientsModel(ingredients = "가지", initialIsSelected = false),
-            IngredientsModel(ingredients = "무", initialIsSelected = false),
-            IngredientsModel(ingredients = "대파", initialIsSelected = false),
-            IngredientsModel(ingredients = "마늘", initialIsSelected = false),
-            IngredientsModel(ingredients = "양파", initialIsSelected = false),
-            IngredientsModel(ingredients = "버섯", initialIsSelected = false),
-            IngredientsModel(ingredients = "마늘", initialIsSelected = false),
-            IngredientsModel(ingredients = "콩나물", initialIsSelected = false),
-            IngredientsModel(ingredients = "토마토", initialIsSelected = false),
-            IngredientsModel(ingredients = "파프리카", initialIsSelected = false),
-            IngredientsModel(ingredients = "두부", initialIsSelected = false),
-            IngredientsModel(ingredients = "콩", initialIsSelected = false),
-            IngredientsModel(ingredients = "감자", initialIsSelected = false),
-            IngredientsModel(ingredients = "고구마", initialIsSelected = false),
-            IngredientsModel(ingredients = "옥수수", initialIsSelected = false),
+    private fun getVegetableList(): List<IngredientsModel> {
+        return listOf(
+            IngredientsModel(id = "kimchi", ingredients = "김치", isSelected = false),
+            IngredientsModel(id = "napa_cabbage", ingredients = "배추", isSelected = false),
+            IngredientsModel(id = "cabbage", ingredients = "양배추", isSelected = false),
+            IngredientsModel(id = "lettuce", ingredients = "상추", isSelected = false),
+            IngredientsModel(id = "perilla_leaves", ingredients = "깻잎", isSelected = false),
+            IngredientsModel(id = "spinach", ingredients = "시금치", isSelected = false),
+            IngredientsModel(id = "green_onion", ingredients = "대파", isSelected = false),
+            IngredientsModel(id = "eggplant", ingredients = "가지", isSelected = false),
+            IngredientsModel(id = "radish", ingredients = "무", isSelected = false),
+            IngredientsModel(id = "garlic", ingredients = "마늘", isSelected = false),
+            IngredientsModel(id = "onion", ingredients = "양파", isSelected = false),
+            IngredientsModel(id = "mushroom", ingredients = "버섯", isSelected = false),
+            IngredientsModel(id = "bean_sprouts", ingredients = "콩나물", isSelected = false),
+            IngredientsModel(id = "tomato", ingredients = "토마토", isSelected = false),
+            IngredientsModel(id = "paprika", ingredients = "파프리카", isSelected = false),
+            IngredientsModel(id = "tofu", ingredients = "두부", isSelected = false),
+            IngredientsModel(id = "bean", ingredients = "콩", isSelected = false),
+            IngredientsModel(id = "potato", ingredients = "감자", isSelected = false),
+            IngredientsModel(id = "sweet_potato", ingredients = "고구마", isSelected = false),
+            IngredientsModel(id = "corn", ingredients = "옥수수", isSelected = false)
         )
     }
 
-    private fun getFruitList(): MutableList<IngredientsModel> {
-        return mutableListOf(
-            IngredientsModel(ingredients = "사과", initialIsSelected = false),
-            IngredientsModel(ingredients = "바나나", initialIsSelected = false),
-            IngredientsModel(ingredients = "배", initialIsSelected = false),
-            IngredientsModel(ingredients = "복숭아", initialIsSelected = false),
-            IngredientsModel(ingredients = "딸기", initialIsSelected = false),
-            IngredientsModel(ingredients = "포도", initialIsSelected = false),
-            IngredientsModel(ingredients = "망고", initialIsSelected = false),
-            IngredientsModel(ingredients = "블루베리", initialIsSelected = false),
-            IngredientsModel(ingredients = "파인애플", initialIsSelected = false),
-            IngredientsModel(ingredients = "레몬", initialIsSelected = false),
-            IngredientsModel(ingredients = "라임", initialIsSelected = false),
-            IngredientsModel(ingredients = "아보카도"),
+    private fun getFruitList(): List<IngredientsModel> {
+        return listOf(
+            IngredientsModel(id = "apple", ingredients = "사과", isSelected = false),
+            IngredientsModel(id = "banana", ingredients = "바나나", isSelected = false),
+            IngredientsModel(id = "pear", ingredients = "배", isSelected = false),
+            IngredientsModel(id = "peach", ingredients = "복숭아", isSelected = false),
+            IngredientsModel(id = "strawberry", ingredients = "딸기", isSelected = false),
+            IngredientsModel(id = "grape", ingredients = "포도", isSelected = false),
+            IngredientsModel(id = "mango", ingredients = "망고", isSelected = false),
+            IngredientsModel(id = "blueberry", ingredients = "블루베리", isSelected = false),
+            IngredientsModel(id = "pineapple", ingredients = "파인애플", isSelected = false),
+            IngredientsModel(id = "lemon", ingredients = "레몬", isSelected = false),
+            IngredientsModel(id = "lime", ingredients = "라임", isSelected = false),
+            IngredientsModel(id = "avocado", ingredients = "아보카도", isSelected = false)
         )
     }
 
-    private fun getProcessedList(): MutableList<IngredientsModel> {
-        return mutableListOf(
-            IngredientsModel(ingredients = "계란", initialIsSelected = false),
-            IngredientsModel(ingredients = "메추리알", initialIsSelected = false),
-            IngredientsModel(ingredients = "치즈", initialIsSelected = false),
-            IngredientsModel(ingredients = "요거트", initialIsSelected = false),
-            IngredientsModel(ingredients = "스팸", initialIsSelected = false),
-            IngredientsModel(ingredients = "햄", initialIsSelected = false),
-            IngredientsModel(ingredients = "베이컨", initialIsSelected = false),
-            IngredientsModel(ingredients = "소시지", initialIsSelected = false),
-            IngredientsModel(ingredients = "만두", initialIsSelected = false),
-            IngredientsModel(ingredients = "순대", initialIsSelected = false),
-            IngredientsModel(ingredients = "참치캔", initialIsSelected = false),
+    private fun getProcessedList(): List<IngredientsModel> {
+        return listOf(
+            IngredientsModel(id = "egg", ingredients = "계란", isSelected = false),
+            IngredientsModel(id = "quail_egg", ingredients = "메추리알", isSelected = false),
+            IngredientsModel(id = "cheese", ingredients = "치즈", isSelected = false),
+            IngredientsModel(id = "yogurt", ingredients = "요거트", isSelected = false),
+            IngredientsModel(id = "spam", ingredients = "스팸", isSelected = false),
+            IngredientsModel(id = "ham", ingredients = "햄", isSelected = false),
+            IngredientsModel(id = "bacon", ingredients = "베이컨", isSelected = false),
+            IngredientsModel(id = "sausage", ingredients = "소시지", isSelected = false),
+            IngredientsModel(id = "dumpling", ingredients = "만두", isSelected = false),
+            IngredientsModel(id = "sundae", ingredients = "순대", isSelected = false),
+            IngredientsModel(id = "canned_tuna", ingredients = "참치캔", isSelected = false)
         )
     }
 
-    private fun getEtcList(): MutableList<IngredientsModel> {
-        return mutableListOf(
-            IngredientsModel(ingredients = "라면", initialIsSelected = false),
-            IngredientsModel(ingredients = "스파게티면", initialIsSelected = false),
-            IngredientsModel(ingredients = "소면", initialIsSelected = false),
-            IngredientsModel(ingredients = "당면", initialIsSelected = false),
-            IngredientsModel(ingredients = "우동면", initialIsSelected = false),
-            IngredientsModel(ingredients = "수제비", initialIsSelected = false),
-            IngredientsModel(ingredients = "가래떡", initialIsSelected = false),
-            IngredientsModel(ingredients = "떡국떡", initialIsSelected = false),
-            IngredientsModel(ingredients = "바게트", initialIsSelected = false),
-            IngredientsModel(ingredients = "베이글", initialIsSelected = false),
-            IngredientsModel(ingredients = "식빵", initialIsSelected = false),
+    private fun getEtcList(): List<IngredientsModel> {
+        return listOf(
+            IngredientsModel(id = "ramen", ingredients = "라면", isSelected = false),
+            IngredientsModel(id = "spaghetti", ingredients = "스파게티면", isSelected = false),
+            IngredientsModel(id = "somen", ingredients = "소면", isSelected = false),
+            IngredientsModel(id = "starch_noodle", ingredients = "당면", isSelected = false),
+            IngredientsModel(id = "udon", ingredients = "우동면", isSelected = false),
+            IngredientsModel(id = "sujebi", ingredients = "수제비", isSelected = false),
+            IngredientsModel(id = "garae_tteok", ingredients = "가래떡", isSelected = false),
+            IngredientsModel(id = "soup_tteok", ingredients = "떡국떡", isSelected = false),
+            IngredientsModel(id = "baguette", ingredients = "바게트", isSelected = false),
+            IngredientsModel(id = "bagel", ingredients = "베이글", isSelected = false),
+            IngredientsModel(id = "bread", ingredients = "식빵", isSelected = false)
         )
     }
 
     private fun getFormattedSearchKeyword(
-        ingredientsList: ArrayList<IngredientsModel>,
+        ingredientsList: List<IngredientsModel>,
     ): String {
 
         var format = ""
@@ -221,17 +209,17 @@ class RecIngredientsViewModel @Inject constructor(
                 "[{\"키워드\":\"김치찌개\"}, {\"키워드\":\"된장찌개\"}]"
     }
 
-    private fun getSearchKeywordList(response: GPT): ArrayList<String> {
-        val searchKeywordList = ArrayList<String>()
-        val jsonArray = response.choices[0].message.content?.let { JSONArray(it) }
-
-        for (i in 0 until (jsonArray?.length() ?: 0)) {
-            jsonArray?.getJSONObject(i)?.apply {
-                if (has("키워드")) {
-                    searchKeywordList.add(get("키워드").toString())
-                }
+    private fun getSearchKeywordList(response: String): List<String> {
+        return try {
+            val jsonArray = JSONArray(response)
+            (0 until jsonArray.length()).mapNotNull { i ->
+                jsonArray.getJSONObject(i)
+                    .takeIf { it.has("키워드") }
+                    ?.getString("키워드")
             }
+        } catch (e: Exception) {
+            emptyList()
         }
-        return searchKeywordList
     }
 }
+
