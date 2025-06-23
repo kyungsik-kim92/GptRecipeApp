@@ -6,5 +6,6 @@ data class FavoriteUiState(
     val selectedRecipes: Set<String> = emptySet(),
     val selectedWellbeingRecipes: Set<String> = emptySet(),
     val isLoading: Boolean = false,
-    val errorMessage: String? = null
+    val errorMessage: String? = null,
+    val successMessage: String? = null
 )

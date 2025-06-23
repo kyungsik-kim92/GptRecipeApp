@@ -48,7 +48,7 @@ class FavoriteFragment : Fragment() {
     private fun addObserver() {
         lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
-                viewModel.uiModel.collect {
+                viewModel.uiState.collect {
                     binding.rvFavoriteList.isVisible = it.favoriteList.isNotEmpty()
                     binding.layoutEmpty.isVisible = it.favoriteList.isEmpty()
 

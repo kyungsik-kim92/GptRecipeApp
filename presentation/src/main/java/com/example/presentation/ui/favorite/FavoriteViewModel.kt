@@ -2,7 +2,9 @@ package com.example.presentation.ui.favorite
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.domain.repo.Repository
+import com.example.domain.usecase.DeleteRecipeUseCase
+import com.example.domain.usecase.GetFavoriteRecipesFlowUseCase
+import com.example.domain.usecase.InsertRecipeUseCase
 import com.example.presentation.mapper.toFavoriteModel
 import com.example.presentation.model.FavoriteUiState
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -17,7 +19,9 @@ import javax.inject.Inject
 
 @HiltViewModel
 class FavoriteViewModel @Inject constructor(
-    private val repository: Repository
+    private val getFavoriteRecipesFlowUseCase: GetFavoriteRecipesFlowUseCase,
+    private val deleteRecipeUseCase: DeleteRecipeUseCase,
+    private val insertRecipeUseCase: InsertRecipeUseCase
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(FavoriteUiState())
@@ -30,8 +34,7 @@ class FavoriteViewModel @Inject constructor(
     private fun observeFavorites() {
         viewModelScope.launch {
             _uiState.value = _uiState.value.copy(isLoading = true)
-
-            repository.getAllFavoritesFlow()
+            getFavoriteRecipesFlowUseCase()
                 .flowOn(Dispatchers.IO)
                 .catch { exception ->
                     _uiState.value = _uiState.value.copy(
