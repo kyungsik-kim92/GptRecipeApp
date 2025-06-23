@@ -2,10 +2,7 @@ package com.example.presentation.ui.recrecipe
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.data.remote.dto.GPT
-import com.example.data.remote.dto.GptRequestParam
-import com.example.data.remote.dto.MessageRequestParam
-import com.example.domain.repo.Repository
+import com.example.domain.usecase.GenerateRecipeUseCase
 import com.example.presentation.model.IngredientsModel
 import com.example.presentation.model.UniteUiModel
 import com.example.presentation.model.WellbeingRecipeModel
@@ -21,38 +18,32 @@ import javax.inject.Inject
 
 @HiltViewModel
 class RecRecipeViewModel @Inject constructor(
-    private val repository: Repository
+    private val generateRecipeUseCase: GenerateRecipeUseCase
 ) : ViewModel() {
     private val _uiModel = MutableStateFlow(
         UniteUiModel(
             isFetched = false,
             isLoading = false,
             searchKeyword = "",
-            searchKeywordList = ArrayList(),
-            ingredientsList = ArrayList(),
-            recipeList = ArrayList(),
-            wellbeingRecipeList = ArrayList()
+            searchKeywordList = emptyList(),
+            ingredientsList = emptyList(),
+            recipeList = emptyList(),
+            wellbeingRecipeList = emptyList()
         )
     )
     val uiModel: StateFlow<UniteUiModel> = _uiModel
 
 
     fun setSearchKeyword(searchKeyword: String) {
-        _uiModel.value = _uiModel.value.copy().apply {
-            this.searchKeyword = searchKeyword
-        }
+        _uiModel.value = _uiModel.value.copy(searchKeyword = searchKeyword)
     }
 
-    fun setSearchKeywordList(searchKeywordList: ArrayList<String>) {
-        _uiModel.value = _uiModel.value.copy().apply {
-            this.searchKeywordList = searchKeywordList
-        }
+    fun setSearchKeywordList(searchKeywordList: List<String>) {
+        _uiModel.value = _uiModel.value.copy(searchKeywordList = searchKeywordList)
     }
 
-    fun setIngredientsList(ingredientsList: ArrayList<IngredientsModel>) {
-        _uiModel.value = _uiModel.value.copy().apply {
-            this.ingredientsList = ingredientsList
-        }
+    fun setIngredientsList(ingredientsList: List<IngredientsModel>) {
+        _uiModel.value = _uiModel.value.copy(ingredientsList = ingredientsList)
     }
 
     fun getIngredients(isIngredients: Boolean = true) {
@@ -60,38 +51,30 @@ class RecRecipeViewModel @Inject constructor(
             isLoading = true
         )
         val searchKeyword = _uiModel.value.searchKeyword
+        val keyword = getFormattedSearchKeyword(searchKeyword)
 
         viewModelScope.launch(Dispatchers.IO) {
-            runCatching {
-                val response = repository.getGptResponse(
-                    GptRequestParam(
-                        messages = arrayListOf(
-                            MessageRequestParam(
-                                role = "user",
-                                content = getFormattedSearchKeyword(searchKeyword)
-                            )
-                        )
-                    )
-                )
-                withContext(Dispatchers.Main) {
+            generateRecipeUseCase(keyword)
+                .onSuccess { response ->
                     if (isIngredients) {
+                        val ingredientsList = getIngredientsList(response.content)
+                        val wellbeingRecipeList = getWellBeingRecipeList(response.content)
                         _uiModel.value = _uiModel.value.copy(
                             searchKeyword = searchKeyword,
                             isFetched = true,
                             isLoading = false,
-                            ingredientsList = getIngredientsList(response),
-                            recipeList = ArrayList(),
-                            wellbeingRecipeList = getWellBeingRecipeList(response)
+                            ingredientsList = ingredientsList,
+                            recipeList = emptyList(),
+                            wellbeingRecipeList = wellbeingRecipeList
+                        )
+                    }
+                }.onFailure {
+                    withContext(Dispatchers.Main) {
+                        _uiModel.value = _uiModel.value.copy(
+                            isLoading = false,
                         )
                     }
                 }
-            }.onFailure {
-                withContext(Dispatchers.Main) {
-                    _uiModel.value = _uiModel.value.copy(
-                        isLoading = false,
-                    )
-                }
-            }
         }
     }
 
@@ -102,42 +85,41 @@ class RecRecipeViewModel @Inject constructor(
                 "[{\"재료\":\"양파\"}, {\"재료\":\"김치\"}, {\"웰빙\":\"올리브오일에 양파를 볶는다\"}, {\"웰빙\":\"저염 김치를 사용한다\"}]"
     }
 
-    private fun getIngredientsList(response: GPT): ArrayList<IngredientsModel> {
-        val ingredientsList = ArrayList<IngredientsModel>()
-        val jsonArray = response.choices[0].message.content?.let { JSONArray(it) }
-
-        for (i in 0 until (jsonArray?.length() ?: 0)) {
-            jsonArray?.getJSONObject(i)?.apply {
-                if (has("재료")) {
-                    val ingredient = get("재료").toString()
-                    ingredientsList.add(
-                        IngredientsModel(
-                            ingredients = ingredient,
-                            initialIsSelected = true
-                        )
+    private fun getIngredientsList(content: String): List<IngredientsModel> {
+        return try {
+            val jsonArray = JSONArray(content)
+            (0 until jsonArray.length()).mapNotNull { i ->
+                val jsonObject = jsonArray.getJSONObject(i)
+                if (jsonObject.has("재료")) {
+                    val ingredient = jsonObject.getString("재료")
+                    IngredientsModel(
+                        id = "ingredient_$i",
+                        ingredients = ingredient,
+                        isSelected = true
                     )
-                }
+                } else null
             }
+        } catch (e: Exception) {
+            emptyList()
         }
-        return ingredientsList
     }
+}
 
-    private fun getWellBeingRecipeList(response: GPT): ArrayList<WellbeingRecipeModel> {
-        val wellBeingRecipeList = ArrayList<WellbeingRecipeModel>()
-        val jsonArray = response.choices[0].message.content?.let { JSONArray(it) }
-
-        for (i in 0 until (jsonArray?.length() ?: 0)) {
-            jsonArray?.getJSONObject(i)?.apply {
-                if (has("웰빙")) {
-                    wellBeingRecipeList.add(
-                        WellbeingRecipeModel(
-                            initialIsSelected = true,
-                            wellbeingRecipe = get("웰빙").toString()
-                        )
-                    )
-                }
-            }
+private fun getWellBeingRecipeList(content: String): List<WellbeingRecipeModel> {
+    return try {
+        val jsonArray = JSONArray(content)
+        (0 until jsonArray.length()).mapNotNull { i ->
+            val jsonObject = jsonArray.getJSONObject(i)
+            if (jsonObject.has("웰빙")) {
+                val wellbeingRecipe = jsonObject.getString("웰빙")
+                WellbeingRecipeModel(
+                    id = "wellbeing_$i",
+                    wellbeingRecipe = wellbeingRecipe,
+                    isSelected = true
+                )
+            } else null
         }
-        return wellBeingRecipeList
+    } catch (e: Exception) {
+        emptyList()
     }
 }
