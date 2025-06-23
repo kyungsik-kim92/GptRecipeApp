@@ -84,6 +84,57 @@ class RecIngredientsViewModel @Inject constructor(
         }
     }
 
+    fun toggleIngredientSelection(categoryType: String, ingredientId: String) {
+        when (categoryType) {
+            "meat" -> {
+                _meatList.value = _meatList.value.map {
+                    if (it.id == ingredientId) it.copy(isSelected = !it.isSelected) else it
+                }
+            }
+
+            "seafood" -> {
+                _seafoodList.value = _seafoodList.value.map {
+                    if (it.id == ingredientId) it.copy(isSelected = !it.isSelected) else it
+                }
+            }
+
+            "vegetable" -> {
+                _vegetableList.value = _vegetableList.value.map {
+                    if (it.id == ingredientId) it.copy(isSelected = !it.isSelected) else it
+                }
+            }
+
+            "fruit" -> {
+                _fruitList.value = _fruitList.value.map {
+                    if (it.id == ingredientId) it.copy(isSelected = !it.isSelected) else it
+                }
+            }
+
+            "processed" -> {
+                _processedList.value = _processedList.value.map {
+                    if (it.id == ingredientId) it.copy(isSelected = !it.isSelected) else it
+                }
+            }
+
+            "etc" -> {
+                _etcList.value = _etcList.value.map {
+                    if (it.id == ingredientId) it.copy(isSelected = !it.isSelected) else it
+                }
+            }
+        }
+    }
+
+    fun getSelectedIngredients(): List<IngredientsModel> {
+        return listOf(
+            _meatList.value,
+            _seafoodList.value,
+            _vegetableList.value,
+            _fruitList.value,
+            _processedList.value,
+            _etcList.value
+        ).flatten().filter { it.isSelected }
+    }
+
     private fun getMeatList(): List<IngredientsModel> {
         return listOf(
             IngredientsModel(id = "chicken", ingredients = "닭고기", isSelected = false),

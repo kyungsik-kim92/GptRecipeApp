@@ -13,7 +13,6 @@ import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
 import com.example.presentation.databinding.FragmentRecIngredientsBinding
-import com.example.presentation.model.IngredientsModel
 import com.example.presentation.model.RecIngredientsUiModel
 import com.example.presentation.ui.adapter.RecIngredientsAdapter
 import dagger.hilt.android.AndroidEntryPoint
@@ -28,12 +27,35 @@ class RecIngredientsFragment : Fragment() {
 
     private val viewModel: RecIngredientsViewModel by viewModels()
 
-    private val meatAdapter = RecIngredientsAdapter()
-    private val seafoodAdapter = RecIngredientsAdapter()
-    private val vegetableAdapter = RecIngredientsAdapter()
-    private val fruitAdapter = RecIngredientsAdapter()
-    private val processedAdapter = RecIngredientsAdapter()
-    private val etcAdapter = RecIngredientsAdapter()
+    private val meatAdapter = RecIngredientsAdapter(
+        onItemClick = { ingredientId ->
+            viewModel.toggleIngredientSelection("seafood", ingredientId)
+        }
+    )
+    private val seafoodAdapter = RecIngredientsAdapter(
+        onItemClick = { ingredientId ->
+            viewModel.toggleIngredientSelection("seafood", ingredientId)
+        })
+    private val vegetableAdapter = RecIngredientsAdapter(
+        onItemClick = { ingredientId ->
+            viewModel.toggleIngredientSelection("vegetable", ingredientId)
+        }
+    )
+    private val fruitAdapter = RecIngredientsAdapter(
+        onItemClick = { ingredientId ->
+            viewModel.toggleIngredientSelection("fruit", ingredientId)
+        }
+    )
+    private val processedAdapter = RecIngredientsAdapter(
+        onItemClick = { ingredientId ->
+            viewModel.toggleIngredientSelection("processed", ingredientId)
+        }
+    )
+    private val etcAdapter = RecIngredientsAdapter(
+        onItemClick = { ingredientId ->
+            viewModel.toggleIngredientSelection("etc", ingredientId)
+        }
+    )
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -65,19 +87,12 @@ class RecIngredientsFragment : Fragment() {
 
     private fun setupClickListeners() {
         binding.btnSearch.setOnClickListener {
-            val ingredientsList = ArrayList<IngredientsModel>().apply {
-                addAll(ArrayList(meatAdapter.currentList.filter { it.isSelected.value }))
-                addAll(ArrayList(seafoodAdapter.currentList.filter { it.isSelected.value }))
-                addAll(ArrayList(vegetableAdapter.currentList.filter { it.isSelected.value }))
-                addAll(ArrayList(fruitAdapter.currentList.filter { it.isSelected.value }))
-                addAll(ArrayList(processedAdapter.currentList.filter { it.isSelected.value }))
-                addAll(ArrayList(etcAdapter.currentList.filter { it.isSelected.value }))
-            }
-            if (ingredientsList.isEmpty()) {
+            val selectedIngredients = viewModel.getSelectedIngredients()
+            if (selectedIngredients.isEmpty()) {
                 Toast.makeText(requireContext(), "재료를 선택해주세요", Toast.LENGTH_SHORT).show()
                 return@setOnClickListener
             }
-            viewModel.getRecRecipes(ingredientsList)
+            viewModel.getRecRecipes(selectedIngredients)
         }
     }
 
