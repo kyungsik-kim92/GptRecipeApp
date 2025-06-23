@@ -13,12 +13,12 @@ class WellbeingRecipeViewModel @Inject constructor() : ViewModel() {
 
     private val _uiModel = MutableStateFlow(
         WellbeingRecipeUiModel(
-            wellBeingRecipeList = ArrayList()
+            wellBeingRecipeList = emptyList()
         )
     )
     val uiModel: StateFlow<WellbeingRecipeUiModel> = _uiModel
 
-    fun setWellBeingRecipeList(wellBeingRecipeList: ArrayList<WellbeingRecipeModel>) {
+    fun setWellBeingRecipeList(wellBeingRecipeList: List<WellbeingRecipeModel>) {
         _uiModel.value = _uiModel.value.copy().apply {
             this.wellBeingRecipeList = wellBeingRecipeList
         }
