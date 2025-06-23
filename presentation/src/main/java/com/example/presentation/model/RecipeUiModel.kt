@@ -12,5 +12,5 @@ data class RecipeUiModel(
     var recipeList: List<RecipeModel>,
     var isLoading: Boolean,
     var isSubscribe: Boolean,
-    var wellbeingRecipeModel: List<WellbeingRecipeModel>
+    var wellbeingRecipeModel: List<WellbeingRecipeModel> = emptyList()
 ) : Parcelable

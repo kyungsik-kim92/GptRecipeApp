@@ -29,7 +29,9 @@ class RecipeFragment : Fragment() {
 
     private val viewModel: RecipeViewModel by viewModels()
 
-    private var ingredientsAdapter = IngredientsAdapter(isClickable = false)
+    private var ingredientsAdapter = IngredientsAdapter(
+        isClickable = false,
+        onItemClick = {})
     private var recipeAdapter = RecipeAdapter()
 
     private val args: RecipeFragmentArgs by navArgs()
@@ -57,11 +59,11 @@ class RecipeFragment : Fragment() {
             viewModel.setRecipeList(uniteUiModel.recipeList)
             viewModel.setWellBeingRecipeList(uniteUiModel.wellbeingRecipeList)
 
-            viewModel.checkIfFavoriteByName(uniteUiModel.searchKeyword)
-        }
-
-        if (args.recipeId != 0L) {
-            viewModel.findRecipe(args.recipeId)
+//            viewModel.checkIfFavoriteByName(uniteUiModel.searchKeyword)
+//        }
+//
+//        if (args.recipeId != 0L) {
+//            viewModel.findRecipe(args.recipeId)
         }
     }
 
@@ -82,38 +84,38 @@ class RecipeFragment : Fragment() {
                 }
             }
 
-            btnRecipe.setOnClickListener {
-                with(binding) {
-                    isIngredients = false
-                    isRecipe = true
-                    if (viewModel.uiModel.value.recipeList.isEmpty()) {
-                        viewModel.getRecipe()
-                    }
-                }
-            }
+//            btnRecipe.setOnClickListener {
+//                with(binding) {
+//                    isIngredients = false
+//                    isRecipe = true
+//                    if (viewModel.uiState.value.recipeList.isEmpty()) {
+//                        viewModel.getRecipe()
+//                    }
+//                }
+//            }
             btnWellBeing.setOnClickListener {
                 routeWellbeing()
             }
-            with(btnSubscribe) {
-                setOnClickListener {
-                    val flag = !(viewModel.uiModel.value.isSubscribe)
-                    viewModel.setSubscribe(flag)
-                    if (flag) {
-                        viewModel.insertRecipe()
-                        Toast.makeText(this.context, "즐겨찾기에 추가되었습니다", Toast.LENGTH_SHORT).show()
-                    } else {
-                        viewModel.deleteRecipe()
-                        Toast.makeText(this.context, "즐겨찾기에 제거되었습니다", Toast.LENGTH_SHORT).show()
-                    }
-                }
-            }
+//            with(btnSubscribe) {
+//                setOnClickListener {
+//                    val flag = !(viewModel.uiState.value.isSubscribe)
+//                    viewModel.setSubscribe(flag)
+//                    if (flag) {
+//                        viewModel.insertRecipe()
+//                        Toast.makeText(this.context, "즐겨찾기에 추가되었습니다", Toast.LENGTH_SHORT).show()
+//                    } else {
+//                        viewModel.deleteRecipe()
+//                        Toast.makeText(this.context, "즐겨찾기에 제거되었습니다", Toast.LENGTH_SHORT).show()
+//                    }
+//                }
+//            }
         }
     }
 
     private fun addObserver() {
         lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
-                viewModel.uiModel.collect {
+                viewModel.uiState.collect {
                     binding.tvRecipeTitle.text = it.searchKeyword
                     ingredientsAdapter.submitList(it.ingredientsList)
                     recipeAdapter.submitList(it.recipeList)
@@ -135,7 +137,7 @@ class RecipeFragment : Fragment() {
     }
 
     private fun routeWellbeing() {
-        val uiModel = viewModel.uiModel.value
+        val uiModel = viewModel.uiState.value
         val recipeUiModel = RecipeUiModel(
             id = uiModel.id,
             searchKeyword = uiModel.searchKeyword,
