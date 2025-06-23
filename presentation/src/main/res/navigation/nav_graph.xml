@@ -51,7 +51,7 @@
         tools:layout="@layout/fragment_search_ingredients">
         <argument
             android:name="searchUiModel"
-            app:argType="com.example.gptrecipeapp.SearchUiModel" />
+            app:argType="com.example.presentation.model.SearchUiModel" />
         <action
             android:id="@+id/action_navigation_search_ingredients_to_recipeFragment"
             app:destination="@id/navigation_recipe" />
@@ -63,7 +63,7 @@
         tools:layout="@layout/fragment_rec_recipe">
         <argument
             android:name="recIngredientsUiModel"
-            app:argType="com.example.gptrecipeapp.RecIngredientsUiModel" />
+            app:argType="com.example.presentation.model.RecIngredientsUiModel" />
         <action
             android:id="@+id/action_navigation_rec_recipe_to_navigation_recipe"
             app:destination="@id/navigation_recipe" />
@@ -75,7 +75,7 @@
         tools:layout="@layout/fragment_recipe">
         <argument
             android:name="uniteUiModel"
-            app:argType="com.example.gptrecipeapp.UniteUiModel"
+            app:argType="com.example.presentation.model.UniteUiModel"
             app:nullable="true" />
         <argument
             android:name="recipeId"
@@ -92,7 +92,7 @@
         tools:layout="@layout/fragment_wellbeing_recipe">
         <argument
             android:name="recipeUiModel"
-            app:argType="com.example.gptrecipeapp.RecipeUiModel" />
+            app:argType="com.example.presentation.model.RecipeUiModel" />
 
     </fragment>
 
