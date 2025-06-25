@@ -72,35 +72,33 @@ class SearchIngredientsFragment : Fragment() {
                     binding.progressBar.isVisible = it.isLoading
 
                     with(binding) {
-                        with(tvRecipeTitle) {
-                            text = it.searchKeyword
-                        }
-                        with(ingredientsAdapter) {
-                            submitList(it.ingredientsList)
-                        }
+                        tvRecipeTitle.text = it.searchKeyword
+                        ingredientsAdapter.submitList(it.ingredientsList)
                     }
-                    routeRecipeFragment(it)
+                    if (it.isFetched) {
+                        routeToRecipe(it)
+                    }
+                    it.isFetched = false
                 }
             }
         }
     }
 
-    private fun routeRecipeFragment(uiState: UniteUiState) {
-        if (uiState.isFetched) {
-            val selectedIngredients = uiState.ingredientsList.filter { it.isSelected }
+    private fun routeToRecipe(uiState: UniteUiState) {
+        val selectedIngredients = uiState.ingredientsList.filter { it.isSelected }
 
-            val uniteUiState = UniteUiState(
-                searchKeyword = uiState.searchKeyword,
-                ingredientsList = selectedIngredients,
-                recipeList = uiState.recipeList,
-                wellbeingRecipeList = uiState.wellbeingRecipeList,
-                isFetched = false
-            )
-            val action = SearchIngredientsFragmentDirections
-                .actionNavigationSearchIngredientsToRecipeFragment(uniteUiState)
-            findNavController().navigate(action)
-        }
+        val uniteUiState = UniteUiState(
+            searchKeyword = uiState.searchKeyword,
+            ingredientsList = selectedIngredients,
+            recipeList = uiState.recipeList,
+            wellbeingRecipeList = uiState.wellbeingRecipeList,
+            isFetched = false
+        )
+        val action = SearchIngredientsFragmentDirections
+            .actionNavigationSearchIngredientsToRecipeFragment(uniteUiState)
+        findNavController().navigate(action)
     }
+
 
     override fun onDestroyView() {
         super.onDestroyView()
