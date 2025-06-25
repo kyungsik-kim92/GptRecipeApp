@@ -10,15 +10,15 @@ import javax.inject.Inject
 @HiltViewModel
 class WellbeingRecipeViewModel @Inject constructor() : ViewModel() {
 
-    private val _uiModel = MutableStateFlow(
+    private val _uiState = MutableStateFlow(
         WellbeingRecipeUiState(
             wellBeingRecipeList = emptyList()
         )
     )
-    val uiModel: StateFlow<WellbeingRecipeUiState> = _uiModel
+    val uiModel: StateFlow<WellbeingRecipeUiState> = _uiState
 
     fun setWellBeingRecipeList(wellBeingRecipeList: List<WellbeingRecipeModel>) {
-        _uiModel.value = _uiModel.value.copy().apply {
+        _uiState.value = _uiState.value.copy().apply {
             this.wellBeingRecipeList = wellBeingRecipeList
         }
     }

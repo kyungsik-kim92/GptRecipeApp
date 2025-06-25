@@ -1,17 +1,24 @@
 package com.example.presentation.ui.recipe
 
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import com.example.domain.model.LocalRecipe
 import com.example.domain.usecase.DeleteRecipeUseCase
 import com.example.domain.usecase.FindRecipeByIdUseCase
 import com.example.domain.usecase.FindRecipeByNameUseCase
 import com.example.domain.usecase.GenerateRecipeUseCase
 import com.example.domain.usecase.InsertRecipeUseCase
+import com.example.presentation.mapper.toDomain
+import com.example.presentation.mapper.toPresentation
 import com.example.presentation.model.IngredientsModel
 import com.example.presentation.model.RecipeModel
 import com.example.presentation.model.WellbeingRecipeModel
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.launch
+import org.json.JSONArray
 import javax.inject.Inject
 
 @HiltViewModel
@@ -52,152 +59,144 @@ class RecipeViewModel @Inject constructor(
         val wellbeingRecipeModel = wellbeingRecipeList.firstOrNull()
         _uiState.value = _uiState.value.copy(wellbeingRecipeModel = wellbeingRecipeList)
     }
+
+
+    fun getRecipe() {
+        _uiState.value = _uiState.value.copy(isLoading = true)
+        val searchKeyword = _uiState.value.searchKeyword
+        val ingredientsList = _uiState.value.ingredientsList
+        val prompt = getFormattedRecipe(searchKeyword, ingredientsList)
+        viewModelScope.launch(Dispatchers.IO) {
+            generateRecipeUseCase(prompt)
+                .onSuccess { response ->
+                    val recipeList = getRecipeList(response.content)
+                    _uiState.value = _uiState.value.copy(
+                        isLoading = false,
+                        recipeList = recipeList
+                    )
+                }.onFailure {
+                    _uiState.value = _uiState.value.copy(
+                        isLoading = false
+                    )
+                }
+        }
+    }
+
+
+    private fun getRecipeList(content: String): List<RecipeModel> {
+        return try {
+            val jsonArray = JSONArray(content)
+            (0 until jsonArray.length()).mapNotNull { i ->
+                val jsonObject = jsonArray.getJSONObject(i)
+                if (jsonObject.has("레시피")) {
+                    val recipe = jsonObject.getString("레시피")
+                    RecipeModel(
+                        id = "recipe_$i",
+                        recipe = recipe,
+                        isSelected = true
+                    )
+                } else null
+            }
+        } catch (e: Exception) {
+            emptyList()
+        }
+    }
+
+    private fun getFormattedRecipe(
+        searchKeyword: String,
+        ingredientsList: List<IngredientsModel>,
+    ): String {
+        val ingredients = ingredientsList.joinToString(",") { it.ingredients }
+        return "$ingredients 재료들로 ${searchKeyword}(을)를 요리하기 위한 순서를 일반적인 방식(레시피)과 건강한 방식(웰빙)을 나열해줘\n" +
+                "답변은 아래와 같은 형식과 한국어만으로 표시해\n" +
+                "주의사항: 두개의 JSON Array 를 생성하지말고 하나의 JSON Array 로 답변을 표시해\n" +
+                "[{\"레시피\":\"기름에 돼지고기를 볶는다\"}, {\"레시피\":\"물을 붓는다\"}, {\"웰빙\":\"따뜻한 물을 붓는다\"}, {\"웰빙\":\"땅콩을 갈아 넣는다\"}]"
+    }
+
+    fun insertRecipe() {
+        val currentState = _uiState.value
+        _uiState.value = currentState.copy(isLoading = true)
+
+        viewModelScope.launch(Dispatchers.IO) {
+            val existingRecipe = findRecipeByNameUseCase(currentState.searchKeyword)
+
+            if (existingRecipe != null) {
+                _uiState.value = currentState.copy(
+                    id = existingRecipe.id,
+                    isSubscribe = true,
+                    isLoading = false
+                )
+            } else {
+                val localRecipe = createLocalRecipeFromCurrentState()
+
+                insertRecipeUseCase(localRecipe)
+                    .onSuccess { id ->
+                        _uiState.value = _uiState.value.copy(
+                            id = id,
+                            isSubscribe = true,
+                            isLoading = false
+                        )
+                    }
+                    .onFailure { exception ->
+                        _uiState.value = _uiState.value.copy(
+                            isLoading = false,
+                        )
+                    }
+            }
+        }
+    }
+
+    private fun createLocalRecipeFromCurrentState(): LocalRecipe {
+        val currentState = _uiState.value
+        return LocalRecipe(
+            id = currentState.id,
+            searchKeyword = currentState.searchKeyword,
+            ingredientsList = currentState.ingredientsList.map { it.toDomain() },
+            recipeList = currentState.recipeList.map { it.toDomain() }
+        )
+    }
+
+    fun deleteRecipe() {
+        val currentState = _uiState.value
+
+        viewModelScope.launch {
+            _uiState.value = _uiState.value.copy(isLoading = true)
+            deleteRecipeUseCase(currentState.searchKeyword)
+                .onSuccess {
+                    _uiState.value = _uiState.value.copy(
+                        id = 0L,
+                        isSubscribe = false,
+                        isLoading = false,
+
+                        )
+                }
+                .onFailure { exception ->
+                    _uiState.value = _uiState.value.copy(
+                        isLoading = false,
+                    )
+                }
+        }
+    }
+
+
+    fun findRecipeById(id: Long) {
+        _uiState.value = _uiState.value.copy(isLoading = true)
+        viewModelScope.launch(Dispatchers.IO) {
+            val recipe = findRecipeByIdUseCase(id)
+            if (recipe != null) {
+                _uiState.value = RecipeUiState(
+                    id = recipe.id,
+                    searchKeyword = recipe.searchKeyword,
+                    isSubscribe = true,
+                    isLoading = false,
+                    ingredientsList = recipe.ingredientsList.map { it.toPresentation() },
+                    recipeList = recipe.recipeList.map { it.toPresentation() })
+            } else {
+                _uiState.value = _uiState.value.copy(
+                    isLoading = false,
+                )
+            }
+        }
+    }
 }
 
-//    fun getRecipe() {
-//        _uiState.value = _uiState.value.copy(isLoading = true)
-//        val searchKeyword = _uiState.value.searchKeyword
-//        val ingredientsList = _uiState.value.ingredientsList
-//        viewModelScope.launch(Dispatchers.IO) {
-//            runCatching {
-//                val response = repository.getGptResponse(
-//                    GptRequestParam(
-//                        messages = arrayListOf(
-//                            MessageRequestParam(
-//                                role = "user",
-//                                content = getFormattedRecipe(searchKeyword, ingredientsList)
-//                            )
-//                        )
-//                    )
-//                )
-//
-//                withContext(Dispatchers.Main) {
-//                    _uiModel.value = _uiModel.value.copy(
-//                        isLoading = false, recipeList = getRecipeList(response)
-//                    )
-//                }
-//            }.onFailure {
-//                withContext(Dispatchers.Main) {
-//                    _uiModel.value = _uiModel.value.copy(
-//                        isLoading = false
-//                    )
-//                }
-//            }
-//        }
-//    }
-//
-//    private fun getRecipeList(response: GPT): ArrayList<RecipeModel> {
-//        val recipeList = ArrayList<RecipeModel>()
-//        val jsonArray = response.choices[0].message.content?.let { JSONArray(it) }
-//
-//        for (i in 0 until (jsonArray?.length() ?: 0)) {
-//            jsonArray?.getJSONObject(i)?.apply {
-//                if (has("레시피")) {
-//                    val recipe = get("레시피").toString()
-//                    recipeList.add(
-//                        RecipeModel(
-//                            initialIsSelected = true, recipe = recipe
-//                        )
-//                    )
-//                }
-//            }
-//        }
-//        return recipeList
-//    }
-//
-//    private fun getFormattedRecipe(
-//        searchKeyword: String,
-//        ingredientsList: ArrayList<IngredientsModel>,
-//    ): String {
-//
-//        var format = ""
-//        ingredientsList.forEachIndexed { index, ingredientsModel ->
-//            format += if (index == ingredientsList.lastIndex) {
-//                ingredientsModel.ingredients
-//            } else {
-//                "${ingredientsModel.ingredients},"
-//            }
-//        }
-//        return "$format 재료들로 ${searchKeyword}(을)를 요리하기 위한 순서를 일반적인 방식(레시피)과 건강한 방식(웰빙)을 나열해줘\n" + "답변은 아래와 같은 형식과 한국어만으로 표시해\n" + "주의사항: 두개의 JSON Array 를 생성하지말고 하나의 JSON Array 로 답변을 표시해\n" + "[{\"레시피\":\"기름에 돼지고기를 볶는다\"}, {\"레시피\":\"물을 붓는다\"}, {\"웰빙\":\"따뜻한 물을 붓는다\"}, {\"웰빙\":\"땅콩을 갈아 넣는다\"}]"
-//    }
-//
-//    fun insertRecipe() {
-//        val searchKeyword = _uiModel.value.searchKeyword
-//        val ingredientsList = _uiModel.value.ingredientsList
-//        val recipeList = _uiModel.value.recipeList
-//        val wellbeingRecipeList = _uiModel.value.wellbeingRecipeModel
-//
-//        viewModelScope.launch(Dispatchers.IO) {
-//            val existingRecipe = repository.findRecipeByName(searchKeyword)
-//
-//            if (existingRecipe != null) {
-//                withContext(Dispatchers.Main) {
-//                    _uiModel.value = _uiModel.value.copy().apply {
-//                        this.id = existingRecipe.id
-//                        this.isSubscribe = true
-//                    }
-//                }
-//            } else {
-//                val localRecipeEntity = LocalRecipeEntity(
-//                    searchKeyword = searchKeyword,
-//                    ingredientsList = ArrayList(ingredientsList.map { it.toEntity() }),
-//                    recipeList = ArrayList(recipeList.map { it.toEntity() }),
-//                    wellbeingRecipeList = ArrayList(wellbeingRecipeList.map { it.toEntity() })
-//                )
-//                val id = repository.insertRecipe(localRecipeEntity)
-//
-//                withContext(Dispatchers.Main) {
-//                    _uiModel.value = _uiModel.value.copy().apply {
-//                        this.id = id
-//                        this.isSubscribe = true
-//                    }
-//                }
-//            }
-//        }
-//    }
-//
-//    fun deleteRecipe() {
-//        val searchKeyword = _uiModel.value.searchKeyword
-//        viewModelScope.launch(Dispatchers.IO) {
-//            repository.deleteRecipeByName(searchKeyword)
-//
-//            withContext(Dispatchers.Main) {
-//                _uiModel.value = _uiModel.value.copy().apply {
-//                    this.id = 0
-//                    this.isSubscribe = false
-//                }
-//            }
-//        }
-//    }
-//
-//    fun findRecipe(id: Long) {
-//        viewModelScope.launch(Dispatchers.IO) {
-//            val recipeModel = repository.findRecipe(id)
-//
-//            recipeModel?.let {
-//                withContext(Dispatchers.Main) {
-//                    _uiModel.value = RecipeUiModel(
-//                        id = recipeModel.id,
-//                        searchKeyword = recipeModel.searchKeyword,
-//                        isSubscribe = true,
-//                        isLoading = false,
-//                        ingredientsList = ArrayList(recipeModel.ingredientsList.map { it.toModel() }),
-//                        recipeList = ArrayList(recipeModel.recipeList.map { it.toModel() }),
-//                        wellbeingRecipeModel = ArrayList(recipeModel.wellbeingRecipeList.map { it.toModel() }),
-//                    )
-//                }
-//            }
-//        }
-//    }
-//
-//    fun checkIfFavoriteByName(recipeName: String) {
-//        viewModelScope.launch(Dispatchers.IO) {
-//            val isFavorite = repository.isFavoriteByName(recipeName)
-//            withContext(Dispatchers.Main) {
-//                _uiModel.value = _uiModel.value.copy().apply {
-//                    this.isSubscribe = isFavorite
-//                }
-//            }
-//        }
-//    }
-//}

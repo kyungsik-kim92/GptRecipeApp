@@ -57,11 +57,11 @@ class RecipeFragment : Fragment() {
             viewModel.setRecipeList(uniteUiModel.recipeList)
             viewModel.setWellBeingRecipeList(uniteUiModel.wellbeingRecipeList)
 
-//            viewModel.checkIfFavoriteByName(uniteUiModel.searchKeyword)
-//        }
-//
-//        if (args.recipeId != 0L) {
-//            viewModel.findRecipe(args.recipeId)
+
+        }
+
+        if (args.recipeId != 0L) {
+            viewModel.findRecipeById(args.recipeId)
         }
     }
 
@@ -82,31 +82,28 @@ class RecipeFragment : Fragment() {
                 }
             }
 
-//            btnRecipe.setOnClickListener {
-//                with(binding) {
-//                    isIngredients = false
-//                    isRecipe = true
-//                    if (viewModel.uiState.value.recipeList.isEmpty()) {
-//                        viewModel.getRecipe()
-//                    }
-//                }
-//            }
+            btnRecipe.setOnClickListener {
+                with(binding) {
+                    isIngredients = false
+                    isRecipe = true
+                    if (viewModel.uiState.value.recipeList.isEmpty()) {
+                        viewModel.getRecipe()
+                    }
+                }
+            }
             btnWellBeing.setOnClickListener {
                 routeWellbeing()
             }
-//            with(btnSubscribe) {
-//                setOnClickListener {
-//                    val flag = !(viewModel.uiState.value.isSubscribe)
-//                    viewModel.setSubscribe(flag)
-//                    if (flag) {
-//                        viewModel.insertRecipe()
-//                        Toast.makeText(this.context, "즐겨찾기에 추가되었습니다", Toast.LENGTH_SHORT).show()
-//                    } else {
-//                        viewModel.deleteRecipe()
-//                        Toast.makeText(this.context, "즐겨찾기에 제거되었습니다", Toast.LENGTH_SHORT).show()
-//                    }
-//                }
-//            }
+            with(btnSubscribe) {
+                setOnClickListener {
+                    val currentState = viewModel.uiState.value
+                    if (currentState.isSubscribe) {
+                        viewModel.deleteRecipe()
+                    } else {
+                        viewModel.insertRecipe()
+                    }
+                }
+            }
         }
     }
 
