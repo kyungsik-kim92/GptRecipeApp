@@ -4,7 +4,6 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.domain.usecase.GenerateRecipeUseCase
 import com.example.presentation.model.IngredientsModel
-import com.example.presentation.model.RecIngredientsUiModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -20,14 +19,14 @@ class RecIngredientsViewModel @Inject constructor(
 ) : ViewModel() {
 
     private val _uiModel = MutableStateFlow(
-        RecIngredientsUiModel(
+        RecIngredientsUiState(
             isLoading = false,
             isFetched = false,
             searchKeywordList = emptyList(),
             ingredientsList = emptyList()
         )
     )
-    val uiModel: StateFlow<RecIngredientsUiModel> = _uiModel
+    val uiModel: StateFlow<RecIngredientsUiState> = _uiModel
 
     private val _meatList = MutableStateFlow<List<IngredientsModel>>(emptyList())
     val meatList = _meatList.asStateFlow()

@@ -4,7 +4,6 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.domain.usecase.GenerateRecipeUseCase
 import com.example.presentation.model.IngredientsModel
-import com.example.presentation.model.SearchUiModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -19,14 +18,14 @@ class SearchViewModel @Inject constructor(
 ) : ViewModel() {
 
     private val _uiModel = MutableStateFlow(
-        SearchUiModel(
+        SearchUiState(
             searchKeyword = "",
             isFetched = false,
             isLoading = false,
             ingredientsList = emptyList()
         )
     )
-    val uiModel: StateFlow<SearchUiModel> = _uiModel
+    val uiModel: StateFlow<SearchUiState> = _uiModel
 
     fun getIngredientsByRecipe(searchKeyword: String) {
         viewModelScope.launch {

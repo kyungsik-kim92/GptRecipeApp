@@ -5,7 +5,7 @@ import androidx.lifecycle.viewModelScope
 import com.example.domain.usecase.GenerateRecipeUseCase
 import com.example.presentation.model.IngredientsModel
 import com.example.presentation.model.RecipeModel
-import com.example.presentation.model.UniteUiModel
+import com.example.presentation.model.UniteUiState
 import com.example.presentation.model.WellbeingRecipeModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -24,7 +24,7 @@ class SearchIngredientsViewModel @Inject constructor(
         MutableStateFlow<List<IngredientsModel>>(emptyList())
 
     private val _uiModel = MutableStateFlow(
-        UniteUiModel(
+        UniteUiState(
             isFetched = false,
             isLoading = false,
             searchKeyword = "",
@@ -33,7 +33,7 @@ class SearchIngredientsViewModel @Inject constructor(
             wellbeingRecipeList = emptyList()
         )
     )
-    val uiModel: StateFlow<UniteUiModel> = _uiModel
+    val uiModel: StateFlow<UniteUiState> = _uiModel
 
     fun setSearchKeyword(searchKeyword: String) {
         _uiModel.value = _uiModel.value.copy(searchKeyword = searchKeyword)

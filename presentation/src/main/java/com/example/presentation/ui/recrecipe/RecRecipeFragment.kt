@@ -13,7 +13,7 @@ import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.example.presentation.databinding.FragmentRecRecipeBinding
-import com.example.presentation.model.UniteUiModel
+import com.example.presentation.model.UniteUiState
 import com.example.presentation.ui.adapter.SearchKeywordAdapter
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
@@ -61,7 +61,7 @@ class RecRecipeFragment : Fragment() {
                     binding.progressBar.isVisible = uiState.isLoading
                     searchKeywordAdapter.submitList(uiState.searchKeywordList)
                     if (uiState.isFetched) {
-                        val uniteUiModel = UniteUiModel(
+                        val uniteUiState = UniteUiState(
                             searchKeyword = uiState.searchKeyword,
                             ingredientsList = uiState.ingredientsList,
                             recipeList = uiState.recipeList,
@@ -69,7 +69,7 @@ class RecRecipeFragment : Fragment() {
                         )
                         val action =
                             RecRecipeFragmentDirections.actionNavigationRecRecipeToNavigationRecipe(
-                                uniteUiModel
+                                uniteUiState
                             )
                         findNavController().navigate(action)
                     }

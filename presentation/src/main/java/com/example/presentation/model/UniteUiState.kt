@@ -5,7 +5,7 @@ import kotlinx.parcelize.Parcelize
 
 
 @Parcelize
-data class UniteUiModel(
+data class UniteUiState(
     var isFetched: Boolean = false,
     var isLoading: Boolean = false,
     var searchKeyword: String = "",

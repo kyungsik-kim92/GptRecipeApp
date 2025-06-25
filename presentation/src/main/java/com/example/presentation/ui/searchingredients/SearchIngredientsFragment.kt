@@ -13,7 +13,7 @@ import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.example.presentation.databinding.FragmentSearchIngredientsBinding
-import com.example.presentation.model.UniteUiModel
+import com.example.presentation.model.UniteUiState
 import com.example.presentation.ui.adapter.IngredientsAdapter
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
@@ -85,11 +85,11 @@ class SearchIngredientsFragment : Fragment() {
         }
     }
 
-    private fun routeRecipeFragment(uiState: UniteUiModel) {
+    private fun routeRecipeFragment(uiState: UniteUiState) {
         if (uiState.isFetched) {
             val selectedIngredients = uiState.ingredientsList.filter { it.isSelected }
 
-            val uniteUiModel = UniteUiModel(
+            val uniteUiState = UniteUiState(
                 searchKeyword = uiState.searchKeyword,
                 ingredientsList = selectedIngredients,
                 recipeList = uiState.recipeList,
@@ -97,7 +97,7 @@ class SearchIngredientsFragment : Fragment() {
                 isFetched = false
             )
             val action = SearchIngredientsFragmentDirections
-                .actionNavigationSearchIngredientsToRecipeFragment(uniteUiModel)
+                .actionNavigationSearchIngredientsToRecipeFragment(uniteUiState)
             findNavController().navigate(action)
         }
     }

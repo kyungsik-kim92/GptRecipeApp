@@ -4,7 +4,6 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
@@ -16,7 +15,6 @@ import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.example.presentation.R
 import com.example.presentation.databinding.FragmentRecipeBinding
-import com.example.presentation.model.RecipeUiModel
 import com.example.presentation.ui.adapter.IngredientsAdapter
 import com.example.presentation.ui.adapter.RecipeAdapter
 import dagger.hilt.android.AndroidEntryPoint
@@ -138,7 +136,7 @@ class RecipeFragment : Fragment() {
 
     private fun routeWellbeing() {
         val uiModel = viewModel.uiState.value
-        val recipeUiModel = RecipeUiModel(
+        val recipeUiState = RecipeUiState(
             id = uiModel.id,
             searchKeyword = uiModel.searchKeyword,
             recipeList = uiModel.recipeList,
@@ -149,7 +147,7 @@ class RecipeFragment : Fragment() {
         )
         val action =
             RecipeFragmentDirections.actionNavigationRecipeToWellbeingRecipeFragment(
-                recipeUiModel
+                recipeUiState
             )
         findNavController().navigate(action)
     }

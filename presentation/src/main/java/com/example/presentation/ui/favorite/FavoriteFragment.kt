@@ -13,7 +13,7 @@ import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
 import com.example.presentation.databinding.FragmentFavoriteBinding
 import com.example.presentation.model.FavoriteModel
-import com.example.presentation.model.UniteUiModel
+import com.example.presentation.model.UniteUiState
 import com.example.presentation.ui.adapter.FavoriteAdapter
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
@@ -59,7 +59,7 @@ class FavoriteFragment : Fragment() {
     }
 
     private fun navigateToRecipe(favoriteModel: FavoriteModel) {
-        val uniteUiModel = UniteUiModel(
+        val uniteUiState = UniteUiState(
             searchKeyword = favoriteModel.searchKeyword,
             ingredientsList = favoriteModel.ingredientsList,
             recipeList = favoriteModel.recipeList,
@@ -67,7 +67,7 @@ class FavoriteFragment : Fragment() {
         )
         val action = FavoriteFragmentDirections.actionNavigationFavoriteToNavigationRecipe(
             recipeId = favoriteModel.id,
-            uniteUiModel = uniteUiModel
+            uniteUiModel = uniteUiState
         )
 
         findNavController().navigate(action)

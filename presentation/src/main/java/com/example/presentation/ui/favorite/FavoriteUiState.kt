@@ -1,4 +1,6 @@
-package com.example.presentation.model
+package com.example.presentation.ui.favorite
+
+import com.example.presentation.model.FavoriteModel
 
 data class FavoriteUiState(
     val favoriteList: List<FavoriteModel> = emptyList(),

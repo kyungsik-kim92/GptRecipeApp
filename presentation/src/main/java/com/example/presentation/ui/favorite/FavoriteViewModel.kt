@@ -6,7 +6,6 @@ import com.example.domain.usecase.DeleteRecipeUseCase
 import com.example.domain.usecase.GetFavoriteRecipesFlowUseCase
 import com.example.domain.usecase.InsertRecipeUseCase
 import com.example.presentation.mapper.toFavoriteModel
-import com.example.presentation.model.FavoriteUiState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow

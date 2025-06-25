@@ -15,7 +15,6 @@ import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
 import com.example.presentation.databinding.FragmentSearchBinding
-import com.example.presentation.model.SearchUiModel
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 
@@ -57,7 +56,7 @@ class SearchFragment : Fragment() {
                 viewModel.uiModel.collect {
                     binding.progressBar.isVisible = it.isLoading
                     if (it.isFetched) {
-                        val searchUiModel = SearchUiModel(
+                        val searchUiState = SearchUiState(
                             searchKeyword = it.searchKeyword,
                             isFetched = it.isFetched,
                             isLoading = it.isLoading,
@@ -65,7 +64,7 @@ class SearchFragment : Fragment() {
                         )
                         val action =
                             SearchFragmentDirections.actionNavigationSearchToNavigationSearchIngredients(
-                                searchUiModel
+                                searchUiState
                             )
                         findNavController().navigate(action)
                     }

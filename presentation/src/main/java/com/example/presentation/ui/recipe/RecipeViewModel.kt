@@ -8,7 +8,6 @@ import com.example.domain.usecase.GenerateRecipeUseCase
 import com.example.domain.usecase.InsertRecipeUseCase
 import com.example.presentation.model.IngredientsModel
 import com.example.presentation.model.RecipeModel
-import com.example.presentation.model.RecipeUiModel
 import com.example.presentation.model.WellbeingRecipeModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -25,7 +24,7 @@ class RecipeViewModel @Inject constructor(
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(
-        RecipeUiModel(
+        RecipeUiState(
             id = 0L,
             searchKeyword = "",
             ingredientsList = emptyList(),
@@ -35,7 +34,7 @@ class RecipeViewModel @Inject constructor(
             wellbeingRecipeModel = emptyList()
         )
     )
-    val uiState: StateFlow<RecipeUiModel> = _uiState
+    val uiState: StateFlow<RecipeUiState> = _uiState
 
     fun setSearchKeyword(searchKeyword: String) {
         _uiState.value = _uiState.value.copy(searchKeyword = searchKeyword)

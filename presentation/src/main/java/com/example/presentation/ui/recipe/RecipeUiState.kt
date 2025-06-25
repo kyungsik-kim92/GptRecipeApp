@@ -1,11 +1,14 @@
-package com.example.presentation.model
+package com.example.presentation.ui.recipe
 
 import android.os.Parcelable
+import com.example.presentation.model.IngredientsModel
+import com.example.presentation.model.RecipeModel
+import com.example.presentation.model.WellbeingRecipeModel
 import kotlinx.parcelize.Parcelize
 
 
 @Parcelize
-data class RecipeUiModel(
+data class RecipeUiState(
     var id: Long,
     var searchKeyword: String,
     var ingredientsList: List<IngredientsModel>,
