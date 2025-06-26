@@ -1,7 +1,6 @@
 package com.example.presentation.ui.searchingredients
 
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -47,7 +46,9 @@ class SearchIngredientsFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         viewModel.setSearchKeyword(args.searchUiModel.searchKeyword)
-        viewModel.setIngredientsList(args.searchUiModel.ingredientsList)
+        if (viewModel.uiModel.value.ingredientsList.isEmpty()) {
+            viewModel.setIngredientsList(args.searchUiModel.ingredientsList)
+        }
 
         binding.btnBack.setOnClickListener {
             findNavController().popBackStack()
