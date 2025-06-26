@@ -17,12 +17,7 @@ import javax.inject.Inject
 @HiltViewModel
 class SearchIngredientsViewModel @Inject constructor(
     private val generateRecipeUseCase: GenerateRecipeUseCase
-) :
-    ViewModel() {
-
-    private val _originalIngredientsList =
-        MutableStateFlow<List<IngredientsModel>>(emptyList())
-
+) : ViewModel() {
     private val _uiModel = MutableStateFlow(
         UniteUiState(
             isFetched = false,
@@ -40,7 +35,6 @@ class SearchIngredientsViewModel @Inject constructor(
     }
 
     fun setIngredientsList(ingredientsList: List<IngredientsModel>) {
-        _originalIngredientsList.value = ingredientsList
         _uiModel.value = _uiModel.value.copy(ingredientsList = ingredientsList)
     }
 
@@ -62,7 +56,6 @@ class SearchIngredientsViewModel @Inject constructor(
                         searchKeyword = searchKeyword,
                         isFetched = true,
                         isLoading = false,
-                        ingredientsList = _originalIngredientsList.value,
                         recipeList = recipeList,
                         wellbeingRecipeList = wellbeingRecipeList
                     )
