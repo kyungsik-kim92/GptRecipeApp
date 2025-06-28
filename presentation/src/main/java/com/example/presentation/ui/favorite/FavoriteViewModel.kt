@@ -2,9 +2,7 @@ package com.example.presentation.ui.favorite
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.domain.usecase.DeleteRecipeUseCase
 import com.example.domain.usecase.GetFavoriteRecipesFlowUseCase
-import com.example.domain.usecase.InsertRecipeUseCase
 import com.example.presentation.mapper.toFavoriteModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
@@ -18,9 +16,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class FavoriteViewModel @Inject constructor(
-    private val getFavoriteRecipesFlowUseCase: GetFavoriteRecipesFlowUseCase,
-    private val deleteRecipeUseCase: DeleteRecipeUseCase,
-    private val insertRecipeUseCase: InsertRecipeUseCase
+    private val getFavoriteRecipesFlowUseCase: GetFavoriteRecipesFlowUseCase
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(FavoriteUiState())
@@ -48,75 +44,5 @@ class FavoriteViewModel @Inject constructor(
                     )
                 }
         }
-    }
-
-    fun toggleIngredientSelection(ingredientId: String) {
-        val currentSelected = _uiState.value.selectedIngredients
-        val newSelected = if (currentSelected.contains(ingredientId)) {
-            currentSelected - ingredientId
-        } else {
-            currentSelected + ingredientId
-        }
-
-        _uiState.value = _uiState.value.copy(
-            selectedIngredients = newSelected,
-            favoriteList = _uiState.value.favoriteList.map { favorite ->
-                favorite.copy(
-                    ingredientsList = favorite.ingredientsList.map { ingredient ->
-                        if (ingredient.id == ingredientId) {
-                            ingredient.copy(isSelected = !ingredient.isSelected)
-                        } else ingredient
-                    }
-                )
-            }
-        )
-    }
-
-    fun toggleRecipeSelection(recipeId: String) {
-        val currentSelected = _uiState.value.selectedRecipes
-        val newSelected = if (currentSelected.contains(recipeId)) {
-            currentSelected - recipeId
-        } else {
-            currentSelected + recipeId
-        }
-
-        _uiState.value = _uiState.value.copy(
-            selectedRecipes = newSelected,
-            favoriteList = _uiState.value.favoriteList.map { favorite ->
-                favorite.copy(
-                    recipeList = favorite.recipeList.map { recipe ->
-                        if (recipe.id == recipeId) {
-                            recipe.copy(isSelected = !recipe.isSelected)
-                        } else recipe
-                    }
-                )
-            }
-        )
-    }
-
-    fun toggleWellbeingRecipeSelection(wellbeingRecipeId: String) {
-        val currentSelected = _uiState.value.selectedWellbeingRecipes
-        val newSelected = if (currentSelected.contains(wellbeingRecipeId)) {
-            currentSelected - wellbeingRecipeId
-        } else {
-            currentSelected + wellbeingRecipeId
-        }
-
-        _uiState.value = _uiState.value.copy(
-            selectedWellbeingRecipes = newSelected,
-            favoriteList = _uiState.value.favoriteList.map { favorite ->
-                favorite.copy(
-                    wellbeingRecipeList = favorite.wellbeingRecipeList.map { wellbeingRecipe ->
-                        if (wellbeingRecipe.id == wellbeingRecipeId) {
-                            wellbeingRecipe.copy(isSelected = !wellbeingRecipe.isSelected)
-                        } else wellbeingRecipe
-                    }
-                )
-            }
-        )
-    }
-
-    fun clearError() {
-        _uiState.value = _uiState.value.copy(errorMessage = null)
     }
 }

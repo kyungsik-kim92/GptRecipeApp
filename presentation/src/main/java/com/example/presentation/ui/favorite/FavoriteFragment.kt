@@ -69,7 +69,6 @@ class FavoriteFragment : Fragment() {
             recipeId = favoriteModel.id,
             uniteUiModel = uniteUiState
         )
-
         findNavController().navigate(action)
     }
 
