@@ -27,6 +27,16 @@ class MainActivity : AppCompatActivity() {
 
         binding.navView.setOnItemSelectedListener { item ->
             when (item.itemId) {
+                R.id.navigation_favorite -> {
+                    if (navController.currentDestination?.id == R.id.navigation_recipe) {
+                        navController.popBackStack(R.id.navigation_favorite, false)
+                    }
+                    if (navController.currentDestination?.id != R.id.navigation_favorite) {
+                        navController.navigate(R.id.navigation_favorite)
+                    }
+                    true
+                }
+
                 R.id.navigation_search -> {
                     if (navController.currentDestination?.id != R.id.navigation_search) {
                         navController.navigate(R.id.navigation_search)
@@ -41,17 +51,9 @@ class MainActivity : AppCompatActivity() {
                     true
                 }
 
-                R.id.navigation_favorite -> {
-                    navController.popBackStack(R.id.navigation_favorite, false)
-                    if (navController.currentDestination?.id != R.id.navigation_favorite) {
-                        navController.navigate(R.id.navigation_favorite)
-                    }
-                    true
-                }
-
                 else -> false
             }
         }
-    }
 
+    }
 }
