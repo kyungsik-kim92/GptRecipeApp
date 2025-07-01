@@ -27,8 +27,7 @@ class RecIngredientsAdapter(
             override fun areItemsTheSame(
                 oldItem: IngredientsModel,
                 newItem: IngredientsModel
-            ) =
-                oldItem == newItem
+            ) = oldItem.id == newItem.id
 
 
             override fun areContentsTheSame(

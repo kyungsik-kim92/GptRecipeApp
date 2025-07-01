@@ -28,7 +28,7 @@ class RecIngredientsFragment : Fragment() {
 
     private val meatAdapter = RecIngredientsAdapter(
         onItemClick = { ingredientId ->
-            viewModel.toggleIngredientSelection("seafood", ingredientId)
+            viewModel.toggleIngredientSelection("meat", ingredientId)
         }
     )
     private val seafoodAdapter = RecIngredientsAdapter(
