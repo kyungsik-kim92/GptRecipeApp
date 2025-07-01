@@ -2,9 +2,11 @@ package com.example.presentation.ui.adapter
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
+import com.example.presentation.R
 import com.example.presentation.databinding.ItemRecIngredientsBinding
 import com.example.presentation.model.IngredientsModel
 
@@ -46,7 +48,6 @@ class RecIngredientsViewHolder(
 ) : RecyclerView.ViewHolder(binding.root) {
     fun bind(item: IngredientsModel) {
         binding.ingredientsModel = item
-        binding.tvIngredients.isSelected = item.isSelected
         binding.invalidateAll()
         itemView.setOnClickListener {
             onItemClick(item.id)

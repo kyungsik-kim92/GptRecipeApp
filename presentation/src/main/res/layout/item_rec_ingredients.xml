@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <data>
+
         <variable
             name="ingredientsModel"
             type="com.example.presentation.model.IngredientsModel" />
@@ -16,7 +17,7 @@
         android:paddingVertical="8dp">
 
         <androidx.constraintlayout.widget.ConstraintLayout
-            android:layout_width="wrap_content"
+            android:layout_width="90dp"
             android:layout_height="wrap_content"
             android:background="@{ingredientsModel.isSelected == true ? @drawable/box_16r_orange100 : @drawable/box_16r_1s_gray100}"
             android:paddingHorizontal="14dp"
@@ -27,11 +28,16 @@
 
             <TextView
                 android:id="@+id/tv_ingredients"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:gravity="center"
                 android:text="@{ingredientsModel.ingredients}"
                 android:textColor="@{ingredientsModel.isSelected == true ? @color/white : @color/gray_400}"
                 android:textSize="16sp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
                 tools:text="닭고기"
                 tools:textColor="@color/gray_400" />
 
