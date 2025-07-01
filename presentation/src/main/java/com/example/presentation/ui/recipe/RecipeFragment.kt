@@ -1,6 +1,7 @@
 package com.example.presentation.ui.recipe
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -103,7 +104,7 @@ class RecipeFragment : Fragment() {
                         Toast.makeText(requireContext(), "즐겨찾기에서 제거되었습니다", Toast.LENGTH_SHORT).show()
                     } else {
                         viewModel.insertRecipe()
-                        Toast.makeText(requireContext(), "즐겨찾기에서 추가되었습니다", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(requireContext(), "즐겨찾기에 추가되었습니다", Toast.LENGTH_SHORT).show()
                     }
                 }
             }
@@ -120,7 +121,7 @@ class RecipeFragment : Fragment() {
                     binding.progressBar.isVisible = it.isLoading
 
                     updateSubscribeButton(it.isSubscribe)
-
+                    Log.d("RecipeFragment", "웰빙 레시피 수: ${it.wellbeingRecipeModel.size}")
                 }
             }
         }

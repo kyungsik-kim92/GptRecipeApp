@@ -56,7 +56,6 @@ class RecipeViewModel @Inject constructor(
     }
 
     fun setWellBeingRecipeList(wellbeingRecipeList: List<WellbeingRecipeModel>) {
-        val wellbeingRecipeModel = wellbeingRecipeList.firstOrNull()
         _uiState.value = _uiState.value.copy(wellbeingRecipeModel = wellbeingRecipeList)
     }
 
@@ -70,9 +69,11 @@ class RecipeViewModel @Inject constructor(
             generateRecipeUseCase(prompt)
                 .onSuccess { response ->
                     val recipeList = getRecipeList(response.content)
+                    val wellbeingList = getWellbeingRecipeList(response.content)
                     _uiState.value = _uiState.value.copy(
                         isLoading = false,
-                        recipeList = recipeList
+                        recipeList = recipeList,
+                        wellbeingRecipeModel = wellbeingList
                     )
                 }.onFailure {
                     _uiState.value = _uiState.value.copy(
@@ -152,7 +153,8 @@ class RecipeViewModel @Inject constructor(
             id = currentState.id,
             searchKeyword = currentState.searchKeyword,
             ingredientsList = currentState.ingredientsList.map { it.toDomain() },
-            recipeList = currentState.recipeList.map { it.toDomain() }
+            recipeList = currentState.recipeList.map { it.toDomain() },
+            wellbeingRecipeList = currentState.wellbeingRecipeModel.map { it.toDomain() }
         )
     }
 
@@ -167,7 +169,7 @@ class RecipeViewModel @Inject constructor(
                         id = 0L,
                         isSubscribe = false,
                         isLoading = false,
-                        )
+                    )
                 }
                 .onFailure { exception ->
                     _uiState.value = _uiState.value.copy(
@@ -189,7 +191,8 @@ class RecipeViewModel @Inject constructor(
                     isSubscribe = true,
                     isLoading = false,
                     ingredientsList = recipe.ingredientsList.map { it.toPresentation() },
-                    recipeList = recipe.recipeList.map { it.toPresentation() })
+                    recipeList = recipe.recipeList.map { it.toPresentation() },
+                    wellbeingRecipeModel = recipe.wellbeingRecipeList.map { it.toPresentation() })
             } else {
                 _uiState.value = _uiState.value.copy(
                     isLoading = false,
@@ -206,6 +209,25 @@ class RecipeViewModel @Inject constructor(
                     id = recipe.id
                 )
             }
+        }
+    }
+
+    private fun getWellbeingRecipeList(content: String): List<WellbeingRecipeModel> {
+        return try {
+            val jsonArray = JSONArray(content)
+            (0 until jsonArray.length()).mapNotNull { i ->
+                val jsonObject = jsonArray.getJSONObject(i)
+                if (jsonObject.has("웰빙")) {
+                    val wellbeingRecipe = jsonObject.getString("웰빙")
+                    WellbeingRecipeModel(
+                        id = "wellbeing_$i",
+                        wellbeingRecipe = wellbeingRecipe,
+                        isSelected = true
+                    )
+                } else null
+            }
+        } catch (e: Exception) {
+            emptyList()
         }
     }
 }
