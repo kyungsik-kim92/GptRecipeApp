@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
@@ -99,8 +100,10 @@ class RecipeFragment : Fragment() {
                     val currentState = viewModel.uiState.value
                     if (currentState.isSubscribe) {
                         viewModel.deleteRecipe()
+                        Toast.makeText(requireContext(), "즐겨찾기에서 제거되었습니다", Toast.LENGTH_SHORT).show()
                     } else {
                         viewModel.insertRecipe()
+                        Toast.makeText(requireContext(), "즐겨찾기에서 추가되었습니다", Toast.LENGTH_SHORT).show()
                     }
                 }
             }

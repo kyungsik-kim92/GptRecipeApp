@@ -134,7 +134,7 @@ class RecipeViewModel @Inject constructor(
                         _uiState.value = _uiState.value.copy(
                             id = id,
                             isSubscribe = true,
-                            isLoading = false
+                            isLoading = false,
                         )
                     }
                     .onFailure { exception ->
@@ -167,7 +167,6 @@ class RecipeViewModel @Inject constructor(
                         id = 0L,
                         isSubscribe = false,
                         isLoading = false,
-
                         )
                 }
                 .onFailure { exception ->
