@@ -198,5 +198,16 @@ class RecipeViewModel @Inject constructor(
             }
         }
     }
+
+    fun checkIfFavoriteByName(recipeName: String) {
+        viewModelScope.launch {
+            findRecipeByNameUseCase(recipeName)?.let { recipe ->
+                _uiState.value = _uiState.value.copy(
+                    isSubscribe = true,
+                    id = recipe.id
+                )
+            }
+        }
+    }
 }
 

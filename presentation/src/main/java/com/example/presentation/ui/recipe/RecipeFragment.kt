@@ -57,7 +57,7 @@ class RecipeFragment : Fragment() {
             viewModel.setRecipeList(uniteUiModel.recipeList)
             viewModel.setWellBeingRecipeList(uniteUiModel.wellbeingRecipeList)
 
-
+            viewModel.checkIfFavoriteByName(uniteUiModel.searchKeyword)
         }
 
         if (args.recipeId != 0L) {
