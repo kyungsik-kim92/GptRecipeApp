@@ -101,7 +101,8 @@ class RecipeFragment : Fragment() {
                     val currentState = viewModel.uiState.value
                     if (currentState.isSubscribe) {
                         viewModel.deleteRecipe()
-                        Toast.makeText(requireContext(), "즐겨찾기에서 제거되었습니다", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(requireContext(), "즐겨찾기에서 제거되었습니다", Toast.LENGTH_SHORT)
+                            .show()
                     } else {
                         viewModel.insertRecipe()
                         Toast.makeText(requireContext(), "즐겨찾기에 추가되었습니다", Toast.LENGTH_SHORT).show()
@@ -136,15 +137,20 @@ class RecipeFragment : Fragment() {
     }
 
     private fun routeWellbeing() {
-        val uiModel = viewModel.uiState.value
+        val uiState = viewModel.uiState.value
+        if (uiState.wellbeingRecipeModel.isEmpty()) {
+            Toast.makeText(requireContext(), "웰빙 레시피가 없습니다.", Toast.LENGTH_SHORT).show()
+            return
+        }
+
         val recipeUiState = RecipeUiState(
-            id = uiModel.id,
-            searchKeyword = uiModel.searchKeyword,
-            recipeList = uiModel.recipeList,
-            ingredientsList = uiModel.ingredientsList,
-            isLoading = uiModel.isLoading,
-            isSubscribe = uiModel.isSubscribe,
-            wellbeingRecipeModel = uiModel.wellbeingRecipeModel
+            id = uiState.id,
+            searchKeyword = uiState.searchKeyword,
+            recipeList = uiState.recipeList,
+            ingredientsList = uiState.ingredientsList,
+            isLoading = uiState.isLoading,
+            isSubscribe = uiState.isSubscribe,
+            wellbeingRecipeModel = uiState.wellbeingRecipeModel
         )
         val action =
             RecipeFragmentDirections.actionNavigationRecipeToWellbeingRecipeFragment(

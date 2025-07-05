@@ -13,6 +13,7 @@ import com.example.presentation.mapper.toPresentation
 import com.example.presentation.model.IngredientsModel
 import com.example.presentation.model.RecipeModel
 import com.example.presentation.model.WellbeingRecipeModel
+import com.example.presentation.ui.common.RecipePromptUtil
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -64,12 +65,11 @@ class RecipeViewModel @Inject constructor(
         _uiState.value = _uiState.value.copy(isLoading = true)
         val searchKeyword = _uiState.value.searchKeyword
         val ingredientsList = _uiState.value.ingredientsList
-        val prompt = getFormattedRecipe(searchKeyword, ingredientsList)
+        val prompt = RecipePromptUtil.createRecipePrompt(searchKeyword, ingredientsList)
         viewModelScope.launch(Dispatchers.IO) {
             generateRecipeUseCase(prompt)
                 .onSuccess { response ->
-                    val recipeList = getRecipeList(response.content)
-                    val wellbeingList = getWellbeingRecipeList(response.content)
+                    val (recipeList, wellbeingList) = RecipePromptUtil.parseRecipeResponse(response.content)
                     _uiState.value = _uiState.value.copy(
                         isLoading = false,
                         recipeList = recipeList,
@@ -81,37 +81,6 @@ class RecipeViewModel @Inject constructor(
                     )
                 }
         }
-    }
-
-
-    private fun getRecipeList(content: String): List<RecipeModel> {
-        return try {
-            val jsonArray = JSONArray(content)
-            (0 until jsonArray.length()).mapNotNull { i ->
-                val jsonObject = jsonArray.getJSONObject(i)
-                if (jsonObject.has("레시피")) {
-                    val recipe = jsonObject.getString("레시피")
-                    RecipeModel(
-                        id = "recipe_$i",
-                        recipe = recipe,
-                        isSelected = true
-                    )
-                } else null
-            }
-        } catch (e: Exception) {
-            emptyList()
-        }
-    }
-
-    private fun getFormattedRecipe(
-        searchKeyword: String,
-        ingredientsList: List<IngredientsModel>,
-    ): String {
-        val ingredients = ingredientsList.joinToString(",") { it.ingredients }
-        return "$ingredients 재료들로 ${searchKeyword}(을)를 요리하기 위한 순서를 일반적인 방식(레시피)과 건강한 방식(웰빙)을 나열해줘\n" +
-                "답변은 아래와 같은 형식과 한국어만으로 표시해\n" +
-                "주의사항: 두개의 JSON Array 를 생성하지말고 하나의 JSON Array 로 답변을 표시해\n" +
-                "[{\"레시피\":\"기름에 돼지고기를 볶는다\"}, {\"레시피\":\"물을 붓는다\"}, {\"웰빙\":\"따뜻한 물을 붓는다\"}, {\"웰빙\":\"땅콩을 갈아 넣는다\"}]"
     }
 
     fun insertRecipe() {
@@ -209,25 +178,6 @@ class RecipeViewModel @Inject constructor(
                     id = recipe.id
                 )
             }
-        }
-    }
-
-    private fun getWellbeingRecipeList(content: String): List<WellbeingRecipeModel> {
-        return try {
-            val jsonArray = JSONArray(content)
-            (0 until jsonArray.length()).mapNotNull { i ->
-                val jsonObject = jsonArray.getJSONObject(i)
-                if (jsonObject.has("웰빙")) {
-                    val wellbeingRecipe = jsonObject.getString("웰빙")
-                    WellbeingRecipeModel(
-                        id = "wellbeing_$i",
-                        wellbeingRecipe = wellbeingRecipe,
-                        isSelected = true
-                    )
-                } else null
-            }
-        } catch (e: Exception) {
-            emptyList()
         }
     }
 }

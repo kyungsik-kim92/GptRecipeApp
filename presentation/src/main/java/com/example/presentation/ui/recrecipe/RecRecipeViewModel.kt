@@ -49,22 +49,15 @@ class RecRecipeViewModel @Inject constructor(
         _uiModel.value = _uiModel.value.copy(isLoading = true)
         val searchKeyword = _uiModel.value.searchKeyword
         val keyword = RecipePromptUtil.createIngredientsPrompt(searchKeyword)
+
         viewModelScope.launch(Dispatchers.IO) {
             generateRecipeUseCase(keyword)
                 .onSuccess { response ->
                     if (isIngredients) {
                         val ingredientsList =
                             RecipePromptUtil.parseIngredientsResponse(response.content)
-                        val wellbeingRecipeList =
-                            RecipePromptUtil.parseWellbeingRecipeResponse(response.content)
-                        _uiModel.value = _uiModel.value.copy(
-                            searchKeyword = searchKeyword,
-                            isFetched = true,
-                            isLoading = false,
-                            ingredientsList = ingredientsList,
-                            recipeList = emptyList(),
-                            wellbeingRecipeList = wellbeingRecipeList
-                        )
+
+                        getRecipe(searchKeyword, ingredientsList)
                     }
                 }.onFailure {
                     withContext(Dispatchers.Main) {
@@ -76,5 +69,33 @@ class RecRecipeViewModel @Inject constructor(
         }
     }
 
-}
+    private suspend fun getRecipe(
+        searchKeyword: String,
+        ingredientsList: List<IngredientsModel>
+    ) {
+        val recipeKeyword = RecipePromptUtil.createRecipePrompt(searchKeyword, ingredientsList)
 
+        generateRecipeUseCase(recipeKeyword)
+            .onSuccess { response ->
+                val (recipeList, wellbeingRecipeList) = RecipePromptUtil.parseRecipeResponse(
+                    response.content
+                )
+
+                withContext(Dispatchers.Main) {
+                    _uiModel.value = _uiModel.value.copy(
+                        searchKeyword = searchKeyword,
+                        isFetched = true,
+                        isLoading = false,
+                        ingredientsList = ingredientsList,
+                        recipeList = recipeList,
+                        wellbeingRecipeList = wellbeingRecipeList
+                    )
+                }
+            }
+            .onFailure {
+                withContext(Dispatchers.Main) {
+                    _uiModel.value = _uiModel.value.copy(isLoading = false)
+                }
+            }
+    }
+}

@@ -62,6 +62,8 @@ class RecRecipeFragment : Fragment() {
                     searchKeywordAdapter.submitList(uiState.searchKeywordList)
                     if (uiState.isFetched) {
                         val uniteUiState = UniteUiState(
+                            isFetched = false,
+                            isLoading = false,
                             searchKeyword = uiState.searchKeyword,
                             ingredientsList = uiState.ingredientsList,
                             recipeList = uiState.recipeList,
