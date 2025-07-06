@@ -4,15 +4,12 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.domain.usecase.GenerateRecipeUseCase
 import com.example.presentation.model.IngredientsModel
-import com.example.presentation.model.RecipeModel
 import com.example.presentation.model.UniteUiState
-import com.example.presentation.model.WellbeingRecipeModel
 import com.example.presentation.ui.common.RecipePromptUtil
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
-import org.json.JSONArray
 import javax.inject.Inject
 
 @HiltViewModel
@@ -53,11 +50,13 @@ class SearchIngredientsViewModel @Inject constructor(
         viewModelScope.launch {
             generateRecipeUseCase(keyword)
                 .onSuccess { response ->
-                    val (recipeList, wellbeingRecipeList) = RecipePromptUtil.parseRecipeResponse(response.content)
+                    val (recipeList, wellbeingRecipeList) = RecipePromptUtil.parseRecipeResponse(
+                        response.content
+                    )
 
                     _uiModel.value = _uiModel.value.copy(
                         searchKeyword = searchKeyword,
-                        ingredientsList = selectedIngredients,
+                        ingredientsList = _uiModel.value.ingredientsList,
                         isFetched = true,
                         isLoading = false,
                         recipeList = recipeList,
@@ -71,6 +70,7 @@ class SearchIngredientsViewModel @Inject constructor(
                 }
         }
     }
+
     fun toggleIngredientSelection(ingredientId: String) {
         _uiModel.value = _uiModel.value.copy(
             ingredientsList = _uiModel.value.ingredientsList.map { ingredient ->
@@ -79,5 +79,9 @@ class SearchIngredientsViewModel @Inject constructor(
                 } else ingredient
             }
         )
+    }
+
+    fun resetFetchedState() {
+        _uiModel.value = _uiModel.value.copy(isFetched = false)
     }
 }
