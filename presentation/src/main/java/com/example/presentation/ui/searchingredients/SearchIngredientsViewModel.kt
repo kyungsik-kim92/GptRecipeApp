@@ -16,7 +16,7 @@ import javax.inject.Inject
 class SearchIngredientsViewModel @Inject constructor(
     private val generateRecipeUseCase: GenerateRecipeUseCase
 ) : ViewModel() {
-    private val _uiModel = MutableStateFlow(
+    private val _uiState = MutableStateFlow(
         UniteUiState(
             isFetched = false,
             isLoading = false,
@@ -26,24 +26,24 @@ class SearchIngredientsViewModel @Inject constructor(
             wellbeingRecipeList = emptyList()
         )
     )
-    val uiModel: StateFlow<UniteUiState> = _uiModel
+    val uiState: StateFlow<UniteUiState> = _uiState
 
     fun setSearchKeyword(searchKeyword: String) {
-        _uiModel.value = _uiModel.value.copy(searchKeyword = searchKeyword)
+        _uiState.value = _uiState.value.copy(searchKeyword = searchKeyword)
     }
 
     fun setIngredientsList(ingredientsList: List<IngredientsModel>) {
-        _uiModel.value = _uiModel.value.copy(ingredientsList = ingredientsList)
+        _uiState.value = _uiState.value.copy(ingredientsList = ingredientsList)
     }
 
     fun getRecipeByIngredients() {
-        _uiModel.value = _uiModel.value.copy(isLoading = true)
+        _uiState.value = _uiState.value.copy(isLoading = true)
 
-        val searchKeyword = _uiModel.value.searchKeyword
-        val selectedIngredients = _uiModel.value.ingredientsList.filter { it.isSelected }
+        val searchKeyword = _uiState.value.searchKeyword
+        val selectedIngredients = _uiState.value.ingredientsList.filter { it.isSelected }
 
         if (selectedIngredients.isEmpty()) {
-            _uiModel.value = _uiModel.value.copy(isLoading = false)
+            _uiState.value = _uiState.value.copy(isLoading = false)
             return
         }
         val keyword = RecipePromptUtil.createRecipePrompt(searchKeyword, selectedIngredients)
@@ -54,9 +54,9 @@ class SearchIngredientsViewModel @Inject constructor(
                         response.content
                     )
 
-                    _uiModel.value = _uiModel.value.copy(
+                    _uiState.value = _uiState.value.copy(
                         searchKeyword = searchKeyword,
-                        ingredientsList = _uiModel.value.ingredientsList,
+                        ingredientsList = _uiState.value.ingredientsList,
                         isFetched = true,
                         isLoading = false,
                         recipeList = recipeList,
@@ -64,7 +64,7 @@ class SearchIngredientsViewModel @Inject constructor(
                     )
                 }
                 .onFailure { exception ->
-                    _uiModel.value = _uiModel.value.copy(
+                    _uiState.value = _uiState.value.copy(
                         isLoading = false,
                     )
                 }
@@ -72,8 +72,8 @@ class SearchIngredientsViewModel @Inject constructor(
     }
 
     fun toggleIngredientSelection(ingredientId: String) {
-        _uiModel.value = _uiModel.value.copy(
-            ingredientsList = _uiModel.value.ingredientsList.map { ingredient ->
+        _uiState.value = _uiState.value.copy(
+            ingredientsList = _uiState.value.ingredientsList.map { ingredient ->
                 if (ingredient.id == ingredientId) {
                     ingredient.copy(isSelected = !ingredient.isSelected)
                 } else ingredient
@@ -82,6 +82,6 @@ class SearchIngredientsViewModel @Inject constructor(
     }
 
     fun resetFetchedState() {
-        _uiModel.value = _uiModel.value.copy(isFetched = false)
+        _uiState.value = _uiState.value.copy(isFetched = false)
     }
 }
