@@ -61,4 +61,7 @@ dependencies {
     implementation(libs.hilt.android)
     ksp(libs.hilt.compiler)
 
+    implementation("com.airbnb.android:lottie:6.1.0")
+
+
 }

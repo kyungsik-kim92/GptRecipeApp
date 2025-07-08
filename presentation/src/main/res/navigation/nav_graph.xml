@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/nav_graph"
-    app:startDestination="@id/navigation_search">
+    app:startDestination="@id/navigation_splash">
 
     <fragment
         android:id="@+id/navigation_search"
@@ -94,6 +94,17 @@
             android:name="recipeUiModel"
             app:argType="com.example.presentation.ui.recipe.RecipeUiState" />
 
+    </fragment>
+    <fragment
+        android:id="@+id/navigation_splash"
+        android:name="com.example.presentation.ui.splash.SplashFragment"
+        android:label="SplashFragment"
+        tools:layout="@layout/fragment_splash">
+        <action
+            android:id="@+id/action_navigation_splash_to_navigation_search"
+            app:destination="@id/navigation_search"
+            app:popUpTo="@id/navigation_splash"
+            app:popUpToInclusive="true" />
     </fragment>
 
 
