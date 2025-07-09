@@ -7,9 +7,6 @@ sealed class FavoriteUiState {
 
     data class Success(
         val favoriteList: List<FavoriteModel>,
-        val selectedIngredients: Set<String> = emptySet(),
-        val selectedRecipes: Set<String> = emptySet(),
-        val selectedWellbeingRecipes: Set<String> = emptySet()
     ) : FavoriteUiState()
 
     data class Error(val message: String) : FavoriteUiState()
