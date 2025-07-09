@@ -43,7 +43,7 @@ class FavoriteFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         binding.rvFavoriteList.adapter = favoriteAdapter
         observeUiState()
-        observeEvents()
+        observeEvent()
     }
 
 
@@ -69,7 +69,7 @@ class FavoriteFragment : Fragment() {
         }
     }
 
-    private fun navigateToRecipe(favoriteModel: FavoriteModel) {
+    private fun routeToRecipe(favoriteModel: FavoriteModel) {
         val uniteUiState = UniteUiState(
             searchKeyword = favoriteModel.searchKeyword,
             ingredientsList = favoriteModel.ingredientsList,
@@ -83,7 +83,7 @@ class FavoriteFragment : Fragment() {
         findNavController().navigate(action)
     }
 
-    private fun observeEvents() {
+    private fun observeEvent() {
         lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewModel.events.collect { event ->
@@ -97,7 +97,7 @@ class FavoriteFragment : Fragment() {
                         }
 
                         is FavoriteUiEvent.NavigateToRecipe -> {
-                            navigateToRecipe(event.favoriteModel)
+                            routeToRecipe(event.favoriteModel)
                         }
                     }
                 }

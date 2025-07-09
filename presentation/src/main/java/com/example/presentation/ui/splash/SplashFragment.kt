@@ -73,13 +73,13 @@ class SplashFragment : Fragment() {
         }
     }
 
-    private fun handleViewEvent(event: SplashViewEvent) {
+    private fun handleViewEvent(event: SplashUiEvent) {
         when (event) {
-            is SplashViewEvent.RouteToHome -> {
+            is SplashUiEvent.RouteToHome -> {
                 routeToHome()
             }
 
-            is SplashViewEvent.ShowError -> {
+            is SplashUiEvent.ShowError -> {
                 Toast.makeText(requireContext(), event.message, Toast.LENGTH_LONG).show()
             }
         }
