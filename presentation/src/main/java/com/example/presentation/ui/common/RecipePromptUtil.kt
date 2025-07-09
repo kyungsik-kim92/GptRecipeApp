@@ -103,27 +103,4 @@ object RecipePromptUtil {
             Pair(emptyList(), emptyList())
         }
     }
-
-    fun parseWellbeingRecipeResponse(response: String): List<WellbeingRecipeModel> {
-        return try {
-            val cleanResponse = response.trim()
-                .removePrefix("```json")
-                .removeSuffix("```")
-                .trim()
-
-            val jsonArray = JSONArray(cleanResponse)
-            (0 until jsonArray.length()).mapNotNull { i ->
-                val jsonObject = jsonArray.getJSONObject(i)
-                if (jsonObject.has("웰빙")) {
-                    WellbeingRecipeModel(
-                        id = "wellbeing_$i",
-                        wellbeingRecipe = jsonObject.getString("웰빙"),
-                        isSelected = true
-                    )
-                } else null
-            }
-        } catch (e: Exception) {
-            emptyList()
-        }
-    }
 }
