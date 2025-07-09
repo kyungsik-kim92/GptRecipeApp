@@ -35,7 +35,13 @@ class SearchFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        setupClickListener()
+        observeUiState()
+        observeEvent()
 
+    }
+
+    private fun setupClickListener() {
         binding.btnSearch.setOnClickListener {
             search()
         }
@@ -47,29 +53,19 @@ class SearchFragment : Fragment() {
                 false
             }
         }
-
     }
 
-    private fun addObserver() {
+    private fun observeUiState() {
         lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
-                viewModel.uiModel.collect {
-                    binding.progressBar.isVisible = it.isLoading
-                    if (it.isFetched) {
-                        val searchUiState = SearchUiState(
-                            searchKeyword = it.searchKeyword,
-                            isFetched = it.isFetched,
-                            isLoading = it.isLoading,
-                            ingredientsList = it.ingredientsList
-                        )
-                        val action =
-                            SearchFragmentDirections.actionNavigationSearchToNavigationSearchIngredients(
-                                searchUiState
-                            )
-                        findNavController().navigate(action)
-                    }
-                    it.isFetched = false
+                viewModel.uiState.collect { state ->
+                    when (state) {
+                        is SearchUiState.Idle -> binding.progressBar.isVisible = false
+                        is SearchUiState.Loading -> binding.progressBar.isVisible = true
+                        is SearchUiState.Success -> binding.progressBar.isVisible = false
+                        is SearchUiState.Error -> binding.progressBar.isVisible = false
 
+                    }
                 }
             }
         }
@@ -81,8 +77,31 @@ class SearchFragment : Fragment() {
             return
         }
         viewModel.getIngredientsByRecipe(searchKeyword)
-        addObserver()
         hideKeyboard()
+    }
+
+    private fun observeEvent() {
+        lifecycleScope.launch {
+            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                viewModel.events.collect { event ->
+                    when (event) {
+                        is SearchUiEvent.RouteToIngredients -> {
+                            routeToIngredients(event.searchUiState)
+                        }
+
+                        is SearchUiEvent.ShowSuccess -> {}
+                        is SearchUiEvent.ShowError -> {}
+                    }
+                }
+            }
+        }
+    }
+
+    private fun routeToIngredients(searchUiState: SearchUiState.Success) {
+        val action = SearchFragmentDirections.actionNavigationSearchToNavigationSearchIngredients(
+            searchUiState
+        )
+        findNavController().navigate(action)
     }
 
     private fun hideKeyboard() {

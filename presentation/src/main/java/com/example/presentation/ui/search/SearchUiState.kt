@@ -10,6 +10,11 @@ sealed class SearchUiState : Parcelable {
     abstract val searchKeyword: String
 
     @Parcelize
+    data class Idle(
+        override val searchKeyword: String = ""
+    ) : SearchUiState()
+
+    @Parcelize
     data class Loading(
         override val searchKeyword: String
     ) : SearchUiState()
@@ -26,6 +31,7 @@ sealed class SearchUiState : Parcelable {
         val message: String
     ) : SearchUiState()
 }
+
 sealed class SearchUiEvent {
     data class ShowSuccess(val message: String) : SearchUiEvent()
     data class ShowError(val message: String) : SearchUiEvent()

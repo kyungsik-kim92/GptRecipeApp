@@ -50,7 +50,7 @@
         android:label="SearchIngredientsFragment"
         tools:layout="@layout/fragment_search_ingredients">
         <argument
-            android:name="searchUiModel"
+            android:name="searchUiState"
             app:argType="com.example.presentation.ui.search.SearchUiState" />
         <action
             android:id="@+id/action_navigation_search_ingredients_to_recipeFragment"
