@@ -56,7 +56,7 @@ class FavoriteViewModel @Inject constructor(
 
     fun onFavoriteItemClick(favoriteModel: FavoriteModel) {
         viewModelScope.launch {
-            _events.emit(FavoriteUiEvent.NavigateToRecipe(favoriteModel))
+            _events.emit(FavoriteUiEvent.RouteToRecipe(favoriteModel))
         }
     }
 }

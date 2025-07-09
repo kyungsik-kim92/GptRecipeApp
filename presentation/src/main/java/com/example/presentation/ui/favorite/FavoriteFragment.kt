@@ -96,7 +96,7 @@ class FavoriteFragment : Fragment() {
                             showErrorMessage(event.message)
                         }
 
-                        is FavoriteUiEvent.NavigateToRecipe -> {
+                        is FavoriteUiEvent.RouteToRecipe -> {
                             routeToRecipe(event.favoriteModel)
                         }
                     }

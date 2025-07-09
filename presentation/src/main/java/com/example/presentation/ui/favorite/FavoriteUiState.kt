@@ -15,5 +15,5 @@ sealed class FavoriteUiState {
 sealed class FavoriteUiEvent {
     data class ShowSuccess(val message: String) : FavoriteUiEvent()
     data class ShowError(val message: String) : FavoriteUiEvent()
-    data class NavigateToRecipe(val favoriteModel: FavoriteModel) : FavoriteUiEvent()
+    data class RouteToRecipe(val favoriteModel: FavoriteModel) : FavoriteUiEvent()
 }
