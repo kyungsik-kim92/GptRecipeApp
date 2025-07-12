@@ -37,7 +37,7 @@ class SearchFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         setupClickListener()
         observeUiState()
-        observeEvent()
+        observeEvents()
 
     }
 
@@ -80,7 +80,7 @@ class SearchFragment : Fragment() {
         hideKeyboard()
     }
 
-    private fun observeEvent() {
+    private fun observeEvents() {
         lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewModel.events.collect { event ->
