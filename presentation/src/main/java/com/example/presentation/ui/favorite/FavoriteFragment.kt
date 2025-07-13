@@ -41,9 +41,13 @@ class FavoriteFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        binding.rvFavoriteList.adapter = favoriteAdapter
+        setupRecyclerView()
         observeUiState()
         observeEvent()
+    }
+
+    private fun setupRecyclerView() {
+        binding.rvFavoriteList.adapter = favoriteAdapter
     }
 
 
