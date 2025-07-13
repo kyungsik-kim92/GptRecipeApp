@@ -2,7 +2,6 @@ package com.example.presentation.ui.splash
 
 import android.animation.Animator
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -42,7 +41,6 @@ class SplashFragment : Fragment() {
 
     private fun setupLottieAnimation() {
         with(binding.splash) {
-
             setAnimation(R.raw.splash)
             addAnimatorListener(object : Animator.AnimatorListener {
                 override fun onAnimationStart(animation: Animator) {
@@ -78,12 +76,8 @@ class SplashFragment : Fragment() {
     }
 
     private fun routeToHome() {
-        try {
-            findNavController().navigate(
-                SplashFragmentDirections.actionNavigationSplashToNavigationSearch()
-            )
-        } catch (e: Exception) {
-            Log.e("SplashFragment", "Navigation 실패", e)
-        }
+        findNavController().navigate(
+            SplashFragmentDirections.actionNavigationSplashToNavigationSearch()
+        )
     }
 }
