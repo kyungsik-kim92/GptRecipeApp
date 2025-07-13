@@ -49,13 +49,10 @@ class SearchIngredientsFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
-        binding.btnBack.setOnClickListener {
-            findNavController().popBackStack()
-        }
-
-        binding.rvIngredientsList.adapter = ingredientsAdapter
-        addObserver()
+        setupBackButton()
+        setupRecyclerView()
+        observeUiState()
+        observeEvents()
         setupData()
 
         binding.btnSearch.setOnClickListener {
@@ -94,11 +91,18 @@ class SearchIngredientsFragment : Fragment() {
 
     }
 
-    private fun setupData() {
-        viewModel.setSearchKeyword(args.searchUiModel.searchKeyword)
-        if (viewModel.uiState.value.ingredientsList.isEmpty()) {
-            viewModel.setIngredientsList(args.searchUiModel.ingredientsList)
+    private fun setupRecyclerView() {
+        binding.rvIngredientsList.adapter = ingredientsAdapter
+    }
+
+    private fun setupBackButton() {
+        binding.btnBack.setOnClickListener {
+            findNavController().popBackStack()
         }
+    }
+
+    private fun setupData() {
+        viewModel.setSearchResult(args.searchUiState)
     }
 
 
@@ -108,23 +112,61 @@ class SearchIngredientsFragment : Fragment() {
         imm.hideSoftInputFromWindow(binding.etIngredients.windowToken, 0)
     }
 
-    private fun addObserver() {
+    private fun observeUiState() {
         lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
-                viewModel.uiState.collect {
-                    binding.progressBar.isVisible = it.isLoading
+                viewModel.uiState.collect { state ->
+                    when (state) {
+                        is SearchIngredientsUiState.Idle -> updateUI(
+                            state.searchKeyword,
+                            state.ingredientsList
+                        )
 
-                    with(binding) {
-                        tvRecipeTitle.text = it.searchKeyword
-                        ingredientsAdapter.submitList(it.ingredientsList)
+                        is SearchIngredientsUiState.Loading -> {
+                            showLoading()
+                            updateUI(
+                                state.searchKeyword,
+                                state.ingredientsList
+                            )
+
+                        }
+
+                        is SearchIngredientsUiState.Success -> updateUI(
+                            state.searchKeyword,
+                            state.ingredientsList
+                        )
+
+                        is SearchIngredientsUiState.Error -> updateUI(
+                            state.searchKeyword,
+                            state.ingredientsList
+                        )
                     }
-                    if (it.isFetched) {
-                        routeToRecipe(it)
-                    }
-                    viewModel.resetFetchedState()
                 }
             }
         }
+    }
+
+    private fun observeEvents() {
+        lifecycleScope.launch {
+            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                viewModel.events.collect { event ->
+                    when (event) {
+                        is SearchIngredientsUiEvent.RouteToRecipe -> {
+                            routeToRecipe(event.uniteUiState)
+                        }
+
+                        is SearchIngredientsUiEvent.ShowError -> {}
+
+                        is SearchIngredientsUiEvent.ShowSuccess -> {}
+                    }
+                }
+            }
+        }
+    }
+
+    private fun updateUI(searchKeyword: String, ingredientsList: List<IngredientsModel>) {
+        binding.tvRecipeTitle.text = searchKeyword
+        ingredientsAdapter.submitList(ingredientsList)
     }
 
     private fun routeToRecipe(uiState: UniteUiState) {
@@ -139,6 +181,10 @@ class SearchIngredientsFragment : Fragment() {
         val action = SearchIngredientsFragmentDirections
             .actionNavigationSearchIngredientsToRecipeFragment(uniteUiState)
         findNavController().navigate(action)
+    }
+
+    private fun showLoading() {
+        binding.progressBar.isVisible = true
     }
 
 
