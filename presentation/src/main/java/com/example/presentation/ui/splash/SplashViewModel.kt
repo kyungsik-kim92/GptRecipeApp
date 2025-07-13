@@ -28,15 +28,8 @@ class SplashViewModel @Inject constructor() : ViewModel() {
 
     fun onAnimationEnd() {
         viewModelScope.launch {
-            try {
-                _uiState.value = SplashUiState.Ready
-
-                _events.emit(SplashUiEvent.RouteToHome)
-
-            } catch (e: Exception) {
-                _uiState.value = SplashUiState.Error(e.message ?: "초기화 실패")
-                _events.emit(SplashUiEvent.ShowError(e.message ?: "초기화 실패"))
-            }
+            _uiState.value = SplashUiState.Ready
+            _events.emit(SplashUiEvent.RouteToHome)
         }
     }
 }
