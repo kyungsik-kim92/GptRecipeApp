@@ -16,21 +16,21 @@ import javax.inject.Inject
 @HiltViewModel
 class SplashViewModel @Inject constructor() : ViewModel() {
 
-    private val _viewState = MutableStateFlow<SplashUiState>(SplashUiState.Loading)
-    val viewState: StateFlow<SplashUiState> = _viewState.asStateFlow()
+    private val _uiState = MutableStateFlow<SplashUiState>(SplashUiState.Loading)
+    val uiState: StateFlow<SplashUiState> = _uiState.asStateFlow()
 
 
-    private val _viewEvent = MutableSharedFlow<SplashUiEvent>()
-    val viewEvent: SharedFlow<SplashUiEvent> = _viewEvent.asSharedFlow()
+    private val _events = MutableSharedFlow<SplashUiEvent>()
+    val events: SharedFlow<SplashUiEvent> = _events.asSharedFlow()
 
     fun onAnimationStart() {
-        _viewState.value = SplashUiState.Loading
+        _uiState.value = SplashUiState.Loading
         initializeApp()
     }
 
     fun onAnimationEnd() {
         viewModelScope.launch {
-            _viewEvent.emit(SplashUiEvent.RouteToHome)
+            _events.emit(SplashUiEvent.RouteToHome)
         }
     }
 
@@ -38,12 +38,12 @@ class SplashViewModel @Inject constructor() : ViewModel() {
         viewModelScope.launch {
             try {
                 delay(2000)
-                _viewState.value = SplashUiState.Ready
+                _uiState.value = SplashUiState.Ready
                 delay(1000)
-                _viewEvent.emit(SplashUiEvent.RouteToHome)
+                _events.emit(SplashUiEvent.RouteToHome)
 
             } catch (e: Exception) {
-                _viewState.value = SplashUiState.Error(e.message ?: "초기화 실패")
+                _uiState.value = SplashUiState.Error(e.message ?: "초기화 실패")
             }
         }
     }

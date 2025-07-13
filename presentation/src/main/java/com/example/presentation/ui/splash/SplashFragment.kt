@@ -6,14 +6,12 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
-import com.airbnb.lottie.LottieDrawable
 import com.example.presentation.R
 import com.example.presentation.databinding.FragmentSplashBinding
 import dagger.hilt.android.AndroidEntryPoint
@@ -39,7 +37,7 @@ class SplashFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         setupLottieAnimation()
-        observeViewModel()
+        observeEvents()
     }
 
     private fun setupLottieAnimation() {
@@ -63,24 +61,18 @@ class SplashFragment : Fragment() {
         }
     }
 
-    private fun observeViewModel() {
+    private fun observeEvents() {
         lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
-                viewModel.viewEvent.collect { event ->
-                    handleViewEvent(event)
+                viewModel.events.collect { event ->
+                    when (event) {
+                        is SplashUiEvent.RouteToHome -> {
+                            routeToHome()
+                        }
+
+                        is SplashUiEvent.ShowError -> {}
+                    }
                 }
-            }
-        }
-    }
-
-    private fun handleViewEvent(event: SplashUiEvent) {
-        when (event) {
-            is SplashUiEvent.RouteToHome -> {
-                routeToHome()
-            }
-
-            is SplashUiEvent.ShowError -> {
-                Toast.makeText(requireContext(), event.message, Toast.LENGTH_LONG).show()
             }
         }
     }
