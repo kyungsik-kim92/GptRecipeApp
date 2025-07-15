@@ -46,38 +46,89 @@ class RecRecipeFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         viewModel.setSearchKeywordList(args.recIngredientsUiModel.searchKeywordList)
         viewModel.setIngredientsList(args.recIngredientsUiModel.ingredientsList)
+        setupBackButton()
+        setupRecyclerView()
+        setupData()
+        observeUiState()
+        observeEvents()
+    }
 
+    private fun setupRecyclerView() {
+        binding.rvSearchKeywordList.adapter = searchKeywordAdapter
+    }
+
+    private fun setupBackButton() {
         binding.btnBack.setOnClickListener {
             findNavController().popBackStack()
         }
-        binding.rvSearchKeywordList.adapter = searchKeywordAdapter
-        addObserver()
     }
 
-    private fun addObserver() {
+    private fun setupData() {
+        viewModel.setupData(args.recIngredientsUiModel)
+    }
+
+    private fun observeUiState() {
         lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
-                viewModel.uiModel.collect { uiState ->
-                    binding.progressBar.isVisible = uiState.isLoading
-                    searchKeywordAdapter.submitList(uiState.searchKeywordList)
-                    if (uiState.isFetched) {
-                        val uniteUiState = UniteUiState(
-                            isFetched = false,
-                            isLoading = false,
-                            searchKeyword = uiState.searchKeyword,
-                            ingredientsList = uiState.ingredientsList,
-                            recipeList = uiState.recipeList,
-                            wellbeingRecipeList = uiState.wellbeingRecipeList
-                        )
-                        val action =
-                            RecRecipeFragmentDirections.actionNavigationRecRecipeToNavigationRecipe(
-                                uniteUiState
-                            )
-                        findNavController().navigate(action)
+                viewModel.uiState.collect { state ->
+                    when (state) {
+                        is RecRecipeUiState.Idle -> {
+                            updateUI(state.searchKeywordList)
+                        }
+
+                        is RecRecipeUiState.Loading -> {
+                            showLoading()
+                            updateUI(state.searchKeywordList)
+                        }
+
+                        is RecRecipeUiState.Success -> {
+                            updateUI(state.searchKeywordList)
+                        }
+
+                        is RecRecipeUiState.Error -> {
+                            updateUI(state.searchKeywordList)
+                        }
                     }
-                    uiState.isFetched = false
                 }
             }
         }
+    }
+
+    private fun observeEvents() {
+        lifecycleScope.launch {
+            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                viewModel.events.collect { event ->
+                    when (event) {
+                        is RecRecipeUiEvent.RouteToRecipe -> {
+                            routeToRecipe(event.uniteUiState)
+                        }
+
+                        is RecRecipeUiEvent.ShowError -> {}
+
+                        is RecRecipeUiEvent.ShowSuccess -> {}
+                    }
+                }
+            }
+        }
+    }
+
+    private fun updateUI(searchKeywordList: List<String>) {
+        searchKeywordAdapter.submitList(searchKeywordList)
+    }
+
+    private fun showLoading() {
+        binding.progressBar.isVisible = true
+    }
+
+    private fun routeToRecipe(uniteUiState: UniteUiState) {
+        val action = RecRecipeFragmentDirections.actionNavigationRecRecipeToNavigationRecipe(
+            uniteUiState
+        )
+        findNavController().navigate(action)
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
     }
 }
