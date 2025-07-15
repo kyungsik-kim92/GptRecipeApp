@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
@@ -80,7 +81,12 @@ class RecIngredientsFragment : Fragment() {
 
     private fun setupClickListeners() {
         binding.btnSearch.setOnClickListener {
-            viewModel.getRecRecipes()
+            val selectedIngredients = viewModel.getSelectedIngredients()
+            if (selectedIngredients.isEmpty()) {
+                Toast.makeText(requireContext(), "재료를 선택해주세요", Toast.LENGTH_SHORT).show()
+                return@setOnClickListener
+            }
+            viewModel.getRecRecipes(selectedIngredients)
         }
     }
 
@@ -107,9 +113,7 @@ class RecIngredientsFragment : Fragment() {
                         is RecIngredientsUiEvent.RouteToRecRecipe -> {
                             routeToRecRecipe(event.recIngredientsUiState)
                         }
-
                         is RecIngredientsUiEvent.ShowError -> {}
-                        is RecIngredientsUiEvent.ShowSuccess -> {}
                     }
                 }
             }

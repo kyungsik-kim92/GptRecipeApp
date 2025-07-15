@@ -39,9 +39,6 @@ sealed class RecIngredientsUiState : Parcelable {
 @Parcelize
 sealed class RecIngredientsUiEvent : Parcelable {
     @Parcelize
-    data class ShowSuccess(val message: String) : RecIngredientsUiEvent()
-
-    @Parcelize
     data class ShowError(val message: String) : RecIngredientsUiEvent()
 
     @Parcelize

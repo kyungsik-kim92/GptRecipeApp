@@ -9,12 +9,10 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharedFlow
-import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import org.json.JSONArray
@@ -32,51 +30,51 @@ class RecIngredientsViewModel @Inject constructor(
     private val _events = MutableSharedFlow<RecIngredientsUiEvent>()
     val events: SharedFlow<RecIngredientsUiEvent> = _events.asSharedFlow()
 
+    private val _meatList = MutableStateFlow<List<IngredientsModel>>(emptyList())
+    val meatList = _meatList.asStateFlow()
 
-    private val _categories = MutableStateFlow<Map<String, List<IngredientsModel>>>(emptyMap())
-    val categories: StateFlow<Map<String, List<IngredientsModel>>> = _categories.asStateFlow()
+    private val _seafoodList = MutableStateFlow<List<IngredientsModel>>(emptyList())
+    val seafoodList = _seafoodList.asStateFlow()
+
+    private val _vegetableList = MutableStateFlow<List<IngredientsModel>>(emptyList())
+    val vegetableList = _vegetableList.asStateFlow()
+
+    private val _fruitList = MutableStateFlow<List<IngredientsModel>>(emptyList())
+    val fruitList = _fruitList.asStateFlow()
+
+    private val _processedList = MutableStateFlow<List<IngredientsModel>>(emptyList())
+    val processedList = _processedList.asStateFlow()
+
+    private val _etcList = MutableStateFlow<List<IngredientsModel>>(emptyList())
+    val etcList = _etcList.asStateFlow()
 
     init {
         loadIngredients()
     }
 
     private fun loadIngredients() {
-        _categories.value = mapOf(
-            "meat" to getMeatList(),
-            "seafood" to getSeafoodList(),
-            "vegetable" to getVegetableList(),
-            "fruit" to getFruitList(),
-            "processed" to getProcessedList(),
-            "etc" to getEtcList()
-        )
+        _meatList.value = getMeatList()
+        _seafoodList.value = getSeafoodList()
+        _vegetableList.value = getVegetableList()
+        _fruitList.value = getFruitList()
+        _processedList.value = getProcessedList()
+        _etcList.value = getEtcList()
     }
 
-    fun getRecRecipes() {
-        val selectedIngredients = getSelectedIngredients()
-
-        if (selectedIngredients.isEmpty()) {
-            viewModelScope.launch {
-                _events.emit(RecIngredientsUiEvent.ShowError("재료를 선택해주세요"))
-            }
-            return
-        }
-        val firstIngredient = selectedIngredients.firstOrNull()?.ingredients ?: "요리"
-        val prompt = RecipePromptUtil.createIngredientsPrompt(firstIngredient)
-
+    fun getRecRecipes(ingredientsList: List<IngredientsModel>) {
         val currentState = _uiState.value
         _uiState.value = RecIngredientsUiState.Loading(
             searchKeywordList = currentState.searchKeywordList,
-            ingredientsList = selectedIngredients
+            ingredientsList = ingredientsList
         )
+        val prompt = getFormattedSearchKeyword(ingredientsList)
         viewModelScope.launch {
             generateRecipeUseCase(prompt)
                 .onSuccess { response ->
-                    val generatedIngredients =
-                        RecipePromptUtil.parseIngredientsResponse(response.content)
-                    val searchKeywords = generatedIngredients.map { it.ingredients }
+                    val searchKeywords = getSearchKeywordList(response.content)
                     val successState = RecIngredientsUiState.Success(
                         searchKeywordList = searchKeywords,
-                        ingredientsList = selectedIngredients
+                        ingredientsList = ingredientsList
                     )
                     _uiState.value = successState
                     _events.emit(RecIngredientsUiEvent.RouteToRecRecipe(successState))
@@ -84,8 +82,8 @@ class RecIngredientsViewModel @Inject constructor(
                 .onFailure { exception ->
                     val errorState = RecIngredientsUiState.Error(
                         searchKeywordList = currentState.searchKeywordList,
-                        ingredientsList = selectedIngredients,
-                        message = exception.message ?: "레시피 검색 실패"
+                        ingredientsList = ingredientsList,
+                        message = exception.message ?: "검색 실패"
                     )
                     _uiState.value = errorState
                     _events.emit(RecIngredientsUiEvent.ShowError(errorState.message))
@@ -94,48 +92,51 @@ class RecIngredientsViewModel @Inject constructor(
     }
 
     fun toggleIngredientSelection(categoryType: String, ingredientId: String) {
-        _categories.update { currentCategories ->
-            currentCategories.mapValues { (category, ingredients) ->
-                if (category == categoryType) {
-                    ingredients.map { ingredient ->
-                        if (ingredient.id == ingredientId) {
-                            ingredient.copy(isSelected = !ingredient.isSelected)
-                        } else ingredient
-                    }
-                } else ingredients
+        when (categoryType) {
+            "meat" -> {
+                _meatList.value = _meatList.value.map {
+                    if (it.id == ingredientId) it.copy(isSelected = !it.isSelected) else it
+                }
+            }
+            "seafood" -> {
+                _seafoodList.value = _seafoodList.value.map {
+                    if (it.id == ingredientId) it.copy(isSelected = !it.isSelected) else it
+                }
+            }
+            "vegetable" -> {
+                _vegetableList.value = _vegetableList.value.map {
+                    if (it.id == ingredientId) it.copy(isSelected = !it.isSelected) else it
+                }
+            }
+            "fruit" -> {
+                _fruitList.value = _fruitList.value.map {
+                    if (it.id == ingredientId) it.copy(isSelected = !it.isSelected) else it
+                }
+            }
+            "processed" -> {
+                _processedList.value = _processedList.value.map {
+                    if (it.id == ingredientId) it.copy(isSelected = !it.isSelected) else it
+                }
+            }
+            "etc" -> {
+                _etcList.value = _etcList.value.map {
+                    if (it.id == ingredientId) it.copy(isSelected = !it.isSelected) else it
+                }
             }
         }
     }
 
     fun getSelectedIngredients(): List<IngredientsModel> {
-        return _categories.value.values
-            .flatten()
-            .filter { it.isSelected }
+        return listOf(
+            _meatList.value,
+            _seafoodList.value,
+            _vegetableList.value,
+            _fruitList.value,
+            _processedList.value,
+            _etcList.value
+        ).flatten().filter { it.isSelected }
     }
 
-    val meatList: StateFlow<List<IngredientsModel>> = _categories
-        .map { it["meat"] ?: emptyList() }
-        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), emptyList())
-
-    val seafoodList: StateFlow<List<IngredientsModel>> = _categories
-        .map { it["seafood"] ?: emptyList() }
-        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), emptyList())
-
-    val vegetableList: StateFlow<List<IngredientsModel>> = _categories
-        .map { it["vegetable"] ?: emptyList() }
-        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), emptyList())
-
-    val fruitList: StateFlow<List<IngredientsModel>> = _categories
-        .map { it["fruit"] ?: emptyList() }
-        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), emptyList())
-
-    val processedList: StateFlow<List<IngredientsModel>> = _categories
-        .map { it["processed"] ?: emptyList() }
-        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), emptyList())
-
-    val etcList: StateFlow<List<IngredientsModel>> = _categories
-        .map { it["etc"] ?: emptyList() }
-        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), emptyList())
 
     private fun getMeatList(): List<IngredientsModel> {
         return listOf(
@@ -243,6 +244,26 @@ class RecIngredientsViewModel @Inject constructor(
             IngredientsModel(id = "bagel", ingredients = "베이글", isSelected = false),
             IngredientsModel(id = "bread", ingredients = "식빵", isSelected = false)
         )
+    }
+
+    private fun getFormattedSearchKeyword(ingredientsList: List<IngredientsModel>): String {
+        val ingredients = ingredientsList.joinToString(",") { it.ingredients }
+        return "$ingredients 재료들로 조리할 수 있는 음식을 나열해줘\n" +
+                "답변은 아래와 같은 형식과 한국어만으로 표시해\n" +
+                "[{\"키워드\":\"김치찌개\"}, {\"키워드\":\"된장찌개\"}]"
+    }
+
+    private fun getSearchKeywordList(response: String): List<String> {
+        return try {
+            val jsonArray = JSONArray(response)
+            (0 until jsonArray.length()).mapNotNull { i ->
+                jsonArray.getJSONObject(i)
+                    .takeIf { it.has("키워드") }
+                    ?.getString("키워드")
+            }
+        } catch (e: Exception) {
+            emptyList()
+        }
     }
 }
 
