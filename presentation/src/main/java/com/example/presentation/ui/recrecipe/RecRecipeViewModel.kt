@@ -50,29 +50,6 @@ class RecRecipeViewModel @Inject constructor(
         }
     }
 
-    fun setSearchKeywordList(searchKeywordList: List<String>) {
-        _uiState.update { currentState ->
-            when (currentState) {
-                is RecRecipeUiState.Idle -> currentState.copy(searchKeywordList = searchKeywordList)
-                is RecRecipeUiState.Loading -> currentState.copy(searchKeywordList = searchKeywordList)
-                is RecRecipeUiState.Success -> currentState.copy(searchKeywordList = searchKeywordList)
-                is RecRecipeUiState.Error -> currentState.copy(searchKeywordList = searchKeywordList)
-            }
-        }
-    }
-
-    fun setIngredientsList(ingredientsList: List<IngredientsModel>) {
-        _uiState.update { currentState ->
-            when (currentState) {
-                is RecRecipeUiState.Idle -> currentState.copy(ingredientsList = ingredientsList)
-                is RecRecipeUiState.Loading -> currentState.copy(ingredientsList = ingredientsList)
-                is RecRecipeUiState.Success -> currentState.copy(ingredientsList = ingredientsList)
-                is RecRecipeUiState.Error -> currentState.copy(ingredientsList = ingredientsList)
-            }
-        }
-    }
-
-
     fun getIngredients(isIngredients: Boolean = true) {
         val currentState = _uiState.value
         if (currentState.searchKeyword.isBlank()) {

@@ -44,8 +44,6 @@ class RecRecipeFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        viewModel.setSearchKeywordList(args.recIngredientsUiModel.searchKeywordList)
-        viewModel.setIngredientsList(args.recIngredientsUiModel.ingredientsList)
         setupBackButton()
         setupRecyclerView()
         setupData()

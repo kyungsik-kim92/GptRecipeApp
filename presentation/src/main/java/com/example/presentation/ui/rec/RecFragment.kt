@@ -25,6 +25,10 @@ class RecFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        searchListener()
+    }
+
+    private fun searchListener() {
         binding.btnSearch.setOnClickListener {
             val action = RecFragmentDirections.actionNavigationRecToRecIngredientsFragment()
             findNavController().navigate(action)

@@ -41,10 +41,14 @@ class WellbeingRecipeFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        viewModel.setWellBeingRecipeList(args.recipeUiModel.wellbeingRecipeModel)
+        setupData()
         setupBackButton()
         setupRecyclerView()
         observeUiState()
+    }
+
+    private fun setupData() {
+        viewModel.setWellBeingRecipeList(args.recipeUiModel.wellbeingRecipeModel)
     }
 
     private fun setupBackButton() {
