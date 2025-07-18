@@ -1,104 +1,118 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
     xmlns:tools="http://schemas.android.com/tools">
 
-    <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/layout_toolbar"
-        android:layout_width="match_parent"
-        android:layout_height="66dp"
-        app:layout_constraintTop_toTopOf="parent">
+    <data>
+        <import type="android.view.View" />
+        <import type="com.example.presentation.ui.search.SearchUiState" />
 
-        <androidx.cardview.widget.CardView
+        <variable
+            name="viewModel"
+            type="com.example.presentation.ui.search.SearchViewModel" />
+        <variable
+            name="uiState"
+            type="com.example.presentation.ui.search.SearchUiState" />
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/layout_toolbar"
             android:layout_width="match_parent"
-            android:layout_height="56dp"
-            app:cardElevation="10dp"
+            android:layout_height="66dp"
             app:layout_constraintTop_toTopOf="parent">
 
-            <TextView
+            <androidx.cardview.widget.CardView
                 android:layout_width="match_parent"
                 android:layout_height="56dp"
-                android:gravity="center"
-                android:text="@string/searchTitle"
-                android:textColor="@color/gray_200"
-                android:textSize="20sp"
-                app:layout_constraintTop_toTopOf="parent" />
+                app:cardElevation="10dp"
+                app:layout_constraintTop_toTopOf="parent">
 
-        </androidx.cardview.widget.CardView>
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="56dp"
+                    android:gravity="center"
+                    android:text="@string/searchTitle"
+                    android:textColor="@color/gray_200"
+                    android:textSize="20sp"
+                    app:layout_constraintTop_toTopOf="parent" />
 
-    </androidx.constraintlayout.widget.ConstraintLayout>
+            </androidx.cardview.widget.CardView>
 
-    <EditText
-        android:id="@+id/et_recipe"
-        android:layout_width="match_parent"
-        android:layout_height="48dp"
-        android:layout_marginHorizontal="9dp"
-        android:layout_marginTop="20dp"
-        android:background="@drawable/box_16r_gray100"
-        android:hint="@string/searchPlaceHolder"
-        android:inputType="text"
-        android:maxLength="100"
-        android:maxLines="1"
-        android:paddingStart="20dp"
-        android:paddingEnd="56dp"
-        android:textColor="@color/black"
-        android:textColorHint="@color/gray_150"
-        android:textSize="16sp"
-        app:layout_constraintTop_toBottomOf="@id/layout_toolbar" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
 
-    <FrameLayout
-        android:id="@+id/btn_search"
-        android:layout_width="56dp"
-        android:layout_height="0dp"
-        app:layout_constraintBottom_toBottomOf="@id/et_recipe"
-        app:layout_constraintEnd_toEndOf="@id/et_recipe"
-        app:layout_constraintTop_toTopOf="@id/et_recipe">
+        <EditText
+            android:id="@+id/et_recipe"
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:layout_marginHorizontal="9dp"
+            android:layout_marginTop="20dp"
+            android:background="@drawable/box_16r_gray100"
+            android:hint="@string/searchPlaceHolder"
+            android:text="@{uiState.searchKeyword}"
+            android:inputType="text"
+            android:maxLength="100"
+            android:maxLines="1"
+            android:paddingStart="20dp"
+            android:paddingEnd="56dp"
+            android:textColor="@color/black"
+            android:textColorHint="@color/gray_150"
+            android:textSize="16sp"
+            app:layout_constraintTop_toBottomOf="@id/layout_toolbar" />
+
+        <FrameLayout
+            android:id="@+id/btn_search"
+            android:layout_width="56dp"
+            android:layout_height="0dp"
+            app:layout_constraintBottom_toBottomOf="@id/et_recipe"
+            app:layout_constraintEnd_toEndOf="@id/et_recipe"
+            app:layout_constraintTop_toTopOf="@id/et_recipe">
+
+            <TextView
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:layout_gravity="center"
+                android:background="@drawable/ic_clamp_recipe_search" />
+
+        </FrameLayout>
+
+        <ImageView
+            android:id="@+id/iv_woman"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_marginHorizontal="28dp"
+            android:layout_marginTop="59dp"
+            app:layout_constraintDimensionRatio="w, 1:1"
+            app:layout_constraintTop_toBottomOf="@id/et_recipe"
+            app:srcCompat="@drawable/ic_clamp_search_woman" />
 
         <TextView
-            android:layout_width="24dp"
-            android:layout_height="24dp"
-            android:layout_gravity="center"
-            android:background="@drawable/ic_clamp_recipe_search" />
+            android:id="@+id/tv_hint"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:text="@string/searchHint"
+            android:textAlignment="center"
+            android:textColor="@color/black"
+            android:textSize="20sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/iv_woman" />
 
-    </FrameLayout>
+        <ProgressBar
+            android:id="@+id/progressBar"
+            android:layout_width="42dp"
+            android:layout_height="42dp"
+            android:indeterminateTint="@color/black"
+            android:visibility="@{uiState instanceof SearchUiState.Loading ? View.VISIBLE : View.GONE}"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:visibility="visible" />
 
-    <ImageView
-        android:id="@+id/iv_woman"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_marginHorizontal="28dp"
-        android:layout_marginTop="59dp"
-        app:layout_constraintDimensionRatio="w, 1:1"
-        app:layout_constraintTop_toBottomOf="@id/et_recipe"
-        app:srcCompat="@drawable/ic_clamp_search_woman" />
-
-    <TextView
-        android:id="@+id/tv_hint"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        android:text="@string/searchHint"
-        android:textAlignment="center"
-        android:textColor="@color/black"
-        android:textSize="20sp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/iv_woman" />
-
-    <ProgressBar
-        android:id="@+id/progressBar"
-        tools:visibility="visible"
-        android:layout_width="42dp"
-        android:layout_height="42dp"
-        android:indeterminateTint="@color/black"
-        android:max="100"
-        android:progress="0"
-        android:visibility="gone"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-</androidx.constraintlayout.widget.ConstraintLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>
