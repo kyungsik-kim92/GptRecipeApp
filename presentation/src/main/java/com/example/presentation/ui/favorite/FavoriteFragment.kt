@@ -36,6 +36,8 @@ class FavoriteFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
         _binding = FragmentFavoriteBinding.inflate(inflater, container, false)
+        binding.viewModel = viewModel
+        binding.lifecycleOwner = viewLifecycleOwner
         return binding.root
     }
 
@@ -55,17 +57,13 @@ class FavoriteFragment : Fragment() {
         lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewModel.uiState.collect { state ->
+                    binding.uiState = state
                     when (state) {
-                        is FavoriteUiState.Loading -> {
-                            showLoading()
-                        }
-
                         is FavoriteUiState.Success -> {
-                            showSuccessState(state)
+                            favoriteAdapter.submitList(state.favoriteList)
                         }
-
-                        is FavoriteUiState.Error -> {
-                            showErrorState(state)
+                        else -> {
+                            favoriteAdapter.submitList(emptyList())
                         }
                     }
                 }
@@ -92,13 +90,9 @@ class FavoriteFragment : Fragment() {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewModel.events.collect { event ->
                     when (event) {
-                        is FavoriteUiEvent.ShowSuccess -> {
-                            showSuccessMessage(event.message)
-                        }
+                        is FavoriteUiEvent.ShowSuccess -> {}
 
-                        is FavoriteUiEvent.ShowError -> {
-                            showErrorMessage(event.message)
-                        }
+                        is FavoriteUiEvent.ShowError -> {}
 
                         is FavoriteUiEvent.RouteToRecipe -> {
                             routeToRecipe(event.favoriteModel)
@@ -108,32 +102,6 @@ class FavoriteFragment : Fragment() {
             }
         }
     }
-
-    private fun showLoading() {
-        binding.rvFavoriteList.isVisible = false
-        binding.layoutEmpty.isVisible = false
-    }
-
-    private fun showSuccessState(state: FavoriteUiState.Success) {
-        binding.rvFavoriteList.isVisible = state.favoriteList.isNotEmpty()
-        binding.layoutEmpty.isVisible = state.favoriteList.isEmpty()
-
-        favoriteAdapter.submitList(state.favoriteList)
-    }
-
-    private fun showErrorState(state: FavoriteUiState.Error) {
-        binding.rvFavoriteList.isVisible = false
-        binding.layoutEmpty.isVisible = true
-    }
-
-    private fun showSuccessMessage(message: String) {
-        Toast.makeText(requireContext(), message, Toast.LENGTH_SHORT).show()
-    }
-
-    private fun showErrorMessage(message: String) {
-        Toast.makeText(requireContext(), message, Toast.LENGTH_LONG).show()
-    }
-
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
