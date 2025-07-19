@@ -7,13 +7,14 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
-import androidx.core.view.isVisible
+import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
+import com.example.presentation.R
 import com.example.presentation.databinding.FragmentSearchBinding
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
@@ -30,6 +31,8 @@ class SearchFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
         _binding = FragmentSearchBinding.inflate(inflater, container, false)
+        binding.viewModel = viewModel
+        binding.lifecycleOwner = viewLifecycleOwner
         return binding.root
     }
 
@@ -59,11 +62,12 @@ class SearchFragment : Fragment() {
         lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewModel.uiState.collect { state ->
+                    binding.uiState = state
                     when (state) {
-                        is SearchUiState.Idle -> binding.progressBar.isVisible = false
-                        is SearchUiState.Loading -> binding.progressBar.isVisible = true
-                        is SearchUiState.Success -> binding.progressBar.isVisible = false
-                        is SearchUiState.Error -> binding.progressBar.isVisible = false
+                        is SearchUiState.Idle -> {}
+                        is SearchUiState.Loading -> {}
+                        is SearchUiState.Success -> {}
+                        is SearchUiState.Error -> {}
 
                     }
                 }
@@ -72,7 +76,7 @@ class SearchFragment : Fragment() {
     }
 
     private fun search() {
-        val searchKeyword = binding.etRecipe.text.toString()
+        val searchKeyword = binding.etRecipe.text.toString().trim()
         if (searchKeyword.isBlank()) {
             return
         }
