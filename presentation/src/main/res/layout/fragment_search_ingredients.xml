@@ -62,6 +62,7 @@
             android:fillViewport="true"
             android:overScrollMode="never"
             android:scrollbars="none"
+            android:visibility="@{uiState instanceof SearchIngredientsUiState.Loading ? View.GONE : View.VISIBLE}"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintTop_toBottomOf="@id/layout_toolbar">
 

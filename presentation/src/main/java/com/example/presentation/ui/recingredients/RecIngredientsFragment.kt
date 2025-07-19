@@ -51,6 +51,8 @@ class RecIngredientsFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
         _binding = FragmentRecIngredientsBinding.inflate(inflater, container, false)
+        binding.viewModel = viewModel
+        binding.lifecycleOwner = viewLifecycleOwner
         return binding.root
     }
 
@@ -94,12 +96,7 @@ class RecIngredientsFragment : Fragment() {
         lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewModel.uiState.collect { state ->
-                    when (state) {
-                        is RecIngredientsUiState.Idle -> {}
-                        is RecIngredientsUiState.Loading -> showLoading()
-                        is RecIngredientsUiState.Success -> {}
-                        is RecIngredientsUiState.Error -> {}
-                    }
+                    binding.uiState = state
                 }
             }
         }
@@ -113,6 +110,7 @@ class RecIngredientsFragment : Fragment() {
                         is RecIngredientsUiEvent.RouteToRecRecipe -> {
                             routeToRecRecipe(event.recIngredientsUiState)
                         }
+
                         is RecIngredientsUiEvent.ShowError -> {}
                     }
                 }
@@ -155,11 +153,6 @@ class RecIngredientsFragment : Fragment() {
                 }
             }
         }
-    }
-
-    private fun showLoading() {
-        binding.progressBar.isVisible = true
-        binding.btnSearch.isEnabled = false
     }
 
     private fun routeToRecRecipe(recIngredientsUiState: RecIngredientsUiState.Success) {
