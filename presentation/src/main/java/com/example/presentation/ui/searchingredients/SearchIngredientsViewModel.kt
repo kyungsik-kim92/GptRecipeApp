@@ -35,10 +35,8 @@ class SearchIngredientsViewModel @Inject constructor(
         if (searchUiState is SearchUiState.Success) {
             _uiState.value = SearchIngredientsUiState.Idle(
                 searchKeyword = searchUiState.searchKeyword,
-                ingredientsList = if (currentState.ingredientsList.isEmpty()) {
+                ingredientsList = currentState.ingredientsList.ifEmpty {
                     searchUiState.ingredientsList
-                } else {
-                    currentState.ingredientsList
                 }
             )
         } else {

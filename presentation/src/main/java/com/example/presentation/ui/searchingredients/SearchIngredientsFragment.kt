@@ -7,7 +7,6 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
 import android.widget.Toast
-import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
@@ -43,6 +42,8 @@ class SearchIngredientsFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
         _binding = FragmentSearchIngredientsBinding.inflate(inflater, container, false)
+        binding.viewModel = viewModel
+        binding.lifecycleOwner = viewLifecycleOwner
         return binding.root
     }
 
@@ -54,7 +55,11 @@ class SearchIngredientsFragment : Fragment() {
         observeUiState()
         observeEvents()
         setupData()
+        setupSearchButton()
 
+    }
+
+    private fun setupSearchButton() {
         binding.btnSearch.setOnClickListener {
             val customIngredient = binding.etIngredients.text.toString().trim()
 
@@ -88,7 +93,6 @@ class SearchIngredientsFragment : Fragment() {
             }
             viewModel.getRecipeByIngredients()
         }
-
     }
 
     private fun setupRecyclerView() {
@@ -116,31 +120,8 @@ class SearchIngredientsFragment : Fragment() {
         lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewModel.uiState.collect { state ->
-                    when (state) {
-                        is SearchIngredientsUiState.Idle -> updateUI(
-                            state.searchKeyword,
-                            state.ingredientsList
-                        )
-
-                        is SearchIngredientsUiState.Loading -> {
-                            showLoading()
-                            updateUI(
-                                state.searchKeyword,
-                                state.ingredientsList
-                            )
-
-                        }
-
-                        is SearchIngredientsUiState.Success -> updateUI(
-                            state.searchKeyword,
-                            state.ingredientsList
-                        )
-
-                        is SearchIngredientsUiState.Error -> updateUI(
-                            state.searchKeyword,
-                            state.ingredientsList
-                        )
-                    }
+                    binding.uiState = state
+                    ingredientsAdapter.submitList(state.ingredientsList)
                 }
             }
         }
@@ -164,11 +145,6 @@ class SearchIngredientsFragment : Fragment() {
         }
     }
 
-    private fun updateUI(searchKeyword: String, ingredientsList: List<IngredientsModel>) {
-        binding.tvRecipeTitle.text = searchKeyword
-        ingredientsAdapter.submitList(ingredientsList)
-    }
-
     private fun routeToRecipe(uiState: UniteUiState) {
         val selectedIngredients = uiState.ingredientsList.filter { it.isSelected }
 
@@ -182,11 +158,6 @@ class SearchIngredientsFragment : Fragment() {
             .actionNavigationSearchIngredientsToRecipeFragment(uniteUiState)
         findNavController().navigate(action)
     }
-
-    private fun showLoading() {
-        binding.progressBar.isVisible = true
-    }
-
 
     override fun onDestroyView() {
         super.onDestroyView()

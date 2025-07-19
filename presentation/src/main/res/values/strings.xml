@@ -8,6 +8,7 @@
 
     <string name="searchTitle">레시피검색</string>
     <string name="searchPlaceHolder">검색</string>
+    <string name="searching">검색 중...</string>
     <string name="searchHint">레시피가 궁금한 음식을 검색해주세요.</string>
 
     <string name="recTitle">레시피 추천</string>
