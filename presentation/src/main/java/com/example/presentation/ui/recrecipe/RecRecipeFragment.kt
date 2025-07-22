@@ -39,6 +39,8 @@ class RecRecipeFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
         _binding = FragmentRecRecipeBinding.inflate(inflater, container, false)
+        binding.viewModel = viewModel
+        binding.lifecycleOwner = viewLifecycleOwner
         return binding.root
     }
 
@@ -69,15 +71,13 @@ class RecRecipeFragment : Fragment() {
         lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewModel.uiState.collect { state ->
+                    binding.uiState = state
                     when (state) {
                         is RecRecipeUiState.Idle -> {
                             updateUI(state.searchKeywordList)
                         }
 
-                        is RecRecipeUiState.Loading -> {
-                            showLoading()
-                            updateUI(state.searchKeywordList)
-                        }
+                        is RecRecipeUiState.Loading -> {}
 
                         is RecRecipeUiState.Success -> {
                             updateUI(state.searchKeywordList)
@@ -112,10 +112,6 @@ class RecRecipeFragment : Fragment() {
 
     private fun updateUI(searchKeywordList: List<String>) {
         searchKeywordAdapter.submitList(searchKeywordList)
-    }
-
-    private fun showLoading() {
-        binding.progressBar.isVisible = true
     }
 
     private fun routeToRecipe(uniteUiState: UniteUiState) {

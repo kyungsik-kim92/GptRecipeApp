@@ -4,7 +4,15 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <data>
+        <import type="android.view.View" />
+        <import type="com.example.presentation.ui.recrecipe.RecRecipeUiState" />
 
+        <variable
+            name="viewModel"
+            type="com.example.presentation.ui.recrecipe.RecRecipeViewModel" />
+        <variable
+            name="uiState"
+            type="com.example.presentation.ui.recrecipe.RecRecipeUiState" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -86,7 +94,7 @@
             android:indeterminateTint="@color/black"
             android:max="100"
             android:progress="0"
-            android:visibility="gone"
+            android:visibility="@{uiState instanceof RecRecipeUiState.Loading ? View.VISIBLE : View.GONE}"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
