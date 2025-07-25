@@ -116,7 +116,8 @@
                     app:layout_constraintEnd_toStartOf="@id/btn_wellBeing"
                     app:layout_constraintHorizontal_bias="0"
                     app:layout_constraintStart_toEndOf="@id/tv_recipeTitle"
-                    app:layout_constraintTop_toTopOf="@id/tv_recipeTitle" />
+                    app:layout_constraintTop_toTopOf="@id/tv_recipeTitle"
+                    app:tint="@{uiState.subscribe ? @color/orange_100 : @color/gray_150}" />
 
                 <TextView
                     android:id="@+id/btn_wellBeing"
