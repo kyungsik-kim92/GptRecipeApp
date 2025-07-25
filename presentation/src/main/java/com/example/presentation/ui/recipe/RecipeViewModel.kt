@@ -16,10 +16,13 @@ import com.example.presentation.model.WellbeingRecipeModel
 import com.example.presentation.ui.common.RecipePromptUtil
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asSharedFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
-import org.json.JSONArray
 import javax.inject.Inject
 
 @HiltViewModel
@@ -31,86 +34,146 @@ class RecipeViewModel @Inject constructor(
     private val findRecipeByNameUseCase: FindRecipeByNameUseCase
 ) : ViewModel() {
 
-    private val _uiState = MutableStateFlow(
-        RecipeUiState(
+    private val _uiState = MutableStateFlow<RecipeUiState>(RecipeUiState.Idle())
+    val uiState: StateFlow<RecipeUiState> = _uiState.asStateFlow()
+
+    private val _events = MutableSharedFlow<RecipeUiEvent>()
+    val events: SharedFlow<RecipeUiEvent> = _events.asSharedFlow()
+
+
+    fun setupInitialData(
+        searchKeyword: String,
+        ingredientsList: List<IngredientsModel>,
+        recipeList: List<RecipeModel>,
+        wellbeingRecipeList: List<WellbeingRecipeModel>
+    ) {
+        _uiState.value = RecipeUiState.Success(
             id = 0L,
-            searchKeyword = "",
-            ingredientsList = emptyList(),
-            recipeList = emptyList(),
-            isLoading = false,
+            searchKeyword = searchKeyword,
+            ingredientsList = ingredientsList,
+            recipeList = recipeList,
             isSubscribe = false,
-            wellbeingRecipeModel = emptyList()
+            wellbeingRecipeModel = wellbeingRecipeList
         )
-    )
-    val uiState: StateFlow<RecipeUiState> = _uiState
-
-    fun setSearchKeyword(searchKeyword: String) {
-        _uiState.value = _uiState.value.copy(searchKeyword = searchKeyword)
     }
-
-    fun setIngredientsList(ingredientsList: List<IngredientsModel>) {
-        _uiState.value = _uiState.value.copy(ingredientsList = ingredientsList)
-    }
-
-    fun setRecipeList(recipeList: List<RecipeModel>) {
-        _uiState.value = _uiState.value.copy(recipeList = recipeList)
-    }
-
-    fun setWellBeingRecipeList(wellbeingRecipeList: List<WellbeingRecipeModel>) {
-        _uiState.value = _uiState.value.copy(wellbeingRecipeModel = wellbeingRecipeList)
-    }
-
 
     fun getRecipe() {
-        _uiState.value = _uiState.value.copy(isLoading = true)
-        val searchKeyword = _uiState.value.searchKeyword
-        val ingredientsList = _uiState.value.ingredientsList
-        val prompt = RecipePromptUtil.createRecipePrompt(searchKeyword, ingredientsList)
+        val currentState = _uiState.value
+        _uiState.value = RecipeUiState.Loading(
+            id = currentState.id,
+            searchKeyword = currentState.searchKeyword,
+            ingredientsList = currentState.ingredientsList,
+            recipeList = currentState.recipeList,
+            isSubscribe = currentState.isSubscribe,
+            wellbeingRecipeModel = currentState.wellbeingRecipeModel
+        )
+
+        val prompt = RecipePromptUtil.createRecipePrompt(
+            currentState.searchKeyword,
+            currentState.ingredientsList
+        )
         viewModelScope.launch(Dispatchers.IO) {
             generateRecipeUseCase(prompt)
                 .onSuccess { response ->
                     val (recipeList, wellbeingList) = RecipePromptUtil.parseRecipeResponse(response.content)
-                    _uiState.value = _uiState.value.copy(
-                        isLoading = false,
-                        recipeList = recipeList,
-                        wellbeingRecipeModel = wellbeingList
+
+                    if (recipeList.isNotEmpty() || wellbeingList.isNotEmpty()) {
+                        val successState = RecipeUiState.Success(
+                            id = currentState.id,
+                            searchKeyword = currentState.searchKeyword,
+                            ingredientsList = currentState.ingredientsList,
+                            recipeList = recipeList,
+                            isSubscribe = currentState.isSubscribe,
+                            wellbeingRecipeModel = wellbeingList
+                        )
+                        _uiState.value = successState
+                        _events.emit(RecipeUiEvent.ShowSuccess("레시피가 생성되었습니다"))
+                    } else {
+                        val errorState = RecipeUiState.Error(
+                            id = currentState.id,
+                            searchKeyword = currentState.searchKeyword,
+                            ingredientsList = currentState.ingredientsList,
+                            recipeList = currentState.recipeList,
+                            isSubscribe = currentState.isSubscribe,
+                            wellbeingRecipeModel = currentState.wellbeingRecipeModel,
+                            message = "레시피를 생성할 수 없습니다"
+                        )
+                        _uiState.value = errorState
+                        _events.emit(RecipeUiEvent.ShowError("레시피를 생성할 수 없습니다"))
+                    }
+                }
+                .onFailure { exception ->
+                    val errorState = RecipeUiState.Error(
+                        id = currentState.id,
+                        searchKeyword = currentState.searchKeyword,
+                        ingredientsList = currentState.ingredientsList,
+                        recipeList = currentState.recipeList,
+                        isSubscribe = currentState.isSubscribe,
+                        wellbeingRecipeModel = currentState.wellbeingRecipeModel,
+                        message = exception.message ?: "Exception Message"
                     )
-                }.onFailure {
-                    _uiState.value = _uiState.value.copy(
-                        isLoading = false
-                    )
+                    _uiState.value = errorState
+                    _events.emit(RecipeUiEvent.ShowError(errorState.message))
                 }
         }
     }
 
     fun insertRecipe() {
         val currentState = _uiState.value
-        _uiState.value = currentState.copy(isLoading = true)
 
         viewModelScope.launch(Dispatchers.IO) {
             val existingRecipe = findRecipeByNameUseCase(currentState.searchKeyword)
 
             if (existingRecipe != null) {
-                _uiState.value = currentState.copy(
-                    id = existingRecipe.id,
-                    isSubscribe = true,
-                    isLoading = false
-                )
+                val successState = when (currentState) {
+                    is RecipeUiState.Loading -> RecipeUiState.Success(
+                        id = existingRecipe.id,
+                        searchKeyword = currentState.searchKeyword,
+                        ingredientsList = currentState.ingredientsList,
+                        recipeList = currentState.recipeList,
+                        isSubscribe = true,
+                        wellbeingRecipeModel = currentState.wellbeingRecipeModel
+                    )
+
+                    else -> RecipeUiState.Success(
+                        id = existingRecipe.id,
+                        searchKeyword = currentState.searchKeyword,
+                        ingredientsList = currentState.ingredientsList,
+                        recipeList = currentState.recipeList,
+                        isSubscribe = true,
+                        wellbeingRecipeModel = currentState.wellbeingRecipeModel
+                    )
+                }
+                _uiState.value = successState
+                _events.emit(RecipeUiEvent.ShowSuccess("즐겨찾기에 추가되었습니다"))
             } else {
                 val localRecipe = createLocalRecipeFromCurrentState()
 
                 insertRecipeUseCase(localRecipe)
                     .onSuccess { id ->
-                        _uiState.value = _uiState.value.copy(
+                        val successState = RecipeUiState.Success(
                             id = id,
+                            searchKeyword = currentState.searchKeyword,
+                            ingredientsList = currentState.ingredientsList,
+                            recipeList = currentState.recipeList,
                             isSubscribe = true,
-                            isLoading = false,
+                            wellbeingRecipeModel = currentState.wellbeingRecipeModel
                         )
+                        _uiState.value = successState
+                        _events.emit(RecipeUiEvent.ShowSuccess("즐겨찾기에 추가되었습니다"))
                     }
                     .onFailure { exception ->
-                        _uiState.value = _uiState.value.copy(
-                            isLoading = false,
+                        val errorState = RecipeUiState.Error(
+                            id = currentState.id,
+                            searchKeyword = currentState.searchKeyword,
+                            ingredientsList = currentState.ingredientsList,
+                            recipeList = currentState.recipeList,
+                            isSubscribe = currentState.isSubscribe,
+                            wellbeingRecipeModel = currentState.wellbeingRecipeModel,
+                            message = "즐겨찾기 추가에 실패했습니다"
                         )
+                        _uiState.value = errorState
+                        _events.emit(RecipeUiEvent.ShowError("즐겨찾기 추가에 실패했습니다"))
                     }
             }
         }
@@ -131,41 +194,69 @@ class RecipeViewModel @Inject constructor(
         val currentState = _uiState.value
 
         viewModelScope.launch {
-            _uiState.value = _uiState.value.copy(isLoading = true)
             deleteRecipeUseCase(currentState.searchKeyword)
                 .onSuccess {
-                    _uiState.value = _uiState.value.copy(
+                    val successState = RecipeUiState.Success(
                         id = 0L,
+                        searchKeyword = currentState.searchKeyword,
+                        ingredientsList = currentState.ingredientsList,
+                        recipeList = currentState.recipeList,
                         isSubscribe = false,
-                        isLoading = false,
+                        wellbeingRecipeModel = currentState.wellbeingRecipeModel
                     )
+                    _uiState.value = successState
+                    _events.emit(RecipeUiEvent.ShowSuccess("즐겨찾기에서 제거되었습니다"))
                 }
                 .onFailure { exception ->
-                    _uiState.value = _uiState.value.copy(
-                        isLoading = false,
+                    val errorState = RecipeUiState.Error(
+                        id = currentState.id,
+                        searchKeyword = currentState.searchKeyword,
+                        ingredientsList = currentState.ingredientsList,
+                        recipeList = currentState.recipeList,
+                        isSubscribe = currentState.isSubscribe,
+                        wellbeingRecipeModel = currentState.wellbeingRecipeModel,
+                        message = "즐겨찾기 제거에 실패했습니다"
                     )
+                    _uiState.value = errorState
+                    _events.emit(RecipeUiEvent.ShowError("즐겨찾기 제거에 실패했습니다"))
                 }
         }
     }
 
 
     fun findRecipeById(id: Long) {
-        _uiState.value = _uiState.value.copy(isLoading = true)
+        _uiState.value = RecipeUiState.Loading(
+            id = 0L,
+            searchKeyword = "",
+            ingredientsList = emptyList(),
+            recipeList = emptyList(),
+            isSubscribe = false,
+            wellbeingRecipeModel = emptyList()
+        )
         viewModelScope.launch(Dispatchers.IO) {
             val recipe = findRecipeByIdUseCase(id)
             if (recipe != null) {
-                _uiState.value = RecipeUiState(
+                val successState = RecipeUiState.Success(
                     id = recipe.id,
                     searchKeyword = recipe.searchKeyword,
                     isSubscribe = true,
-                    isLoading = false,
                     ingredientsList = recipe.ingredientsList.map { it.toPresentation() },
                     recipeList = recipe.recipeList.map { it.toPresentation() },
-                    wellbeingRecipeModel = recipe.wellbeingRecipeList.map { it.toPresentation() })
-            } else {
-                _uiState.value = _uiState.value.copy(
-                    isLoading = false,
+                    wellbeingRecipeModel = recipe.wellbeingRecipeList.map { it.toPresentation() }
                 )
+                _uiState.value = successState
+            } else {
+                val errorState = RecipeUiState.Error(
+                    id = 0L,
+                    searchKeyword = "",
+                    ingredientsList = emptyList(),
+                    recipeList = emptyList(),
+                    isSubscribe = false,
+                    wellbeingRecipeModel = emptyList(),
+                    message = "레시피를 찾을 수 없습니다"
+                )
+                _uiState.value = errorState
+                _events.emit(RecipeUiEvent.ShowError("레시피를 찾을 수 없습니다"))
             }
         }
     }
@@ -173,12 +264,36 @@ class RecipeViewModel @Inject constructor(
     fun checkIfFavoriteByName(recipeName: String) {
         viewModelScope.launch {
             findRecipeByNameUseCase(recipeName)?.let { recipe ->
-                _uiState.value = _uiState.value.copy(
-                    isSubscribe = true,
-                    id = recipe.id
-                )
+                val currentState = _uiState.value
+                _uiState.value = when (currentState) {
+                    is RecipeUiState.Idle -> currentState.copy(isSubscribe = true, id = recipe.id)
+                    is RecipeUiState.Loading -> currentState.copy(
+                        isSubscribe = true,
+                        id = recipe.id
+                    )
+
+                    is RecipeUiState.Success -> currentState.copy(
+                        isSubscribe = true,
+                        id = recipe.id
+                    )
+
+                    is RecipeUiState.Error -> currentState.copy(isSubscribe = true, id = recipe.id)
+                }
+            }
+
+        }
+    }
+
+    fun routeToWellbeing() {
+        val currentState = _uiState.value
+        if (currentState.wellbeingRecipeModel.isEmpty()) {
+            viewModelScope.launch {
+                _events.emit(RecipeUiEvent.ShowError("웰빙 레시피가 없습니다"))
+            }
+        } else {
+            viewModelScope.launch {
+                _events.emit(RecipeUiEvent.RouteToWellbeing(currentState))
             }
         }
     }
 }
-

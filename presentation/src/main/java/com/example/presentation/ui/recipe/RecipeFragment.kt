@@ -1,13 +1,10 @@
 package com.example.presentation.ui.recipe
 
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
-import androidx.core.content.ContextCompat
-import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
@@ -15,7 +12,6 @@ import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
-import com.example.presentation.R
 import com.example.presentation.databinding.FragmentRecipeBinding
 import com.example.presentation.ui.adapter.IngredientsAdapter
 import com.example.presentation.ui.adapter.RecipeAdapter
@@ -35,6 +31,7 @@ class RecipeFragment : Fragment() {
     private var recipeAdapter = RecipeAdapter()
 
     private val args: RecipeFragmentArgs by navArgs()
+    private var currentTab = TabType.INGREDIENTS
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -42,23 +39,31 @@ class RecipeFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
         _binding = FragmentRecipeBinding.inflate(inflater, container, false)
+        binding.viewModel = viewModel
+        binding.lifecycleOwner = viewLifecycleOwner
         return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        setupUI()
-        addObserver()
-        loadArgData()
+        setupData()
+        setupBackButton()
+        setupWellbeingButton()
+        setupRecyclerView()
+        setupTabButton()
+        setupSubscribeButton()
+        observeUiState()
+        observeEvents()
     }
 
-    private fun loadArgData() {
+    private fun setupData() {
         args.uniteUiModel?.let { uniteUiModel ->
-            viewModel.setSearchKeyword(uniteUiModel.searchKeyword)
-            viewModel.setIngredientsList(uniteUiModel.ingredientsList)
-            viewModel.setRecipeList(uniteUiModel.recipeList)
-            viewModel.setWellBeingRecipeList(uniteUiModel.wellbeingRecipeList)
-
+            viewModel.setupInitialData(
+                searchKeyword = uniteUiModel.searchKeyword,
+                ingredientsList = uniteUiModel.ingredientsList,
+                recipeList = uniteUiModel.recipeList,
+                wellbeingRecipeList = uniteUiModel.wellbeingRecipeList
+            )
             viewModel.checkIfFavoriteByName(uniteUiModel.searchKeyword)
         }
 
@@ -67,91 +72,105 @@ class RecipeFragment : Fragment() {
         }
     }
 
-    private fun setupUI() {
+    private fun setupBackButton() {
         binding.btnBack.setOnClickListener {
             findNavController().popBackStack()
         }
-        with(binding) {
-            rvIngredientsList.adapter = ingredientsAdapter
-            rvRecipeList.adapter = recipeAdapter
-            isIngredients = true
-            isRecipe = false
+    }
 
-            btnIngredients.setOnClickListener {
-                with(binding) {
-                    isIngredients = true
-                    isRecipe = false
-                }
-            }
+    private fun setupWellbeingButton() {
+        binding.btnWellBeing.setOnClickListener {
+            viewModel.routeToWellbeing()
+        }
+    }
 
-            btnRecipe.setOnClickListener {
-                with(binding) {
-                    isIngredients = false
-                    isRecipe = true
-                    if (viewModel.uiState.value.recipeList.isEmpty()) {
-                        viewModel.getRecipe()
-                    }
-                }
+    private fun setupRecyclerView() {
+        binding.rvIngredientsList.adapter = ingredientsAdapter
+        binding.rvRecipeList.adapter = recipeAdapter
+    }
+
+    private fun setupTabButton() {
+        binding.btnIngredients.setOnClickListener {
+            switchTab(TabType.INGREDIENTS)
+        }
+
+        binding.btnRecipe.setOnClickListener {
+            switchTab(TabType.RECIPE)
+
+            val currentState = viewModel.uiState.value
+            if (currentState.recipeList.isEmpty()) {
+                viewModel.getRecipe()
             }
-            btnWellBeing.setOnClickListener {
-                routeWellbeing()
-            }
-            with(btnSubscribe) {
-                setOnClickListener {
-                    val currentState = viewModel.uiState.value
-                    if (currentState.isSubscribe) {
-                        viewModel.deleteRecipe()
-                        Toast.makeText(requireContext(), "즐겨찾기에서 제거되었습니다", Toast.LENGTH_SHORT)
-                            .show()
-                    } else {
-                        viewModel.insertRecipe()
-                        Toast.makeText(requireContext(), "즐겨찾기에 추가되었습니다", Toast.LENGTH_SHORT).show()
-                    }
-                }
+        }
+
+        switchTab(TabType.INGREDIENTS)
+    }
+
+
+    private fun switchTab(tabType: TabType) {
+        currentTab = tabType
+        binding.isIngredients = (tabType == TabType.INGREDIENTS)
+        binding.isRecipe = (tabType == TabType.RECIPE)
+
+    }
+
+    private fun setupSubscribeButton() {
+        binding.btnSubscribe.setOnClickListener {
+            val currentState = viewModel.uiState.value
+
+            if (currentState.isSubscribe) {
+                viewModel.deleteRecipe()
+            } else {
+                viewModel.insertRecipe()
             }
         }
     }
 
-    private fun addObserver() {
+
+    private fun observeUiState() {
         lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
-                viewModel.uiState.collect {
-                    binding.tvRecipeTitle.text = it.searchKeyword
-                    ingredientsAdapter.submitList(it.ingredientsList)
-                    recipeAdapter.submitList(it.recipeList)
-                    binding.progressBar.isVisible = it.isLoading
-
-                    updateSubscribeButton(it.isSubscribe)
-                    Log.d("RecipeFragment", "웰빙 레시피 수: ${it.wellbeingRecipeModel.size}")
+                viewModel.uiState.collect { state ->
+                    binding.uiState = state
+                    updateRecyclerView(state)
                 }
             }
         }
     }
 
-    private fun updateSubscribeButton(isSubscribe: Boolean) {
-        binding.btnSubscribe.background = if (isSubscribe) {
-            ContextCompat.getDrawable(requireContext(), R.drawable.ic_clamp_subscribe_fill)
-        } else {
-            ContextCompat.getDrawable(requireContext(), R.drawable.ic_clamp_subscribe_outline)
+    private fun observeEvents() {
+        lifecycleScope.launch {
+            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                viewModel.events.collect { event ->
+                    when (event) {
+                        is RecipeUiEvent.ShowSuccess -> {
+                            showToast(event.message)
+                        }
+
+                        is RecipeUiEvent.ShowError -> {
+                            showToast(event.message)
+                        }
+
+                        is RecipeUiEvent.RouteToWellbeing -> {
+                            routeToWellbeing(event.recipeUiState)
+                        }
+                    }
+                }
+            }
         }
     }
 
-    private fun routeWellbeing() {
-        val uiState = viewModel.uiState.value
-        if (uiState.wellbeingRecipeModel.isEmpty()) {
-            Toast.makeText(requireContext(), "웰빙 레시피가 없습니다.", Toast.LENGTH_SHORT).show()
-            return
+    private fun updateRecyclerView(state: RecipeUiState) {
+        if (state.ingredientsList.isNotEmpty()) {
+            ingredientsAdapter.submitList(state.ingredientsList)
         }
 
-        val recipeUiState = RecipeUiState(
-            id = uiState.id,
-            searchKeyword = uiState.searchKeyword,
-            recipeList = uiState.recipeList,
-            ingredientsList = uiState.ingredientsList,
-            isLoading = uiState.isLoading,
-            isSubscribe = uiState.isSubscribe,
-            wellbeingRecipeModel = uiState.wellbeingRecipeModel
-        )
+        if (state.recipeList.isNotEmpty()) {
+            recipeAdapter.submitList(state.recipeList)
+        }
+    }
+
+    private fun routeToWellbeing(recipeUiState: RecipeUiState) {
         val action =
             RecipeFragmentDirections.actionNavigationRecipeToWellbeingRecipeFragment(
                 recipeUiState
@@ -159,8 +178,16 @@ class RecipeFragment : Fragment() {
         findNavController().navigate(action)
     }
 
+    private fun showToast(message: String) {
+        Toast.makeText(requireContext(), message, Toast.LENGTH_SHORT).show()
+    }
+
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
+    }
+
+    enum class TabType {
+        INGREDIENTS, RECIPE
     }
 }

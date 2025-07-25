@@ -69,7 +69,7 @@
             android:layout_marginTop="24dp"
             android:overScrollMode="never"
             android:scrollbars="none"
-            android:visibility="@{uiState.loading ? View.GONE : View.VISIBLE}"
+            android:visibility="@{uiState instanceof RecipeUiState.Loading ? View.GONE : View.VISIBLE}"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintTop_toBottomOf="@id/layout_toolbar">
 
@@ -109,15 +109,13 @@
                     android:layout_width="18dp"
                     android:layout_height="18dp"
                     android:layout_marginHorizontal="8dp"
-                    android:background="@drawable/ic_clamp_subscribe_outline"
-                    android:src="@{uiState.subscribe ? @drawable/ic_clamp_subscribe_filled : @drawable/ic_clamp_subscribe_outline}"
+                    android:src="@{uiState.isSubscribe ? @drawable/ic_clamp_subscribe_fill : @drawable/ic_clamp_subscribe_outline}"
                     app:layout_constrainedWidth="true"
                     app:layout_constraintBottom_toBottomOf="@id/tv_recipeTitle"
                     app:layout_constraintEnd_toStartOf="@id/btn_wellBeing"
                     app:layout_constraintHorizontal_bias="0"
                     app:layout_constraintStart_toEndOf="@id/tv_recipeTitle"
-                    app:layout_constraintTop_toTopOf="@id/tv_recipeTitle"
-                    app:tint="@{uiState.subscribe ? @color/orange_100 : @color/gray_150}" />
+                    app:layout_constraintTop_toTopOf="@id/tv_recipeTitle" />
 
                 <TextView
                     android:id="@+id/btn_wellBeing"
@@ -138,7 +136,7 @@
                     android:layout_height="35dp"
                     android:layout_marginStart="16dp"
                     android:layout_marginTop="30dp"
-                    android:background="@{isIngredients ? @drawable/box_30r_orange100 : @drawable/box_30r_gray_light}"
+                    android:background="@{isIngredients ? @drawable/box_30r_orange100 : @drawable/box_30r_white}"
                     android:gravity="center"
                     android:text="@string/ingredients"
                     android:textColor="@{isIngredients ? @color/white : @color/gray_150}"
@@ -156,7 +154,7 @@
                     android:layout_marginStart="8dp"
                     android:layout_marginTop="30dp"
                     android:layout_marginEnd="16dp"
-                    android:background="@{isRecipe ? @drawable/box_30r_orange100 : @drawable/box_30r_gray_light}"
+                    android:background="@{isRecipe ? @drawable/box_30r_orange100 : @drawable/box_30r_white}"
                     android:gravity="center"
                     android:text="@string/recipe"
                     android:textColor="@{isRecipe ? @color/white : @color/gray_150}"
@@ -207,7 +205,7 @@
             android:indeterminateTint="@color/black"
             android:max="100"
             android:progress="0"
-            android:visibility="@{uiState.loading ? View.VISIBLE : View.GONE}"
+            android:visibility="@{uiState instanceof RecipeUiState.Loading ? View.VISIBLE : View.GONE}"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
