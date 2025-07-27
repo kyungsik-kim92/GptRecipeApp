@@ -1,6 +1,5 @@
 package com.example.presentation.ui.splash
 
-import android.animation.Animator
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -30,6 +29,8 @@ class SplashFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
         _binding = FragmentSplashBinding.inflate(inflater, container, false)
+        binding.viewModel = viewModel
+        binding.lifecycleOwner = viewLifecycleOwner
         return binding.root
     }
 
@@ -42,19 +43,6 @@ class SplashFragment : Fragment() {
     private fun setupLottieAnimation() {
         with(binding.splash) {
             setAnimation(R.raw.splash)
-            addAnimatorListener(object : Animator.AnimatorListener {
-                override fun onAnimationStart(animation: Animator) {
-                    viewModel.onAnimationStart()
-                }
-
-                override fun onAnimationEnd(animation: Animator) {
-                    viewModel.onAnimationEnd()
-                }
-
-                override fun onAnimationCancel(animation: Animator) {}
-
-                override fun onAnimationRepeat(animation: Animator) {}
-            })
             playAnimation()
         }
     }

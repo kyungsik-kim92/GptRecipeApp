@@ -4,6 +4,11 @@
 
     <data>
 
+        <import type="com.example.presentation.ext.LottieAnimateState" />
+
+        <variable
+            name="viewModel"
+            type="com.example.presentation.ui.splash.SplashViewModel" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -12,6 +17,7 @@
 
         <com.airbnb.lottie.LottieAnimationView
             android:id="@+id/splash"
+            onLottieAnimateState="@{viewModel::onLottieAnimationState}"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_centerInParent="true"

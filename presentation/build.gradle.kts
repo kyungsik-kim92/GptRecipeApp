@@ -5,6 +5,7 @@ plugins {
     alias(libs.plugins.hilt.android)
     id("androidx.navigation.safeargs.kotlin")
     id("kotlin-parcelize")
+    kotlin("kapt")
 }
 
 android {
@@ -62,6 +63,5 @@ dependencies {
     ksp(libs.hilt.compiler)
 
     implementation("com.airbnb.android:lottie:6.1.0")
-
 
 }

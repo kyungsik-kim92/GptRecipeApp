@@ -2,6 +2,7 @@ package com.example.presentation.ui.splash
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.presentation.ext.LottieAnimateState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -22,14 +23,33 @@ class SplashViewModel @Inject constructor() : ViewModel() {
     private val _events = MutableSharedFlow<SplashUiEvent>()
     val events: SharedFlow<SplashUiEvent> = _events.asSharedFlow()
 
-    fun onAnimationStart() {
+    private fun onAnimationStart() {
         _uiState.value = SplashUiState.Loading
     }
 
-    fun onAnimationEnd() {
+    private fun onAnimationEnd() {
         viewModelScope.launch {
             _uiState.value = SplashUiState.Ready
             _events.emit(SplashUiEvent.RouteToHome)
         }
+    }
+
+    fun onLottieAnimationState(state: Any?): Any {
+        when (state) {
+            is LottieAnimateState.Start -> {
+                onAnimationStart()
+            }
+
+            is LottieAnimateState.End -> {
+                onAnimationEnd()
+            }
+
+            is LottieAnimateState.Cancel -> {
+                viewModelScope.launch {
+                    _events.emit(SplashUiEvent.ShowError("Error Message"))
+                }
+            }
+        }
+        return Unit
     }
 }
