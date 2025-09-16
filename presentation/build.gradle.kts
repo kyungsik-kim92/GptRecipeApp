@@ -45,23 +45,14 @@ dependencies {
     implementation(project(":domain"))
     implementation(project(":data"))
 
-    implementation(libs.androidx.core.ktx)
-    implementation(libs.androidx.appcompat)
-    implementation(libs.material)
-    testImplementation(libs.junit)
-    androidTestImplementation(libs.androidx.junit)
-    androidTestImplementation(libs.androidx.espresso.core)
+    implementation(libs.bundles.androidx.core)
 
-    // flexbox
-    implementation("com.google.android.flexbox:flexbox:3.0.0")
-
-    // Navigation-UI
-    implementation("androidx.navigation:navigation-fragment-ktx:2.8.9")
-    implementation("androidx.navigation:navigation-ui-ktx:2.8.9")
+    implementation(libs.bundles.navigation)
 
     implementation(libs.hilt.android)
     ksp(libs.hilt.compiler)
 
-    implementation("com.airbnb.android:lottie:6.1.0")
+    implementation(libs.flexbox)
+    implementation(libs.lottie)
 
 }
