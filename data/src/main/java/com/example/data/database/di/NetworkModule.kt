@@ -28,7 +28,8 @@ object NetworkModule {
     @Provides
     @Singleton
     fun provideOkHttpClient(
-        httpLoggingInterceptor: HttpLoggingInterceptor
+        httpLoggingInterceptor: HttpLoggingInterceptor,
+        apiKeyProvider: ApiKeyProvider
     ): OkHttpClient {
         return OkHttpClient.Builder()
             .connectTimeout(60, TimeUnit.SECONDS)
@@ -38,7 +39,7 @@ object NetworkModule {
                 chain.proceed(
                     chain.request().newBuilder()
                         .addHeader("Content-Type", "application/json")
-                        .addHeader("Authorization", "Bearer ${NetworkConstant.GPT_TOKEN}")
+                        .addHeader("Authorization", "Bearer ${apiKeyProvider.getApiKey()}")
                         .method(chain.request().method, chain.request().body)
                         .build()
                 )
@@ -53,7 +54,7 @@ object NetworkModule {
         okHttpClient: OkHttpClient
     ): Retrofit {
         return Retrofit.Builder()
-            .baseUrl(NetworkConstant.SERVER_BASE_URL)
+            .baseUrl(NetworkConstant.BASE_URL)
             .client(okHttpClient)
             .addConverterFactory(GsonConverterFactory.create())
             .build()
