@@ -38,9 +38,7 @@ object NetworkModule {
             .addInterceptor { chain ->
                 chain.proceed(
                     chain.request().newBuilder()
-                        .addHeader("Content-Type", "application/json")
                         .addHeader("Authorization", "Bearer ${apiKeyProvider.getApiKey()}")
-                        .method(chain.request().method, chain.request().body)
                         .build()
                 )
             }
