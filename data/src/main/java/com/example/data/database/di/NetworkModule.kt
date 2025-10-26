@@ -28,8 +28,7 @@ object NetworkModule {
     @Provides
     @Singleton
     fun provideOkHttpClient(
-        httpLoggingInterceptor: HttpLoggingInterceptor,
-        apiKeyProvider: ApiKeyProvider
+        httpLoggingInterceptor: HttpLoggingInterceptor
     ): OkHttpClient {
         return OkHttpClient.Builder()
             .connectTimeout(60, TimeUnit.SECONDS)
@@ -38,7 +37,7 @@ object NetworkModule {
             .addInterceptor { chain ->
                 chain.proceed(
                     chain.request().newBuilder()
-                        .addHeader("Authorization", "Bearer ${apiKeyProvider.getApiKey()}")
+                        .addHeader("Authorization", "Bearer  ${NetworkConstant.GPT_TOKEN}")
                         .build()
                 )
             }
@@ -65,6 +64,4 @@ object NetworkModule {
     ): ApiService {
         return retrofit.create(ApiService::class.java)
     }
-
-
 }
