@@ -31,7 +31,8 @@ class MainActivity : AppCompatActivity() {
             binding.navView.visibility = when (destination.id) {
                 R.id.navigation_search,
                 R.id.navigation_rec,
-                R.id.navigation_favorite -> View.VISIBLE
+                R.id.navigation_favorite,
+                R.id.navigation_shopping_list -> View.VISIBLE
 
                 else -> View.GONE
             }
