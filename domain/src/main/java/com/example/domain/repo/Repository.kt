@@ -2,6 +2,7 @@ package com.example.domain.repo
 
 import com.example.domain.model.LocalRecipe
 import com.example.domain.model.RecipeResponse
+import com.example.domain.model.ShoppingItem
 import kotlinx.coroutines.flow.Flow
 
 interface Repository {
@@ -20,4 +21,14 @@ interface Repository {
     suspend fun findRecipeByName(recipeName: String): LocalRecipe?
 
     fun getAllFavoritesFlow(): Flow<List<LocalRecipe>>
+
+    fun getAllShoppingItems(): Flow<List<ShoppingItem>>
+
+    suspend fun insertShoppingItems(items: List<ShoppingItem>)
+
+    suspend fun updateShoppingItemChecked(itemId: Long, isChecked: Boolean)
+
+    suspend fun deleteAllShoppingItems()
+
+    suspend fun deleteCheckedShoppingItems()
 }

@@ -4,10 +4,13 @@ import com.example.data.database.source.DataSource
 import com.example.data.mapper.toDomain
 import com.example.data.mapper.toEntity
 import com.example.data.mapper.toRecipeResponse
+import com.example.data.mapper.toShoppingItemDomain
+import com.example.data.mapper.toShoppingItemEntity
 import com.example.data.remote.dto.GptRequestParam
 import com.example.data.remote.dto.MessageRequestParam
 import com.example.domain.model.LocalRecipe
 import com.example.domain.model.RecipeResponse
+import com.example.domain.model.ShoppingItem
 import com.example.domain.repo.Repository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
@@ -67,6 +70,29 @@ class RepositoryImpl @Inject constructor(private val dataSource: DataSource) : R
         return dataSource.getAllFavoritesFlow().map { entityList ->
             entityList.map { it.toDomain() }
         }
+    }
+
+    override fun getAllShoppingItems(): Flow<List<ShoppingItem>> {
+        return dataSource.getAllShoppingItems().map { entityList ->
+            entityList.map { it.toShoppingItemDomain() }
+        }
+    }
+
+    override suspend fun insertShoppingItems(items: List<ShoppingItem>) {
+        val entities = items.map { it.toShoppingItemEntity() }
+        dataSource.insertShoppingItems(entities)
+    }
+
+    override suspend fun updateShoppingItemChecked(itemId: Long, isChecked: Boolean) {
+        dataSource.updateShoppingItemChecked(itemId, isChecked)
+    }
+
+    override suspend fun deleteAllShoppingItems() {
+        dataSource.deleteAllShoppingItems()
+    }
+
+    override suspend fun deleteCheckedShoppingItems() {
+        dataSource.deleteCheckedShoppingItems()
     }
 
 }

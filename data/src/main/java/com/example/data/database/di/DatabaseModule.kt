@@ -4,6 +4,7 @@ import android.content.Context
 import androidx.room.Room
 import com.example.data.database.AppDatabase
 import com.example.data.database.dao.RecipeDao
+import com.example.data.database.dao.ShoppingItemDao
 import com.example.data.database.network.ApiService
 import com.example.data.database.source.DataSource
 import com.example.data.database.source.impl.DataSourceImpl
@@ -35,6 +36,12 @@ object DatabaseModule {
     fun provideRecipeDao(appDatabase: AppDatabase): RecipeDao {
         return appDatabase.recipeDao
     }
+
+    @Provides
+    @Singleton
+    fun provideShoppingItemDao(appDatabase: AppDatabase): ShoppingItemDao {
+        return appDatabase.shoppingItemDao
+    }
 }
 
 @InstallIn(SingletonComponent::class)
@@ -45,8 +52,9 @@ object DataModule {
     fun provideDataSource(
         apiService: ApiService,
         recipeDao: RecipeDao,
+        shoppingItemDao: ShoppingItemDao
     ): DataSource {
-        return DataSourceImpl(apiService, recipeDao)
+        return DataSourceImpl(apiService, recipeDao, shoppingItemDao)
     }
 
     @Provides

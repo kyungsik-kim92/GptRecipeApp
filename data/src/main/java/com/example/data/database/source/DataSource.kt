@@ -1,6 +1,7 @@
 package com.example.data.database.source
 
 import com.example.data.local.entity.LocalRecipeEntity
+import com.example.data.local.entity.ShoppingItemEntity
 import com.example.data.remote.dto.GPT
 import com.example.data.remote.dto.GptRequestParam
 import kotlinx.coroutines.flow.Flow
@@ -23,5 +24,15 @@ interface DataSource {
     suspend fun findRecipe(id: Long): LocalRecipeEntity?
 
     fun getAllFavoritesFlow(): Flow<List<LocalRecipeEntity>>
+
+    fun getAllShoppingItems(): Flow<List<ShoppingItemEntity>>
+
+    suspend fun insertShoppingItems(items: List<ShoppingItemEntity>)
+
+    suspend fun updateShoppingItemChecked(itemId: Long, isChecked: Boolean)
+
+    suspend fun deleteAllShoppingItems()
+
+    suspend fun deleteCheckedShoppingItems()
 
 }
