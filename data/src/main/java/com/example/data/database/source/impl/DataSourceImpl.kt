@@ -1,9 +1,11 @@
 package com.example.data.database.source.impl
 
 import com.example.data.database.dao.RecipeDao
+import com.example.data.database.dao.ShoppingItemDao
 import com.example.data.database.network.ApiService
 import com.example.data.database.source.DataSource
 import com.example.data.local.entity.LocalRecipeEntity
+import com.example.data.local.entity.ShoppingItemEntity
 import com.example.data.remote.dto.GPT
 import com.example.data.remote.dto.GptRequestParam
 import kotlinx.coroutines.flow.Flow
@@ -11,7 +13,8 @@ import javax.inject.Inject
 
 class DataSourceImpl @Inject constructor(
     private val apiService: ApiService,
-    private val recipeDao: RecipeDao
+    private val recipeDao: RecipeDao,
+    private val shoppingItemDao: ShoppingItemDao
 ) : DataSource {
     override suspend fun getGptResponse(body: GptRequestParam): GPT {
         return apiService.getGptResponse(body)
@@ -43,5 +46,25 @@ class DataSourceImpl @Inject constructor(
 
     override fun getAllFavoritesFlow(): Flow<List<LocalRecipeEntity>> {
         return recipeDao.getAllFavoritesFlow()
+    }
+
+    override fun getAllShoppingItems(): Flow<List<ShoppingItemEntity>> {
+        return shoppingItemDao.getAllItems()
+    }
+
+    override suspend fun insertShoppingItems(items: List<ShoppingItemEntity>) {
+        shoppingItemDao.insertItems(items)
+    }
+
+    override suspend fun updateShoppingItemChecked(itemId: Long, isChecked: Boolean) {
+        shoppingItemDao.updateItemChecked(itemId, isChecked)
+    }
+
+    override suspend fun deleteAllShoppingItems() {
+        shoppingItemDao.deleteAllItems()
+    }
+
+    override suspend fun deleteCheckedShoppingItems() {
+        shoppingItemDao.deleteCheckedItems()
     }
 }
