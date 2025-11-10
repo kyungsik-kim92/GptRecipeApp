@@ -17,3 +17,8 @@ sealed class ShoppingListUiState {
         val message: String
     ) : ShoppingListUiState()
 }
+sealed class ShoppingListEvent {
+    data class ShowSuccess(val message: String) : ShoppingListEvent()
+    data class ShowError(val message: String) : ShoppingListEvent()
+    object ShowDeleteAllConfirmation : ShoppingListEvent()
+}
