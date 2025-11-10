@@ -207,6 +207,19 @@
                     tools:listitem="@layout/item_ingredients"
                     tools:visibility="gone" />
 
+                <TextView
+                    android:id="@+id/btn_shopping_list"
+                    android:layout_width="match_parent"
+                    android:layout_height="51dp"
+                    android:layout_marginTop="20dp"
+                    android:background="@drawable/box_8r_orange100"
+                    android:gravity="center"
+                    android:text="@string/cartlist"
+                    android:textColor="@color/white"
+                    android:textSize="16sp"
+                    android:textStyle="bold"
+                    app:layout_constraintTop_toBottomOf="@id/rv_ingredientsList" />
+
             </androidx.constraintlayout.widget.ConstraintLayout>
 
         </ScrollView>
