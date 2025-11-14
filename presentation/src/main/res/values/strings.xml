@@ -42,5 +42,6 @@
     <string name="recipeWellbeing">건강하게 먹고 싶다면?</string>
     <string name="ingredients">재료</string>
     <string name="recipe">레시피</string>
+    <string name="cartlist">🛒 장보기 리스트 생성</string>
 
 </resources>

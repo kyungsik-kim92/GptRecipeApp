@@ -3,10 +3,12 @@ package com.example.presentation.ui.recipe
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.domain.model.LocalRecipe
+import com.example.domain.repo.Repository
 import com.example.domain.usecase.DeleteRecipeUseCase
 import com.example.domain.usecase.FindRecipeByIdUseCase
 import com.example.domain.usecase.FindRecipeByNameUseCase
 import com.example.domain.usecase.GenerateRecipeUseCase
+import com.example.domain.usecase.GenerateShoppingListUseCase
 import com.example.domain.usecase.InsertRecipeUseCase
 import com.example.presentation.mapper.toDomain
 import com.example.presentation.mapper.toPresentation
@@ -31,7 +33,8 @@ class RecipeViewModel @Inject constructor(
     private val insertRecipeUseCase: InsertRecipeUseCase,
     private val deleteRecipeUseCase: DeleteRecipeUseCase,
     private val findRecipeByIdUseCase: FindRecipeByIdUseCase,
-    private val findRecipeByNameUseCase: FindRecipeByNameUseCase
+    private val findRecipeByNameUseCase: FindRecipeByNameUseCase,
+    private val generateShoppingListUseCase: GenerateShoppingListUseCase
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow<RecipeUiState>(RecipeUiState.Idle())
@@ -281,6 +284,30 @@ class RecipeViewModel @Inject constructor(
                 }
             }
 
+        }
+    }
+
+    fun generateShoppingListFromCurrentRecipe() {
+        viewModelScope.launch(Dispatchers.IO) {
+            val currentState = _uiState.value
+
+            try {
+                if (currentState.id != 0L) {
+                    generateShoppingListUseCase(currentState.id)
+                    _events.emit(RecipeUiEvent.ShowSuccess("쇼핑 리스트가 생성되었습니다!"))
+                    return@launch
+                }
+
+                val recipe = findRecipeByNameUseCase(currentState.searchKeyword)
+                if (recipe != null) {
+                    generateShoppingListUseCase(recipe.id)
+                    _events.emit(RecipeUiEvent.ShowSuccess("쇼핑 리스트가 생성되었습니다!"))
+                } else {
+                    _events.emit(RecipeUiEvent.ShowError("레시피를 먼저 즐겨찾기에 저장해주세요."))
+                }
+            } catch (e: Exception) {
+                _events.emit(RecipeUiEvent.ShowError(e.message ?: "쇼핑 리스트 생성에 실패했습니다."))
+            }
         }
     }
 

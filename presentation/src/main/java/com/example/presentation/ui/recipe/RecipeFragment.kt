@@ -49,6 +49,7 @@ class RecipeFragment : Fragment() {
         setupData()
         setupBackButton()
         setupWellbeingButton()
+        setupShoppingListButton()
         setupRecyclerView()
         setupTabButton()
         setupSubscribeButton()
@@ -81,6 +82,22 @@ class RecipeFragment : Fragment() {
     private fun setupWellbeingButton() {
         binding.btnWellBeing.setOnClickListener {
             viewModel.routeToWellbeing()
+        }
+    }
+
+    private fun setupShoppingListButton() {
+        binding.btnShoppingList.setOnClickListener {
+            val currentState = viewModel.uiState.value
+
+            if (currentState.isSubscribe) {
+                viewModel.generateShoppingListFromCurrentRecipe()
+            } else {
+                Toast.makeText(
+                    requireContext(),
+                    "먼저 레시피를 즐겨찾기에 추가해주세요!",
+                    Toast.LENGTH_SHORT
+                ).show()
+            }
         }
     }
 
