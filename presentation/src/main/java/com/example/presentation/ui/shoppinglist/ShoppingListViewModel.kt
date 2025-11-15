@@ -2,6 +2,7 @@ package com.example.presentation.ui.shoppinglist
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.domain.usecase.DeleteAllShoppingItemsUseCase
 import com.example.domain.usecase.DeleteShoppingItemsUseCase
 import com.example.domain.usecase.GenerateShoppingListUseCase
 import com.example.domain.usecase.GetAllShoppingListUseCase
@@ -24,7 +25,8 @@ class ShoppingListViewModel @Inject constructor(
     private val getAllShoppingItemsUseCase: GetAllShoppingListUseCase,
     private val generateShoppingListUseCase: GenerateShoppingListUseCase,
     private val updateShoppingItemCheckedUseCase: UpdateShoppingItemCheckedUseCase,
-    private val deleteShoppingItemsUseCase: DeleteShoppingItemsUseCase
+    private val deleteShoppingItemsUseCase: DeleteShoppingItemsUseCase,
+    private val deleteAllShoppingItemsUseCase: DeleteAllShoppingItemsUseCase
 ) : ViewModel() {
     private val _uiState = MutableStateFlow<ShoppingListUiState>(ShoppingListUiState.Idle)
     val uiState: StateFlow<ShoppingListUiState> = _uiState.asStateFlow()
@@ -106,6 +108,7 @@ class ShoppingListViewModel @Inject constructor(
     fun confirmDeleteAll() {
         viewModelScope.launch {
             try {
+                deleteAllShoppingItemsUseCase()
                 _events.emit(ShoppingListEvent.ShowSuccess("전체 항목이 삭제되었습니다"))
             } catch (e: Exception) {
                 _events.emit(ShoppingListEvent.ShowError("전체 삭제에 실패했습니다"))
