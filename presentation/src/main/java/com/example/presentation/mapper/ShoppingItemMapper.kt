@@ -16,11 +16,11 @@ fun ShoppingItem.toPresentation(): ShoppingItemModel {
 
 fun ShoppingItemModel.toDomain(): ShoppingItem {
     return ShoppingItem(
-        id = this.id,
-        name = this.name,
-        quantity = this.quantity,
-        category = this.category,
-        isChecked = this.isChecked,
-        recipeName = this.recipeName
+        id = id,
+        name = name,
+        quantity = quantity,
+        category = category,
+        isChecked = isChecked,
+        recipeName = recipeName
     )
 }
