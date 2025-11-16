@@ -3,11 +3,15 @@ package com.example.presentation.ui.shoppinglist
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.domain.usecase.DeleteAllShoppingItemsUseCase
-import com.example.domain.usecase.DeleteShoppingItemsUseCase
+import com.example.domain.usecase.DeleteCheckedShoppingItemsUseCase
+import com.example.domain.usecase.DeleteShoppingItemUseCase
 import com.example.domain.usecase.GenerateShoppingListUseCase
 import com.example.domain.usecase.GetAllShoppingListUseCase
+import com.example.domain.usecase.InsertShoppingItemUseCase
 import com.example.domain.usecase.UpdateShoppingItemCheckedUseCase
+import com.example.presentation.mapper.toDomain
 import com.example.presentation.mapper.toPresentation
+import com.example.presentation.model.ShoppingItemModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -25,8 +29,10 @@ class ShoppingListViewModel @Inject constructor(
     private val getAllShoppingItemsUseCase: GetAllShoppingListUseCase,
     private val generateShoppingListUseCase: GenerateShoppingListUseCase,
     private val updateShoppingItemCheckedUseCase: UpdateShoppingItemCheckedUseCase,
-    private val deleteShoppingItemsUseCase: DeleteShoppingItemsUseCase,
-    private val deleteAllShoppingItemsUseCase: DeleteAllShoppingItemsUseCase
+    private val deleteCheckedShoppingItemsUseCase: DeleteCheckedShoppingItemsUseCase,
+    private val deleteAllShoppingItemsUseCase: DeleteAllShoppingItemsUseCase,
+    private val deleteShoppingItemUseCase: DeleteShoppingItemUseCase,
+    private val insertShoppingItemUseCase: InsertShoppingItemUseCase
 ) : ViewModel() {
     private val _uiState = MutableStateFlow<ShoppingListUiState>(ShoppingListUiState.Idle)
     val uiState: StateFlow<ShoppingListUiState> = _uiState.asStateFlow()
@@ -61,20 +67,6 @@ class ShoppingListViewModel @Inject constructor(
         }
     }
 
-    fun generateShoppingList(recipeId: Long) {
-        viewModelScope.launch {
-            _uiState.value = ShoppingListUiState.Loading
-
-            try {
-                generateShoppingListUseCase(recipeId)
-            } catch (e: Exception) {
-                _uiState.value = ShoppingListUiState.Error(
-                    message = e.message ?: "쇼핑 리스트 생성에 실패했습니다."
-                )
-            }
-        }
-    }
-
     fun onItemCheckedChanged(itemId: Long, isChecked: Boolean) {
         viewModelScope.launch {
             try {
@@ -90,7 +82,7 @@ class ShoppingListViewModel @Inject constructor(
     fun deleteCheckedItems() {
         viewModelScope.launch {
             try {
-                deleteShoppingItemsUseCase()
+                deleteCheckedShoppingItemsUseCase()
             } catch (e: Exception) {
                 _uiState.value = ShoppingListUiState.Error(
                     message = "선택한 항목 삭제에 실패했습니다."
@@ -112,6 +104,27 @@ class ShoppingListViewModel @Inject constructor(
                 _events.emit(ShoppingListEvent.ShowSuccess("전체 항목이 삭제되었습니다"))
             } catch (e: Exception) {
                 _events.emit(ShoppingListEvent.ShowError("전체 삭제에 실패했습니다"))
+            }
+        }
+    }
+
+    fun deleteItem(itemId: Long) {
+        viewModelScope.launch {
+            try {
+                deleteShoppingItemUseCase(itemId)
+            } catch (e: Exception) {
+                _events.emit(ShoppingListEvent.ShowError("삭제에 실패했습니다"))
+            }
+        }
+    }
+
+    fun restoreItem(item: ShoppingItemModel) {
+        viewModelScope.launch {
+            try {
+                insertShoppingItemUseCase(item.toDomain())
+                _events.emit(ShoppingListEvent.ShowSuccess("항목이 복구되었습니다"))
+            } catch (e: Exception) {
+                _events.emit(ShoppingListEvent.ShowError("복구에 실패했습니다"))
             }
         }
     }

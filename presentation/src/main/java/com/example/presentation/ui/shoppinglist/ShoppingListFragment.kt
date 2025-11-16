@@ -11,9 +11,13 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
+import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.example.presentation.databinding.FragmentShoppingListBinding
+import com.example.presentation.model.ShoppingItemModel
 import com.example.presentation.ui.adapter.ShoppingListAdapter
+import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 
@@ -26,6 +30,8 @@ class ShoppingListFragment : Fragment() {
     private val viewModel: ShoppingListViewModel by viewModels()
 
     private lateinit var shoppingListAdapter: ShoppingListAdapter
+
+    private var recentlyDeletedItem: ShoppingItemModel? = null
 
 
     override fun onCreateView(
@@ -49,6 +55,7 @@ class ShoppingListFragment : Fragment() {
         )
         setupRecyclerView()
         setupButtons()
+        setupSwipeToDelete()
         observeUiState()
         observeEvents()
     }
@@ -66,7 +73,7 @@ class ShoppingListFragment : Fragment() {
             if (currentState is ShoppingListUiState.Success && currentState.checkedCount > 0) {
                 showDeleteCheckedConfirmation()
             } else {
-                Toast.makeText(requireContext(), "완료된 항목이 없습니다", Toast.LENGTH_SHORT).show()
+                Toast.makeText(requireContext(), "선택된 항목이 없습니다", Toast.LENGTH_SHORT).show()
             }
         }
 
@@ -82,8 +89,8 @@ class ShoppingListFragment : Fragment() {
 
     private fun showDeleteCheckedConfirmation() {
         AlertDialog.Builder(requireContext())
-            .setTitle("완료된 항목 삭제")
-            .setMessage("체크된 항목을 모두 삭제하시겠습니까?")
+            .setTitle("선택된 항목 삭제")
+            .setMessage("선택된 항목을 모두 삭제하시겠습니까?")
             .setPositiveButton("삭제") { _, _ ->
                 viewModel.deleteCheckedItems()
             }
@@ -100,6 +107,50 @@ class ShoppingListFragment : Fragment() {
             }
             .setNegativeButton("취소", null)
             .show()
+    }
+
+    private fun setupSwipeToDelete() {
+        val itemTouchHelperCallback = object : ItemTouchHelper.SimpleCallback(
+            0,
+            ItemTouchHelper.LEFT or ItemTouchHelper.RIGHT
+        ) {
+            override fun onMove(
+                recyclerView: RecyclerView,
+                viewHolder: RecyclerView.ViewHolder,
+                target: RecyclerView.ViewHolder
+            ): Boolean {
+                return false
+            }
+
+            override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
+                val position = viewHolder.adapterPosition
+                val currentState = viewModel.uiState.value
+
+                if (currentState is ShoppingListUiState.Success) {
+                    val deletedItem = currentState.items[position]
+                    recentlyDeletedItem = deletedItem
+
+                    viewModel.deleteItem(deletedItem.id)
+                    showSnackbar()
+                }
+            }
+        }
+
+        val itemTouchHelper = ItemTouchHelper(itemTouchHelperCallback)
+        itemTouchHelper.attachToRecyclerView(binding.rvShoppingList)
+    }
+
+    private fun showSnackbar() {
+        Snackbar.make(
+            binding.root,
+            "항목이 삭제되었습니다",
+            Snackbar.LENGTH_LONG
+        ).setAction("실행 취소") {
+            recentlyDeletedItem?.let { item ->
+                viewModel.restoreItem(item)
+                recentlyDeletedItem = null
+            }
+        }.show()
     }
 
     private fun observeUiState() {
