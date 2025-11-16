@@ -32,7 +32,9 @@
         tools:layout="@layout/fragment_favorite">
         <action
             android:id="@+id/action_navigation_favorite_to_navigation_recipe"
-            app:destination="@id/navigation_recipe" />
+            app:destination="@id/navigation_recipe"
+            app:popUpTo="@id/navigation_favorite"
+            app:popUpToInclusive="false" />
     </fragment>
     <fragment
         android:id="@+id/navigation_rec_ingredients"
@@ -54,7 +56,9 @@
             app:argType="com.example.presentation.ui.search.SearchUiState" />
         <action
             android:id="@+id/action_navigation_search_ingredients_to_recipeFragment"
-            app:destination="@id/navigation_recipe" />
+            app:destination="@id/navigation_recipe"
+            app:popUpTo="@id/navigation_search"
+            app:popUpToInclusive="false" />
     </fragment>
     <fragment
         android:id="@+id/navigation_rec_recipe"
@@ -66,7 +70,9 @@
             app:argType="com.example.presentation.ui.recingredients.RecIngredientsUiState" />
         <action
             android:id="@+id/action_navigation_rec_recipe_to_navigation_recipe"
-            app:destination="@id/navigation_recipe" />
+            app:destination="@id/navigation_recipe"
+            app:popUpTo="@id/navigation_rec"
+            app:popUpToInclusive="false"/>
     </fragment>
     <fragment
         android:id="@+id/navigation_recipe"
@@ -87,7 +93,9 @@
 
         <action
             android:id="@+id/action_navigation_recipe_to_shopping_list"
-            app:destination="@id/navigation_shopping_list" />
+            app:destination="@id/navigation_shopping_list"
+            app:popUpToInclusive="true"
+            app:launchSingleTop="true"/>
     </fragment>
     <fragment
         android:id="@+id/navigation_wellbeing_recipe"

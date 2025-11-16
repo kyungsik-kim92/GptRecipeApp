@@ -2,6 +2,7 @@ package com.example.presentation
 
 import android.os.Bundle
 import android.view.View
+import androidx.activity.OnBackPressedCallback
 import androidx.appcompat.app.AppCompatActivity
 import androidx.navigation.NavController
 import androidx.navigation.fragment.NavHostFragment
@@ -19,12 +20,14 @@ class MainActivity : AppCompatActivity() {
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
         setupBottomNavigation()
+        setupBackPressedCallback()
     }
 
     private fun setupBottomNavigation() {
         val navHostFragment = supportFragmentManager
             .findFragmentById(R.id.nav_container) as NavHostFragment
         navController = navHostFragment.navController
+
         binding.navView.setupWithNavController(navController)
 
         navController.addOnDestinationChangedListener { _, destination, _ ->
@@ -33,9 +36,30 @@ class MainActivity : AppCompatActivity() {
                 R.id.navigation_rec,
                 R.id.navigation_favorite,
                 R.id.navigation_shopping_list -> View.VISIBLE
-
                 else -> View.GONE
             }
         }
+    }
+
+    private fun setupBackPressedCallback() {
+        onBackPressedDispatcher.addCallback(this, object : OnBackPressedCallback(true) {
+            override fun handleOnBackPressed() {
+                val currentDestination = navController.currentDestination?.id
+
+                when (currentDestination) {
+                    R.id.navigation_search,
+                    R.id.navigation_rec,
+                    R.id.navigation_favorite,
+                    R.id.navigation_shopping_list -> {
+                        finish()
+                    }
+                    else -> {
+                        if (!navController.popBackStack()) {
+                            finish()
+                        }
+                    }
+                }
+            }
+        })
     }
 }
