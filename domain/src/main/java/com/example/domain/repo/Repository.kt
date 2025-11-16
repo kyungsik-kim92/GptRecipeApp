@@ -31,4 +31,8 @@ interface Repository {
     suspend fun deleteAllShoppingItems()
 
     suspend fun deleteCheckedShoppingItems()
+
+    suspend fun insertShoppingItem(item: ShoppingItem)
+
+    suspend fun deleteShoppingItem(itemId: Long)
 }

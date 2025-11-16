@@ -67,4 +67,12 @@ class DataSourceImpl @Inject constructor(
     override suspend fun deleteCheckedShoppingItems() {
         shoppingItemDao.deleteCheckedItems()
     }
+
+    override suspend fun insertShoppingItem(item: ShoppingItemEntity) {
+        shoppingItemDao.insertItem(item)
+    }
+
+    override suspend fun deleteShoppingItem(itemId: Long) {
+        shoppingItemDao.deleteItem(itemId)
+    }
 }

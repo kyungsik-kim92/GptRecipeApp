@@ -95,4 +95,12 @@ class RepositoryImpl @Inject constructor(private val dataSource: DataSource) : R
         dataSource.deleteCheckedShoppingItems()
     }
 
+    override suspend fun insertShoppingItem(item: ShoppingItem) {
+        dataSource.insertShoppingItem(item.toShoppingItemEntity())
+    }
+
+    override suspend fun deleteShoppingItem(itemId: Long) {
+        dataSource.deleteShoppingItem(itemId)
+    }
+
 }

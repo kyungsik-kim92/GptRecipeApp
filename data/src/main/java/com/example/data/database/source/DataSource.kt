@@ -35,4 +35,8 @@ interface DataSource {
 
     suspend fun deleteCheckedShoppingItems()
 
+    suspend fun insertShoppingItem(item: ShoppingItemEntity)
+
+    suspend fun deleteShoppingItem(itemId: Long)
+
 }
