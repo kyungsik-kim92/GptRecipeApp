@@ -43,5 +43,6 @@
     <string name="ingredients">재료</string>
     <string name="recipe">레시피</string>
     <string name="cartlist">🛒 장보기 리스트 생성</string>
+    <string name="shoppinglist">🛒 쇼핑 리스트</string>
 
 </resources>
