@@ -1,10 +1,14 @@
 package com.example.presentation.model
 
-data class ShoppingItemModel(
-    val id: Long,
-    val name: String,
-    val quantity: String,
-    val category: String,
-    val isChecked: Boolean,
-    val recipeName: String
-)
+sealed class ShoppingListItem {
+    data class Header(
+        val category: String,
+        val itemCount: Int,
+        val checkedCount: Int,
+        val isExpanded: Boolean = true
+    ) : ShoppingListItem()
+
+    data class Item(
+        val shoppingItem: ShoppingItemModel
+    ) : ShoppingListItem()
+}
