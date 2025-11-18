@@ -67,7 +67,7 @@
             android:layout_height="24dp"
             android:contentDescription="펼치기/접기"
             android:rotation="@{header.isExpanded ? 180 : 0}"
-            android:src="@android:drawable/arrow_down_float"
+            android:src="@drawable/baseline_arrow_drop_down_24"
             app:tint="@android:color/darker_gray"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
