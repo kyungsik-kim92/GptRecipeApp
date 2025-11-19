@@ -12,6 +12,7 @@ import com.example.domain.usecase.UpdateShoppingItemCheckedUseCase
 import com.example.presentation.mapper.toDomain
 import com.example.presentation.mapper.toPresentation
 import com.example.presentation.model.ShoppingItemModel
+import com.example.presentation.model.ShoppingListItem
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -40,6 +41,8 @@ class ShoppingListViewModel @Inject constructor(
     private val _events = MutableSharedFlow<ShoppingListEvent>()
     val events: SharedFlow<ShoppingListEvent> = _events.asSharedFlow()
 
+    private val _expandedCategories = MutableStateFlow<Set<String>>(emptySet())
+
     init {
         loadShoppingList()
     }
@@ -58,12 +61,62 @@ class ShoppingListViewModel @Inject constructor(
                     val presentationItems = domainItems.map { it.toPresentation() }
                     val checkedCount = presentationItems.count { it.isChecked }
 
+                    if (_expandedCategories.value.isEmpty()) {
+                        val allRecipeNames = presentationItems.map { it.recipeName }.toSet()
+                        _expandedCategories.value = allRecipeNames
+                    }
+
+                    val groupedItems = groupItemsByCategory(presentationItems)
+
                     _uiState.value = ShoppingListUiState.Success(
                         items = presentationItems,
+                        groupedItems = groupedItems,
                         totalCount = presentationItems.size,
                         checkedCount = checkedCount
                     )
                 }
+        }
+    }
+
+    private fun groupItemsByCategory(items: List<ShoppingItemModel>): List<ShoppingListItem> {
+        val grouped = items.groupBy { it.recipeName }
+        val result = mutableListOf<ShoppingListItem>()
+
+        grouped.forEach { category ->
+            grouped.forEach { (recipeName, recipeItems) ->
+                val isExpanded = _expandedCategories.value.contains(recipeName)
+
+                val header = ShoppingListItem.Header(
+                    category = recipeName,
+                    itemCount = recipeItems.size,
+                    checkedCount = recipeItems.count { it.isChecked },
+                    isExpanded = isExpanded
+                )
+                result.add(header)
+
+                if (isExpanded) {
+                    recipeItems.forEach { item ->
+                        result.add(ShoppingListItem.Item(item))
+                    }
+                }
+            }
+        }
+        return result
+    }
+
+    fun toggleCategory(category: String) {
+        val current = _expandedCategories.value.toMutableSet()
+        if (current.contains(category)) {
+            current.remove(category)
+        } else {
+            current.add(category)
+        }
+        _expandedCategories.value = current
+
+        val currentState = _uiState.value
+        if (currentState is ShoppingListUiState.Success) {
+            val groupedItems = groupItemsByCategory(currentState.items)
+            _uiState.value = currentState.copy(groupedItems = groupedItems)
         }
     }
 

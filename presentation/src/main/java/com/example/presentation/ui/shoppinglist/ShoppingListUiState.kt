@@ -1,6 +1,7 @@
 package com.example.presentation.ui.shoppinglist
 
 import com.example.presentation.model.ShoppingItemModel
+import com.example.presentation.model.ShoppingListItem
 
 sealed class ShoppingListUiState {
     data object Idle : ShoppingListUiState()
@@ -9,6 +10,7 @@ sealed class ShoppingListUiState {
 
     data class Success(
         val items: List<ShoppingItemModel>,
+        val groupedItems: List<ShoppingListItem> = emptyList(),
         val totalCount: Int,
         val checkedCount: Int
     ) : ShoppingListUiState()

@@ -16,7 +16,8 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.presentation.databinding.FragmentShoppingListBinding
 import com.example.presentation.model.ShoppingItemModel
-import com.example.presentation.ui.adapter.ShoppingListAdapter
+import com.example.presentation.model.ShoppingListItem
+import com.example.presentation.ui.adapter.GroupedShoppingListAdapter
 import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
@@ -29,7 +30,7 @@ class ShoppingListFragment : Fragment() {
 
     private val viewModel: ShoppingListViewModel by viewModels()
 
-    private lateinit var shoppingListAdapter: ShoppingListAdapter
+    private lateinit var groupedShoppingListAdapter: GroupedShoppingListAdapter
 
     private var recentlyDeletedItem: ShoppingItemModel? = null
 
@@ -48,9 +49,12 @@ class ShoppingListFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        shoppingListAdapter = ShoppingListAdapter(
+        groupedShoppingListAdapter = GroupedShoppingListAdapter(
             onItemChecked = { item, isChecked ->
                 viewModel.onItemCheckedChanged(item.id, isChecked)
+            },
+            onHeaderClicked = { category ->
+                viewModel.toggleCategory(category)
             }
         )
         setupRecyclerView()
@@ -62,7 +66,7 @@ class ShoppingListFragment : Fragment() {
 
     private fun setupRecyclerView() {
         binding.rvShoppingList.apply {
-            adapter = shoppingListAdapter
+            adapter = groupedShoppingListAdapter
             layoutManager = LinearLayoutManager(requireContext())
         }
     }
@@ -127,11 +131,17 @@ class ShoppingListFragment : Fragment() {
                 val currentState = viewModel.uiState.value
 
                 if (currentState is ShoppingListUiState.Success) {
-                    val deletedItem = currentState.items[position]
-                    recentlyDeletedItem = deletedItem
+                    val item = currentState.groupedItems[position]
 
-                    viewModel.deleteItem(deletedItem.id)
-                    showSnackbar()
+                    if (item is ShoppingListItem.Item) {
+                        val deletedItem = item.shoppingItem
+                        recentlyDeletedItem = deletedItem
+
+                        viewModel.deleteItem(deletedItem.id)
+                        showSnackbar()
+                    } else {
+                        groupedShoppingListAdapter.notifyItemChanged(position)
+                    }
                 }
             }
         }
@@ -180,12 +190,14 @@ class ShoppingListFragment : Fragment() {
                                 binding.llEmptyState.visibility = View.GONE
                                 binding.btnDeleteChecked.visibility = View.VISIBLE
 
-                                shoppingListAdapter.submitList(state.items)
+                                groupedShoppingListAdapter.submitList(state.groupedItems)
                             }
 
                             binding.tvTotalCount.text = "전체: ${state.totalCount}개"
                             binding.tvCheckedCount.text = "완료: ${state.checkedCount}개"
+
                             binding.btnDeleteChecked.isEnabled = state.checkedCount > 0
+                            binding.btnDeleteChecked.alpha = if (state.checkedCount > 0) 1.0f else 0.5f
                         }
 
 
