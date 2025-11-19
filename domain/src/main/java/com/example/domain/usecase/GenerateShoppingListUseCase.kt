@@ -31,12 +31,11 @@ class GenerateShoppingListUseCase @Inject constructor(
 
 
     private fun parseIngredientName(ingredientText: String): String {
-        return ingredientText.split(" ").firstOrNull() ?: ingredientText
+        return ingredientText.trim()
     }
 
     private fun parseQuantity(ingredientText: String): String {
-        val parts = ingredientText.split(" ")
-        return if (parts.size > 1) parts.drop(1).joinToString(" ") else "적당량"
+        return "필요량"
     }
 
     private fun categorizeIngredient(ingredientText: String): String {
