@@ -305,6 +305,8 @@ class RecipeViewModel @Inject constructor(
                 } else {
                     _events.emit(RecipeUiEvent.ShowError("레시피를 먼저 즐겨찾기에 저장해주세요."))
                 }
+            } catch (e: IllegalStateException) {
+                _events.emit(RecipeUiEvent.ShowError(e.message ?: "이미 쇼핑 리스트가 존재합니다."))
             } catch (e: Exception) {
                 _events.emit(RecipeUiEvent.ShowError(e.message ?: "쇼핑 리스트 생성에 실패했습니다."))
             }

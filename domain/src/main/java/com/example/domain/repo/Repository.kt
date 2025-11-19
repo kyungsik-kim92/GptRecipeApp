@@ -35,4 +35,6 @@ interface Repository {
     suspend fun insertShoppingItem(item: ShoppingItem)
 
     suspend fun deleteShoppingItem(itemId: Long)
+
+    suspend fun hasShoppingItemsByRecipeName(recipeName: String): Boolean
 }

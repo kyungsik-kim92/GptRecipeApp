@@ -7,6 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
+import android.widget.Toast
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
@@ -94,7 +95,9 @@ class SearchFragment : Fragment() {
                         }
 
                         is SearchUiEvent.ShowSuccess -> {}
-                        is SearchUiEvent.ShowError -> {}
+                        is SearchUiEvent.ShowError -> {
+                            Toast.makeText(requireContext(), event.message, Toast.LENGTH_LONG).show()
+                        }
                     }
                 }
             }

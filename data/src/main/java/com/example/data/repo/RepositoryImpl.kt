@@ -103,4 +103,7 @@ class RepositoryImpl @Inject constructor(private val dataSource: DataSource) : R
         dataSource.deleteShoppingItem(itemId)
     }
 
+    override suspend fun hasShoppingItemsByRecipeName(recipeName: String): Boolean {
+        return dataSource.hasShoppingItemsByRecipeName(recipeName)
+    }
 }

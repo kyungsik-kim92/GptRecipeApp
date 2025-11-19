@@ -1,7 +1,7 @@
 package com.example.data.database.source.impl
 
 import com.example.data.database.dao.RecipeDao
-import com.example.data.database.dao.ShoppingItemDao
+import com.example.data.database.dao.ShoppingListDao
 import com.example.data.database.network.ApiService
 import com.example.data.database.source.DataSource
 import com.example.data.local.entity.LocalRecipeEntity
@@ -14,7 +14,7 @@ import javax.inject.Inject
 class DataSourceImpl @Inject constructor(
     private val apiService: ApiService,
     private val recipeDao: RecipeDao,
-    private val shoppingItemDao: ShoppingItemDao
+    private val shoppingListDao: ShoppingListDao
 ) : DataSource {
     override suspend fun getGptResponse(body: GptRequestParam): GPT {
         return apiService.getGptResponse(body)
@@ -49,30 +49,34 @@ class DataSourceImpl @Inject constructor(
     }
 
     override fun getAllShoppingItems(): Flow<List<ShoppingItemEntity>> {
-        return shoppingItemDao.getAllItems()
+        return shoppingListDao.getAllItems()
     }
 
     override suspend fun insertShoppingItems(items: List<ShoppingItemEntity>) {
-        shoppingItemDao.insertItems(items)
+        shoppingListDao.insertItems(items)
     }
 
     override suspend fun updateShoppingItemChecked(itemId: Long, isChecked: Boolean) {
-        shoppingItemDao.updateItemChecked(itemId, isChecked)
+        shoppingListDao.updateItemChecked(itemId, isChecked)
     }
 
     override suspend fun deleteAllShoppingItems() {
-        shoppingItemDao.deleteAllItems()
+        shoppingListDao.deleteAllItems()
     }
 
     override suspend fun deleteCheckedShoppingItems() {
-        shoppingItemDao.deleteCheckedItems()
+        shoppingListDao.deleteCheckedItems()
     }
 
     override suspend fun insertShoppingItem(item: ShoppingItemEntity) {
-        shoppingItemDao.insertItem(item)
+        shoppingListDao.insertItem(item)
     }
 
     override suspend fun deleteShoppingItem(itemId: Long) {
-        shoppingItemDao.deleteItem(itemId)
+        shoppingListDao.deleteItem(itemId)
+    }
+
+    override suspend fun hasShoppingItemsByRecipeName(recipeName: String): Boolean {
+        return shoppingListDao.hasItemsByRecipeName(recipeName)
     }
 }

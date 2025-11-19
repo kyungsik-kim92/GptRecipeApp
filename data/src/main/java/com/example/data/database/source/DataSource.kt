@@ -39,4 +39,6 @@ interface DataSource {
 
     suspend fun deleteShoppingItem(itemId: Long)
 
+    suspend fun hasShoppingItemsByRecipeName(recipeName: String): Boolean
+
 }

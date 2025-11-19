@@ -82,25 +82,24 @@ class ShoppingListViewModel @Inject constructor(
         val grouped = items.groupBy { it.recipeName }
         val result = mutableListOf<ShoppingListItem>()
 
-        grouped.forEach { category ->
-            grouped.forEach { (recipeName, recipeItems) ->
-                val isExpanded = _expandedCategories.value.contains(recipeName)
+        grouped.forEach { (recipeName, recipeItems) ->
+            val isExpanded = _expandedCategories.value.contains(recipeName)
 
-                val header = ShoppingListItem.Header(
-                    category = recipeName,
-                    itemCount = recipeItems.size,
-                    checkedCount = recipeItems.count { it.isChecked },
-                    isExpanded = isExpanded
-                )
-                result.add(header)
+            val header = ShoppingListItem.Header(
+                category = recipeName,
+                itemCount = recipeItems.size,
+                checkedCount = recipeItems.count { it.isChecked },
+                isExpanded = isExpanded
+            )
+            result.add(header)
 
-                if (isExpanded) {
-                    recipeItems.forEach { item ->
-                        result.add(ShoppingListItem.Item(item))
-                    }
+            if (isExpanded) {
+                recipeItems.forEach { item ->
+                    result.add(ShoppingListItem.Item(item))
                 }
             }
         }
+
         return result
     }
 

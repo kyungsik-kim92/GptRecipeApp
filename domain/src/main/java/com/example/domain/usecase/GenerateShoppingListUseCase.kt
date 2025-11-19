@@ -12,6 +12,10 @@ class GenerateShoppingListUseCase @Inject constructor(
         val recipe = repository.findRecipe(recipeId)
             ?: throw IllegalArgumentException("레시피를 찾을 수 없습니다.")
 
+        if (repository.hasShoppingItemsByRecipeName(recipe.searchKeyword)) {
+            throw IllegalStateException("이미 ${recipe.searchKeyword}의 쇼핑 리스트가 존재합니다.")
+        }
+
         val shoppingItems = recipe.ingredientsList.map { ingredient ->
             ShoppingItem(
                 id = 0L,
