@@ -3,5 +3,5 @@ package com.example.data.database.network
 object NetworkConstant {
     const val BASE_URL = "https://api.openai.com/"
     const val GPT_TOKEN =
-        "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"
+        "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"
 }
