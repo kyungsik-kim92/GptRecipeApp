@@ -5,7 +5,8 @@ sealed class ShoppingListItem {
         val category: String,
         val itemCount: Int,
         val checkedCount: Int,
-        val isExpanded: Boolean = true
+        val isExpanded: Boolean = true,
+        val isAllChecked: Boolean = false
     ) : ShoppingListItem()
 
     data class Item(

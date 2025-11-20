@@ -55,6 +55,9 @@ class ShoppingListFragment : Fragment() {
             },
             onHeaderClicked = { category ->
                 viewModel.toggleCategory(category)
+            },
+            onCategoryCheckAllChanged = { category, isChecked ->
+                viewModel.onCategoryCheckAllChanged(category, isChecked)
             }
         )
         setupRecyclerView()
@@ -197,7 +200,8 @@ class ShoppingListFragment : Fragment() {
                             binding.tvCheckedCount.text = "완료: ${state.checkedCount}개"
 
                             binding.btnDeleteChecked.isEnabled = state.checkedCount > 0
-                            binding.btnDeleteChecked.alpha = if (state.checkedCount > 0) 1.0f else 0.5f
+                            binding.btnDeleteChecked.alpha =
+                                if (state.checkedCount > 0) 1.0f else 0.5f
                         }
 
 

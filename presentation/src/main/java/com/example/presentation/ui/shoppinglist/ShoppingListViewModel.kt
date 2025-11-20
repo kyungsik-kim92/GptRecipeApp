@@ -84,12 +84,14 @@ class ShoppingListViewModel @Inject constructor(
 
         grouped.forEach { (recipeName, recipeItems) ->
             val isExpanded = _expandedCategories.value.contains(recipeName)
+            val allChecked = recipeItems.isNotEmpty() && recipeItems.all { it.isChecked }
 
             val header = ShoppingListItem.Header(
                 category = recipeName,
                 itemCount = recipeItems.size,
                 checkedCount = recipeItems.count { it.isChecked },
-                isExpanded = isExpanded
+                isExpanded = isExpanded,
+                isAllChecked = allChecked
             )
             result.add(header)
 
@@ -177,6 +179,24 @@ class ShoppingListViewModel @Inject constructor(
                 _events.emit(ShoppingListEvent.ShowSuccess("항목이 복구되었습니다"))
             } catch (e: Exception) {
                 _events.emit(ShoppingListEvent.ShowError("복구에 실패했습니다"))
+            }
+        }
+    }
+
+    fun onCategoryCheckAllChanged(category: String, isChecked: Boolean) {
+        viewModelScope.launch {
+            try {
+                val currentState = _uiState.value
+                if (currentState is ShoppingListUiState.Success) {
+
+                    val itemsToUpdate = currentState.items.filter { it.recipeName == category }
+
+                    itemsToUpdate.forEach { item ->
+                        updateShoppingItemCheckedUseCase(item.id, isChecked)
+                    }
+                }
+            } catch (e: Exception) {
+                _events.emit(ShoppingListEvent.ShowError("체크 상태 변경에 실패했습니다"))
             }
         }
     }

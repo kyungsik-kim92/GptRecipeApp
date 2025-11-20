@@ -12,7 +12,8 @@ import com.example.presentation.model.ShoppingListItem
 
 class GroupedShoppingListAdapter(
     private val onItemChecked: (ShoppingItemModel, Boolean) -> Unit,
-    private val onHeaderClicked: (String) -> Unit
+    private val onHeaderClicked: (String) -> Unit,
+    private val onCategoryCheckAllChanged: (String, Boolean) -> Unit
 ) : ListAdapter<ShoppingListItem, RecyclerView.ViewHolder>(ShoppingListDiffCallback()) {
 
     companion object {
@@ -35,8 +36,9 @@ class GroupedShoppingListAdapter(
                     parent,
                     false
                 )
-                HeaderViewHolder(binding, onHeaderClicked)
+                HeaderViewHolder(binding, onHeaderClicked, onCategoryCheckAllChanged)
             }
+
             else -> {
                 val binding = ItemShoppingListBinding.inflate(
                     LayoutInflater.from(parent.context),
@@ -57,16 +59,24 @@ class GroupedShoppingListAdapter(
 
     class HeaderViewHolder(
         private val binding: ItemShoppingCategoryHeaderBinding,
-        private val onHeaderClicked: (String) -> Unit
+        private val onHeaderClicked: (String) -> Unit,
+        private val onCategoryCheckAllChanged: (String, Boolean) -> Unit
     ) : RecyclerView.ViewHolder(binding.root) {
         fun bind(header: ShoppingListItem.Header) {
             binding.header = header
             binding.root.setOnClickListener {
                 onHeaderClicked(header.category)
             }
+            binding.cbCategoryAll.setOnCheckedChangeListener(null)
+            binding.cbCategoryAll.isChecked = header.isAllChecked
+            binding.cbCategoryAll.setOnCheckedChangeListener { _, isChecked ->
+                onCategoryCheckAllChanged(header.category, isChecked)
+            }
+
             binding.executePendingBindings()
         }
     }
+
     class ShoppingListDiffCallback : DiffUtil.ItemCallback<ShoppingListItem>() {
         override fun areItemsTheSame(
             oldItem: ShoppingListItem,
