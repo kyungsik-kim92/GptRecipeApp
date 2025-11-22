@@ -4,6 +4,7 @@ import android.content.Context
 import androidx.room.Room
 import com.example.data.database.AppDatabase
 import com.example.data.database.dao.RecipeDao
+import com.example.data.database.dao.SearchHistoryDao
 import com.example.data.database.dao.ShoppingListDao
 import com.example.data.database.network.ApiService
 import com.example.data.database.source.DataSource
@@ -41,6 +42,12 @@ object DatabaseModule {
     @Singleton
     fun provideShoppingItemDao(appDatabase: AppDatabase): ShoppingListDao {
         return appDatabase.shoppingListDao
+    }
+
+    @Provides
+    @Singleton
+    fun provideSearchHistoryDao(appDatabase: AppDatabase): SearchHistoryDao {
+        return appDatabase.searchHistoryDao
     }
 }
 

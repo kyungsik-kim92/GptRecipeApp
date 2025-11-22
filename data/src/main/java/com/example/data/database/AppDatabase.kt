@@ -5,22 +5,26 @@ import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
 import com.example.data.database.converters.CustomTypeConverters
 import com.example.data.database.dao.RecipeDao
+import com.example.data.database.dao.SearchHistoryDao
 import com.example.data.database.dao.ShoppingListDao
 import com.example.data.local.entity.LocalRecipeEntity
+import com.example.data.local.entity.SearchHistoryEntity
 import com.example.data.local.entity.ShoppingItemEntity
 
 @Database(
     entities = [
         LocalRecipeEntity::class,
-        ShoppingItemEntity::class
+        ShoppingItemEntity::class,
+        SearchHistoryEntity::class
     ],
-    version = 2,
+    version = 3,
     exportSchema = false
 )
 @TypeConverters(CustomTypeConverters::class)
 abstract class AppDatabase : RoomDatabase() {
     abstract val recipeDao: RecipeDao
     abstract val shoppingListDao: ShoppingListDao
+    abstract val searchHistoryDao: SearchHistoryDao
 
     companion object {
         const val DB_NAME = "recipe.db"
