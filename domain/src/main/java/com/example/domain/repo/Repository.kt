@@ -2,6 +2,7 @@ package com.example.domain.repo
 
 import com.example.domain.model.LocalRecipe
 import com.example.domain.model.RecipeResponse
+import com.example.domain.model.SearchHistory
 import com.example.domain.model.ShoppingItem
 import kotlinx.coroutines.flow.Flow
 
@@ -37,4 +38,12 @@ interface Repository {
     suspend fun deleteShoppingItem(itemId: Long)
 
     suspend fun hasShoppingItemsByRecipeName(recipeName: String): Boolean
+
+    suspend fun insertSearchHistory(keyword: String)
+
+    fun getRecentSearches(): Flow<List<SearchHistory>>
+
+    suspend fun deleteSearchHistory(keyword: String)
+
+    suspend fun deleteAllSearchHistory()
 }

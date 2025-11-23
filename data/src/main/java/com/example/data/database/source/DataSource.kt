@@ -1,6 +1,7 @@
 package com.example.data.database.source
 
 import com.example.data.local.entity.LocalRecipeEntity
+import com.example.data.local.entity.SearchHistoryEntity
 import com.example.data.local.entity.ShoppingItemEntity
 import com.example.data.remote.dto.GPT
 import com.example.data.remote.dto.GptRequestParam
@@ -40,5 +41,13 @@ interface DataSource {
     suspend fun deleteShoppingItem(itemId: Long)
 
     suspend fun hasShoppingItemsByRecipeName(recipeName: String): Boolean
+
+    suspend fun insertSearchHistory(keyword: String)
+
+    fun getRecentSearches(): Flow<List<SearchHistoryEntity>>
+
+    suspend fun deleteSearchHistory(keyword: String)
+
+    suspend fun deleteAllSearchHistory()
 
 }
