@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "764635373610",
+    "project_id": "gptrecipe-7eb5c",
+    "storage_bucket": "gptrecipe-7eb5c.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:764635373610:android:a1b611853b2e4c77996353",
+        "android_client_info": {
+          "package_name": "com.example.gptrecipeapp"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAphLymM2w02aN9Ha1loItPtyEvE4b2GjA"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
