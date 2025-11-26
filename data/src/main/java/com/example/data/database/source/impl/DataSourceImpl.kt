@@ -3,24 +3,24 @@ package com.example.data.database.source.impl
 import com.example.data.database.dao.RecipeDao
 import com.example.data.database.dao.SearchHistoryDao
 import com.example.data.database.dao.ShoppingListDao
-import com.example.data.database.network.ApiService
 import com.example.data.database.source.DataSource
 import com.example.data.local.entity.LocalRecipeEntity
 import com.example.data.local.entity.SearchHistoryEntity
 import com.example.data.local.entity.ShoppingItemEntity
 import com.example.data.remote.dto.GPT
 import com.example.data.remote.dto.GptRequestParam
+import com.example.data.remote.firebase.FirebaseDataSource
 import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 
 class DataSourceImpl @Inject constructor(
-    private val apiService: ApiService,
+    private val firebaseDataSource: FirebaseDataSource,
     private val recipeDao: RecipeDao,
     private val shoppingListDao: ShoppingListDao,
     private val searchHistoryDao: SearchHistoryDao
 ) : DataSource {
     override suspend fun getGptResponse(body: GptRequestParam): GPT {
-        return apiService.getGptResponse(body)
+        return firebaseDataSource.getGptResponse(body)
     }
 
     override suspend fun getAll(): List<LocalRecipeEntity> {

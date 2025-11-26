@@ -6,9 +6,9 @@ import com.example.data.database.AppDatabase
 import com.example.data.database.dao.RecipeDao
 import com.example.data.database.dao.SearchHistoryDao
 import com.example.data.database.dao.ShoppingListDao
-import com.example.data.database.network.ApiService
 import com.example.data.database.source.DataSource
 import com.example.data.database.source.impl.DataSourceImpl
+import com.example.data.remote.firebase.FirebaseDataSource
 import com.example.data.repo.RepositoryImpl
 import com.example.domain.repo.Repository
 import dagger.Module
@@ -57,11 +57,12 @@ object DataModule {
     @Provides
     @Singleton
     fun provideDataSource(
-        apiService: ApiService,
+        firebaseDataSource: FirebaseDataSource,
         recipeDao: RecipeDao,
-        shoppingListDao: ShoppingListDao
+        shoppingListDao: ShoppingListDao,
+        searchHistoryDao: SearchHistoryDao
     ): DataSource {
-        return DataSourceImpl(apiService, recipeDao, shoppingListDao)
+        return DataSourceImpl(firebaseDataSource, recipeDao, shoppingListDao, searchHistoryDao)
     }
 
     @Provides
