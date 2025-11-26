@@ -4,7 +4,6 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
@@ -13,6 +12,7 @@ import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.example.presentation.databinding.FragmentRecRecipeBinding
+import com.example.presentation.model.SearchHistoryModel
 import com.example.presentation.model.UniteUiState
 import com.example.presentation.ui.adapter.SearchKeywordAdapter
 import dagger.hilt.android.AndroidEntryPoint
@@ -25,10 +25,13 @@ class RecRecipeFragment : Fragment() {
 
     private val viewModel: RecRecipeViewModel by viewModels()
 
-    private val searchKeywordAdapter = SearchKeywordAdapter { searchKeyword ->
-        viewModel.setSearchKeyword(searchKeyword)
-        viewModel.getIngredients()
-    }
+    private val searchKeywordAdapter = SearchKeywordAdapter(
+        onItemClick = { searchKeyword ->
+            viewModel.setSearchKeyword(searchKeyword)
+            viewModel.getIngredients()
+        },
+        onDeleteClick = {}
+    )
 
     private val args: RecRecipeFragmentArgs by navArgs()
 
@@ -111,7 +114,14 @@ class RecRecipeFragment : Fragment() {
     }
 
     private fun updateUI(searchKeywordList: List<String>) {
-        searchKeywordAdapter.submitList(searchKeywordList)
+        val models = searchKeywordList.mapIndexed { index, keyword ->
+            SearchHistoryModel(
+                id = index.toLong(),
+                keyword = keyword,
+                searchedAt = System.currentTimeMillis()
+            )
+        }
+        searchKeywordAdapter.submitList(models)
     }
 
     private fun routeToRecipe(uniteUiState: UniteUiState) {

@@ -36,20 +36,23 @@
             android:textColor="@color/black"
             android:textSize="20sp"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toStartOf="@id/btn_detail"
+            app:layout_constraintEnd_toStartOf="@id/btn_delete"
             app:layout_constraintStart_toEndOf="@id/iv_meal"
             app:layout_constraintTop_toTopOf="parent"
             tools:text="레시피" />
 
-        <TextView
-            android:id="@+id/btn_detail"
-            android:layout_width="24dp"
-            android:layout_height="24dp"
-            android:layout_marginEnd="16dp"
-            android:background="@drawable/ic_chevron_circle_right"
-            app:layout_constraintBottom_toBottomOf="@id/tv_recipeTitle"
+        <ImageButton
+            android:id="@+id/btn_delete"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_marginEnd="8dp"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:contentDescription="삭제"
+            android:src="@drawable/baseline_close_24"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="@id/tv_recipeTitle" />
+            app:layout_constraintTop_toTopOf="parent"
+            app:tint="@color/gray_300" />
 
         <View
             android:layout_width="match_parent"

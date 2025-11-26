@@ -10,6 +10,7 @@ import com.example.data.remote.dto.GptRequestParam
 import com.example.data.remote.dto.MessageRequestParam
 import com.example.domain.model.LocalRecipe
 import com.example.domain.model.RecipeResponse
+import com.example.domain.model.SearchHistory
 import com.example.domain.model.ShoppingItem
 import com.example.domain.repo.Repository
 import kotlinx.coroutines.flow.Flow
@@ -105,5 +106,23 @@ class RepositoryImpl @Inject constructor(private val dataSource: DataSource) : R
 
     override suspend fun hasShoppingItemsByRecipeName(recipeName: String): Boolean {
         return dataSource.hasShoppingItemsByRecipeName(recipeName)
+    }
+
+    override suspend fun insertSearchHistory(keyword: String) {
+        dataSource.insertSearchHistory(keyword)
+    }
+
+    override fun getRecentSearches(): Flow<List<SearchHistory>> {
+        return dataSource.getRecentSearches().map { entityList ->
+            entityList.map { it.toDomain() }
+        }
+    }
+
+    override suspend fun deleteSearchHistory(keyword: String) {
+        dataSource.deleteSearchHistory(keyword)
+    }
+
+    override suspend fun deleteAllSearchHistory() {
+        dataSource.deleteAllSearchHistory()
     }
 }

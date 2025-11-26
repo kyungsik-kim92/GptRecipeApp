@@ -17,7 +17,7 @@ import com.example.data.local.entity.ShoppingItemEntity
         ShoppingItemEntity::class,
         SearchHistoryEntity::class
     ],
-    version = 3,
+    version = 6,
     exportSchema = false
 )
 @TypeConverters(CustomTypeConverters::class)
