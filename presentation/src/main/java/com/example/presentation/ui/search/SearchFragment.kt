@@ -43,6 +43,7 @@ class SearchFragment : Fragment() {
         setupRecyclerView()
         setupClickListener()
         setupSearchEditText()
+        setupClearAllButton()
         observeUiState()
         observeEvents()
         observeRecentSearches()
@@ -71,6 +72,11 @@ class SearchFragment : Fragment() {
         }
     }
 
+    private fun setupClearAllButton() {
+        binding.btnClearAll.setOnClickListener {
+            showDeleteAllDialog()
+        }
+    }
 
     private fun hideRecentSearches() {
         binding.rvRecentSearches.visibility = View.GONE
@@ -83,9 +89,28 @@ class SearchFragment : Fragment() {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewModel.recentSearches.collect { searches ->
                     searchKeywordAdapter.submitList(searches)
+
+                    if (binding.etRecipe.hasFocus() && searches.isNotEmpty()) {
+                        binding.btnClearAll.visibility = View.VISIBLE
+                        binding.dividerSearchHistory.visibility = View.VISIBLE
+                    } else {
+                        binding.btnClearAll.visibility = View.GONE
+                        binding.dividerSearchHistory.visibility = View.GONE
+                    }
                 }
             }
         }
+    }
+
+    private fun showDeleteAllDialog() {
+        androidx.appcompat.app.AlertDialog.Builder(requireContext())
+            .setTitle("검색 기록 전체 삭제")
+            .setMessage("모든 검색 기록을 삭제하시겠습니까?")
+            .setPositiveButton("삭제") { _, _ ->
+                viewModel.deleteAllSearchHistory()
+            }
+            .setNegativeButton("취소", null)
+            .show()
     }
 
     private fun updateRecentSearchesVisibility() {
@@ -95,9 +120,13 @@ class SearchFragment : Fragment() {
         if (hasFocus && searches.isNotEmpty()) {
             binding.rvRecentSearches.visibility = View.VISIBLE
             binding.ivWoman.visibility = View.GONE
+            binding.btnClearAll.visibility = View.VISIBLE
+            binding.dividerSearchHistory.visibility = View.VISIBLE
             binding.tvHint.visibility = View.GONE
         } else if (hasFocus && searches.isEmpty()) {
             binding.rvRecentSearches.visibility = View.GONE
+            binding.btnClearAll.visibility = View.GONE
+            binding.dividerSearchHistory.visibility = View.GONE
             binding.ivWoman.visibility = View.VISIBLE
             binding.tvHint.visibility = View.VISIBLE
         } else {
@@ -118,6 +147,7 @@ class SearchFragment : Fragment() {
             }
         }
     }
+
 
     private fun observeUiState() {
         lifecycleScope.launch {

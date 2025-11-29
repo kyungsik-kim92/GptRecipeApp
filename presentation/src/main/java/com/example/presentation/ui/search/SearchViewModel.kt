@@ -1,7 +1,9 @@
 package com.example.presentation.ui.search
 
+import android.util.Printer
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.domain.usecase.DeleteAllSearchHistoryUseCase
 import com.example.domain.usecase.DeleteSearchHistoryUseCase
 import com.example.domain.usecase.GenerateRecipeUseCase
 import com.example.domain.usecase.GetRecentSearchesUseCase
@@ -23,7 +25,8 @@ class SearchViewModel @Inject constructor(
     private val generateRecipeUseCase: GenerateRecipeUseCase,
     private val insertSearchHistoryUseCase: InsertSearchHistoryUseCase,
     private val getRecentSearchesUseCase: GetRecentSearchesUseCase,
-    private val deleteSearchHistoryUseCase: DeleteSearchHistoryUseCase
+    private val deleteSearchHistoryUseCase: DeleteSearchHistoryUseCase,
+    private val deleteAllSearchHistoryUseCase: DeleteAllSearchHistoryUseCase
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow<SearchUiState>(SearchUiState.Idle())
@@ -85,6 +88,12 @@ class SearchViewModel @Inject constructor(
     fun deleteSearchHistory(keyword: String) {
         viewModelScope.launch {
             deleteSearchHistoryUseCase(keyword)
+        }
+    }
+
+    fun deleteAllSearchHistory() {
+        viewModelScope.launch {
+            deleteAllSearchHistoryUseCase()
         }
     }
 
