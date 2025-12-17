@@ -42,8 +42,8 @@ android {
 }
 
 dependencies {
-    implementation(project(":domain"))
-    implementation(project(":data"))
+    implementation(projects.domain)
+    implementation(projects.data)
 
     implementation(libs.bundles.androidx.core)
 

@@ -43,9 +43,9 @@ android {
 }
 
 dependencies {
-    implementation(project(":presentation"))
-    implementation(project(":data"))
-    implementation(project(":domain"))
+    implementation(projects.presentation)
+    implementation(projects.data)
+    implementation(projects.domain)
 
     implementation(libs.hilt.android)
     ksp(libs.hilt.compiler)
