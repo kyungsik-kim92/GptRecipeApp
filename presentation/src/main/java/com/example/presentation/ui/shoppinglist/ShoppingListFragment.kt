@@ -97,7 +97,7 @@ class ShoppingListFragment : Fragment() {
     private fun showDeleteCheckedConfirmation() {
         AlertDialog.Builder(requireContext())
             .setTitle("선택된 항목 삭제")
-            .setMessage("선택된 항목을 모두 삭제하시겠습니까?")
+            .setMessage("선택된 항목을 삭제하시겠습니까?")
             .setPositiveButton("삭제") { _, _ ->
                 viewModel.deleteCheckedItems()
             }
