@@ -35,6 +35,14 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent">
 
+                    <Space
+                        android:id="@+id/space"
+                        android:layout_width="48dp"
+                        android:layout_height="48dp"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+
                     <TextView
                         android:layout_width="0dp"
                         android:layout_height="match_parent"
@@ -43,7 +51,7 @@
                         android:textColor="@color/gray_200"
                         android:textSize="20sp"
                         app:layout_constraintEnd_toStartOf="@id/btnDeleteAll"
-                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintStart_toEndOf="@id/space"
                         app:layout_constraintTop_toTopOf="parent" />
 
                     <ImageButton
@@ -53,10 +61,10 @@
                         android:background="?attr/selectableItemBackgroundBorderless"
                         android:contentDescription="전체 삭제"
                         android:src="@android:drawable/ic_menu_delete"
-                        app:tint="@android:color/holo_red_dark"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintTop_toTopOf="parent" />
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:tint="@android:color/holo_red_dark" />
 
                 </androidx.constraintlayout.widget.ConstraintLayout>
 
