@@ -28,16 +28,8 @@ class RepositoryImpl @Inject constructor(private val dataSource: DataSource) : R
                 )
             )
         )
-        return try {
-            val gptResponse = dataSource.getGptResponse(gptRequest)
-            gptResponse.toRecipeResponse()
-        } catch (e: Exception) {
-            RecipeResponse(
-                content = "",
-                isComplete = false,
-                hasError = true
-            )
-        }
+        val gptResponse = dataSource.getGptResponse(gptRequest)
+        return gptResponse.toRecipeResponse()
     }
 
     override suspend fun isFavoriteByName(recipeName: String): Boolean {
