@@ -44,5 +44,8 @@
     <string name="recipe">레시피</string>
     <string name="cartlist">🛒 장보기 리스트 생성</string>
     <string name="shoppinglist">쇼핑 리스트</string>
+    <string name="delete_all">전체 삭제</string>
+    <string name="delete">삭제</string>
+    <string name="toggle_expand">펼치기/접기</string>
 
 </resources>

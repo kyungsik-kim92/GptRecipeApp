@@ -77,7 +77,7 @@
             android:id="@+id/ivExpand"
             android:layout_width="24dp"
             android:layout_height="24dp"
-            android:contentDescription="펼치기/접기"
+            android:contentDescription="@string/toggle_expand"
             android:rotation="@{header.isExpanded ? 180 : 0}"
             android:src="@drawable/baseline_arrow_drop_down_24"
             app:layout_constraintBottom_toBottomOf="parent"
