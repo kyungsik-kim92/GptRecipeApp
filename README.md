@@ -9,3 +9,16 @@ Kotlin + Clean Architecture + MVVM 기반으로, Firebase Functions를 통해 Op
 - **즐겨찾기** — 마음에 드는 레시피를 저장해 목록에서 바로 조회
 - **최근 검색** — 검색어 기록을 저장·삭제하고, 탭하여 다시 검색
 - **쇼핑 리스트** — 레시피 기준으로 쇼핑 목록 자동 생성, 카테고리별 그룹·체크·삭제 지원
+
+## 기술 스택
+
+- **Language:** Kotlin
+- **UI:** DataBinding
+- **Architecture:** Clean Architecture + MVVM
+- **Async:** Kotlin Coroutines + Flow
+- **DI:** Hilt (KSP)
+- **Jetpack:** ViewModel, Navigation Component, Lifecycle
+- **Local DB:** Room (Entity, DAO, TypeConverter)
+- **Backend:** Firebase Functions → OpenAI API (gpt-3.5-turbo), API 키는 Secret Manager로 관리
+- **Image:** Lottie, Flexbox
+- **Build:** Gradle Kotlin DSL, Version Catalog (libs.versions.toml)
