@@ -22,3 +22,31 @@ Kotlin + Clean Architecture + MVVM 기반으로, Firebase Functions를 통해 Op
 - **Backend:** Firebase Functions → OpenAI API (gpt-3.5-turbo), API 키는 Secret Manager로 관리
 - **Image:** Lottie, Flexbox
 - **Build:** Gradle Kotlin DSL, Version Catalog (libs.versions.toml)
+  
+## 프로젝트 구조
+ ```
+GptRecipeApp/
+├── app/                    # 진입점
+│   └── Application.kt
+│
+├── presentation/           # UI 레이어
+│   ├── MainActivity.kt
+│   ├── ui/                  # splash, search, recipe, favorite, shoppinglist 등
+│   ├── model/
+│   └── mapper/
+│
+├── domain/                 # 비즈니스 로직
+│   ├── model/
+│   ├── repo/
+│   └── usecase/
+│
+├── data/                   # 데이터 레이어
+│   ├── database/           # AppDatabase, dao, DataSource, converters
+│   ├── local/entity/
+│   ├── remote/             # dto, firebase
+│   ├── repo/
+│   └── mapper/
+│
+└── functions/              # Firebase Cloud Functions
+    └── src/index.ts        # OpenAI 연동
+  ```
