@@ -31,7 +31,7 @@ GptRecipeApp/
 │
 ├── presentation/           # UI 레이어
 │   ├── MainActivity.kt
-│   ├── ui/                  # splash, search, recipe, favorite, shoppinglist 등
+│   ├── ui/                 # splash, search, recipe, favorite, shoppinglist 등
 │   ├── model/
 │   └── mapper/
 │
@@ -41,11 +41,11 @@ GptRecipeApp/
 │   └── usecase/
 │
 ├── data/                   # 데이터 레이어
-    ├── database/           # AppDatabase, dao, DataSource, converters
-    ├── local/entity/
-    ├── remote/             # dto, firebase
-    ├── repo/
-    └── mapper/
+│   ├── database/           # AppDatabase, dao, DataSource, converters
+│   ├── local/entity/
+│   ├── remote/             # dto, firebase
+│   ├── repo/
+│   └── mapper/
 
 
   ```
