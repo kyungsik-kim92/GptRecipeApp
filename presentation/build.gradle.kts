@@ -6,6 +6,7 @@ plugins {
     id("androidx.navigation.safeargs.kotlin")
     id("kotlin-parcelize")
     kotlin("kapt")
+    alias(libs.plugins.kotlin.serialization)
 }
 
 android {
@@ -54,5 +55,7 @@ dependencies {
 
     implementation(libs.flexbox)
     implementation(libs.lottie)
+
+    implementation(libs.kotlinx.serialization)
 
 }

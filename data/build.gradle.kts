@@ -5,6 +5,7 @@ plugins {
     alias(libs.plugins.hilt.android)
     id("kotlin-parcelize")
     id("com.google.gms.google-services")
+    alias(libs.plugins.kotlin.serialization)
 }
 
 android {
@@ -60,4 +61,6 @@ dependencies {
 
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.7.3")
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-play-services:1.7.3")
+
+    implementation(libs.kotlinx.serialization)
 }
