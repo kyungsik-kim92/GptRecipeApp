@@ -33,8 +33,6 @@ class SearchFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
         _binding = FragmentSearchBinding.inflate(inflater, container, false)
-        binding.viewModel = viewModel
-        binding.lifecycleOwner = viewLifecycleOwner
         return binding.root
     }
 
@@ -153,15 +151,35 @@ class SearchFragment : Fragment() {
         lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewModel.uiState.collect { state ->
-                    binding.uiState = state
                     when (state) {
-                        is SearchUiState.Idle -> {}
+                        is SearchUiState.Idle -> {
+                            binding.progressBar.visibility = View.GONE
+                            if (binding.etRecipe.text.toString() != state.searchKeyword) {
+                                binding.etRecipe.setText(state.searchKeyword)
+                            }
+                        }
+
                         is SearchUiState.Loading -> {
+                            binding.progressBar.visibility = View.VISIBLE
+                            if (binding.etRecipe.text.toString() != state.searchKeyword) {
+                                binding.etRecipe.setText(state.searchKeyword)
+                            }
                             hideRecentSearches()
                         }
 
-                        is SearchUiState.Success -> {}
-                        is SearchUiState.Error -> {}
+                        is SearchUiState.Success -> {
+                            binding.progressBar.visibility = View.GONE
+                            if (binding.etRecipe.text.toString() != state.searchKeyword) {
+                                binding.etRecipe.setText(state.searchKeyword)
+                            }
+                        }
+
+                        is SearchUiState.Error -> {
+                            binding.progressBar.visibility = View.GONE
+                            if (binding.etRecipe.text.toString() != state.searchKeyword) {
+                                binding.etRecipe.setText(state.searchKeyword)
+                            }
+                        }
 
                     }
                 }

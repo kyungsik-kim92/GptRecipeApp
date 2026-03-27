@@ -43,7 +43,7 @@ class SearchKeywordViewHolder(
     private val onDeleteClick: (String) -> Unit
 ) : RecyclerView.ViewHolder(binding.root) {
     fun bind(item: SearchHistoryModel) {
-        binding.searchKeyword = item.keyword
+        binding.tvRecipeTitle.text = item.keyword
         itemView.setOnClickListener {
             onItemClick(item.keyword)
         }
