@@ -1,31 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
 
-    <data>
-
-        <import type="com.example.presentation.ext.LottieAnimateState" />
-
-        <variable
-            name="viewModel"
-            type="com.example.presentation.ui.splash.SplashViewModel" />
-    </data>
-
-    <androidx.constraintlayout.widget.ConstraintLayout
+    <com.airbnb.lottie.LottieAnimationView
+        android:id="@+id/splash"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:layout_centerInParent="true"
+        app:lottie_autoPlay="true"
+        app:lottie_loop="false"
+        app:lottie_rawRes="@raw/splash"
+        app:lottie_repeatCount="0"
+        app:lottie_speed="1.5" />
 
-        <com.airbnb.lottie.LottieAnimationView
-            android:id="@+id/splash"
-            onLottieAnimateState="@{viewModel::onLottieAnimationState}"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_centerInParent="true"
-            app:lottie_autoPlay="true"
-            app:lottie_loop="false"
-            app:lottie_rawRes="@raw/splash"
-            app:lottie_repeatCount="0"
-            app:lottie_speed="1.5" />
-
-    </androidx.constraintlayout.widget.ConstraintLayout>
-</layout>
+</androidx.constraintlayout.widget.ConstraintLayout>

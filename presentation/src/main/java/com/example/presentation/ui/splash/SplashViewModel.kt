@@ -2,7 +2,6 @@ package com.example.presentation.ui.splash
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.presentation.ext.LottieAnimateState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -52,4 +51,10 @@ class SplashViewModel @Inject constructor() : ViewModel() {
         }
         return Unit
     }
+}
+
+sealed class LottieAnimateState {
+    data object Start : LottieAnimateState()
+    data object End : LottieAnimateState()
+    data object Cancel : LottieAnimateState()
 }

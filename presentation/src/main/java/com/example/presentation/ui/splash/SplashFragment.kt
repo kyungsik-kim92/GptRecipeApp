@@ -1,5 +1,6 @@
 package com.example.presentation.ui.splash
 
+import android.animation.Animator
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -12,6 +13,7 @@ import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
 import com.example.presentation.R
 import com.example.presentation.databinding.FragmentSplashBinding
+import com.example.presentation.ext.LottieAnimateState
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 
@@ -29,8 +31,6 @@ class SplashFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
         _binding = FragmentSplashBinding.inflate(inflater, container, false)
-        binding.viewModel = viewModel
-        binding.lifecycleOwner = viewLifecycleOwner
         return binding.root
     }
 
@@ -43,6 +43,18 @@ class SplashFragment : Fragment() {
     private fun setupLottieAnimation() {
         with(binding.splash) {
             setAnimation(R.raw.splash)
+            addAnimatorListener(object : Animator.AnimatorListener {
+                override fun onAnimationStart(animation: Animator) {
+                    viewModel.onLottieAnimationState(LottieAnimateState.Start)
+                }
+                override fun onAnimationEnd(animation: Animator) {
+                    viewModel.onLottieAnimationState(LottieAnimateState.End)
+                }
+                override fun onAnimationCancel(animation: Animator) {
+                    viewModel.onLottieAnimationState(LottieAnimateState.Cancel)
+                }
+                override fun onAnimationRepeat(animation: Animator) {}
+            })
             playAnimation()
         }
     }
